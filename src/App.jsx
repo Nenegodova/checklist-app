@@ -204,6 +204,39 @@ const category = dark ? "#e5e7eb" : "#111827";
     });
   };
 
+const ui = {
+  categoryTitle: {
+    cursor: "pointer",
+    marginBottom: 12,
+    fontSize: 15,
+    fontWeight: 600,
+    color: category,
+    display: "flex",
+    alignItems: "center",
+    gap: 6
+  },
+
+  card: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 10,
+    padding: 14,
+    border: `1px solid ${border}`,
+    background: card,
+    textAlign: "left",
+    borderRadius: 12,
+    transition: "all 0.15s ease"
+  },
+
+  taskText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: "20px",
+    color: textColor,
+    textDecoration: "none"
+  }
+};
+
   return (
     <div style={{
       padding: 30,
