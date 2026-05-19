@@ -250,9 +250,10 @@ const ui = {
   >
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
 
-        <div style={{ marginBottom: 20 }}>
+        {/* HEADER */}
+<div style={{ marginBottom: 20 }}>
 
-  {/* TITLE */}
+  {/* TITLE + PROGRESS */}
   <div style={{ textAlign: "center" }}>
     <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>
       Чек-лист проверки
@@ -314,7 +315,7 @@ const ui = {
 
 </div>
 
-
+          
           <div style={{ flex: 1, textAlign: "center" }}>
   <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>
     Чек-лист проверки
