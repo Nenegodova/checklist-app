@@ -325,11 +325,10 @@ const ui = {
 const btn = {
   padding: "6px 12px",
   borderRadius: 10,
-  border: `1px solid ${border}`,
-  background: dark ? "#18181b" : "#ffffff",
-  color: dark ? "#e8e8ea" : "#111827",
+  border: "1px solid #d1d5db",
+  background: "#ffffff",
+  color: "#111827",
   cursor: "pointer",
-  fontSize: 13,
-  transition: "all 0.15s ease"
+  fontSize: 13
 };
 
