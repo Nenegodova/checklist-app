@@ -251,14 +251,69 @@ const ui = {
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
 
         {/* HEADER FIXED */}
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 20
-        }}>
+        <div style={{ marginBottom: 20 }}>
+
+  {/* TITLE */}
+  <div style={{ textAlign: "center" }}>
+    <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>
+      Чек-лист проверки
+    </h1>
+
+    <div style={{ marginTop: 6, fontSize: 13, color: mutedColor }}>
+      {doneTasks}/{totalTasks} ({percent}%)
+    </div>
+
+    {/* PROGRESS BAR */}
+    <div
+      style={{
+        marginTop: 10,
+        height: 6,
+        width: 220,
+        background: dark ? "#2a2a2e" : "#e5e7eb",
+        borderRadius: 999,
+        overflow: "hidden",
+        marginLeft: "auto",
+        marginRight: "auto"
+      }}
+    >
+      <div
+        style={{
+          height: "100%",
+          width: `${percent}%`,
+          background: dark ? "#7ab7ff" : "#2563eb",
+          borderRadius: 999,
+          transition: "width 0.3s ease"
+        }}
+      />
+    </div>
+  </div>
+
+  {/* BUTTONS */}
+  <div style={{
+    display: "flex",
+    gap: 10,
+    justifyContent: "center",
+    flexWrap: "wrap",
+    marginTop: 16
+  }}>
+    <button style={btn} onClick={() => setDark(v => !v)}>
+      Тема
+    </button>
+
+    <button style={btn} onClick={resetAll}>
+      Сброс
+    </button>
+
+    <button style={btn} onClick={() => setFocusMode(v => !v)}>
+      {focusMode ? "Фокус ON" : "Фокус OFF"}
+    </button>
+
+    <button style={{ ...btn, color: "red" }} onClick={hardReset}>
+      RESET
+    </button>
+  </div>
+
+</div>
           <div style={{ flex: 1, textAlign: "center" }}>
   <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>
     Чек-лист проверки
