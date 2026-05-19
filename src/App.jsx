@@ -250,7 +250,6 @@ const ui = {
   >
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
 
-        {/* HEADER FIXED */}
         <div style={{ marginBottom: 20 }}>
 
   {/* TITLE */}
@@ -314,6 +313,8 @@ const ui = {
   </div>
 
 </div>
+
+
           <div style={{ flex: 1, textAlign: "center" }}>
   <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>
     Чек-лист проверки
