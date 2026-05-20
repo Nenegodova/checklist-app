@@ -79,6 +79,9 @@ const DATA = {
 export default function App() {
   const [dark, setDark] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const [notes, setNotes] = useState(() => {
+  return localStorage.getItem("notes") || "";
+});
 
   const [tasks, setTasks] = useState(() => {
     const savedVersion = localStorage.getItem("version");
@@ -115,6 +118,9 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("collapsed", JSON.stringify(collapsed));
   }, [collapsed]);
+  useEffect(() => {
+  localStorage.setItem("notes", notes);
+}, [notes]);
 
   const toggle = (cat, index) => {
   setTasks((prev) => {
@@ -300,6 +306,45 @@ const ui = {
           </div>
         </div>
 
+
+<div
+  style={{
+    marginBottom: 24,
+    padding: 16,
+    border: `1px solid ${border}`,
+    borderRadius: 14,
+    background: card
+  }}
+>
+  <div
+    style={{
+      marginBottom: 10,
+      fontWeight: 600,
+      color: title
+    }}
+  >
+    📝 Заметки
+  </div>
+
+  <textarea
+    value={notes}
+    onChange={(e) => setNotes(e.target.value)}
+    placeholder="Написать что-нибудь..."
+    style={{
+      width: "100%",
+      minHeight: 120,
+      padding: 12,
+      borderRadius: 10,
+      border: `1px solid ${border}`,
+      background: dark ? "#111" : "#fff",
+      color: textColor,
+      fontSize: 14,
+      resize: "vertical",
+      outline: "none",
+      boxSizing: "border-box"
+    }}
+  />
+</div>
         {/* LIST */}
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 20 }}>
