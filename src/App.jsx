@@ -106,10 +106,19 @@ export default function App() {
     return initial;
   });
 
-  const [collapsed, setCollapsed] = useState(() => {
-    const saved = localStorage.getItem("collapsed");
-    return saved ? JSON.parse(saved) : {};
+ const [collapsed, setCollapsed] = useState(() => {
+  const saved = localStorage.getItem("collapsed");
+
+  if (saved) return JSON.parse(saved);
+
+  // все категории закрыты по умолчанию
+  const initial = {};
+  Object.keys(DATA).forEach((cat) => {
+    initial[cat] = true;
   });
+
+  return initial;
+});
 
   useEffect(() => {
     localStorage.setItem("checklist", JSON.stringify(tasks));
@@ -410,7 +419,7 @@ const ui = {
   <textarea
     value={notes}
     onChange={(e) => setNotes(e.target.value)}
-    placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать всё в голове"
+    placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
     style={{
       width: "100%",
       minHeight: 120,
