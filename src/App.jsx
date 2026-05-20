@@ -312,23 +312,13 @@ const ui = {
     gap: 10
   }}
 >
-  {/* левая часть */}
-  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-    <span style={{ fontSize: 16 }}>
-      {collapsed[cat] ? "▶" : "▼"}
-    </span>
+  <span style={{ fontSize: 16 }}>
+    {collapsed[cat] ? "▶" : "▼"}
+  </span>
 
-    <span>{cat}</span>
-  </div>
+  <span>{cat}</span>
 
-  {/* счётчик НЕ уезжает в космос */}
-  <span
-    style={{
-      marginLeft: "auto",
-      fontSize: 12,
-      opacity: 0.7
-    }}
-  >
+  <span style={{ fontSize: 12, opacity: 0.7 }}>
     {tasks[cat].filter(t => t.done).length}/{tasks[cat].length}
     {tasks[cat].every(t => t.done) ? " ✓" : ""}
   </span>
