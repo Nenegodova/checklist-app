@@ -404,13 +404,13 @@ const ui = {
       color: title
     }}
   >
-    📝 Заметки
+    Заметки
   </div>
 
   <textarea
     value={notes}
     onChange={(e) => setNotes(e.target.value)}
-    placeholder="Написать что-нибудь..."
+    placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать всё в голове"
     style={{
       width: "100%",
       minHeight: 120,
