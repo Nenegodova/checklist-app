@@ -230,7 +230,7 @@ const ui = {
     color: category,
     display: "flex",
     alignItems: "center",
-    gap: 10
+    gap: 30
   },
 
   card: {
