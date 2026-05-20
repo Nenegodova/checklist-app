@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const DATA_VERSION = "1.0";
 
 const LINKS = {
-  "Методичка":
+  "Методички":
     "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994"
 };
 
@@ -66,7 +66,7 @@ const DATA = {
   ],
 
   "Прочее": [
-    "Методичка",
+    "Методички",
     "Проверить комментарии на полях",
     "Проверить метку в кайтене об обновлении",
     "Проверить комментарии в кайтене",
