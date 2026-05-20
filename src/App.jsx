@@ -288,8 +288,28 @@ const ui = {
           <div key={cat} style={{ marginBottom: 20 }}>
 
             <div onClick={() => toggleCollapse(cat)} style={ui.categoryTitle}>
-              {collapsed[cat] ? "▶" : "▼"} {cat}
-            </div>
+  {collapsed[cat] ? "▶" : "▼"}
+
+  {cat}
+
+  <span
+    style={{
+      marginLeft: 8,
+      fontSize: 12,
+      opacity: 0.7
+    }}
+  >
+    {
+      tasks[cat].filter(t => t.done).length
+    }/{tasks[cat].length}
+
+    {
+      tasks[cat].every(t => t.done)
+        ? " ✓"
+        : ""
+    }
+  </span>
+</div>
 
             {!collapsed[cat] && (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
