@@ -323,13 +323,13 @@ const ui = {
       color: title
     }}
   >
-    📝 Заметки
+    Заметки
   </div>
 
   <textarea
     value={notes}
     onChange={(e) => setNotes(e.target.value)}
-    placeholder="Написать что-нибудь..."
+    placeholder="Здесь можешь что-нибудь записать чтобы не забыть..."
     style={{
       width: "100%",
       minHeight: 120,
