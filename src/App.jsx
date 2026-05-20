@@ -473,7 +473,7 @@ const ui = {
       height: 58,
       borderRadius: "50%",
       border: "none",
-      background: "#a1a1aa",
+      background: "#c0c0c8",
       color: "#fff",
       fontSize: 22,
       cursor: "pointer",
