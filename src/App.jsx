@@ -5,7 +5,9 @@ const DATA_VERSION = "1.0";
 const LINKS = {
   "Методички":
     "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994",
-     "Мягкий перенос в заге":
+     "Мягкий перенос в заге.":
+    "https://symbl.cc/ru/00AD/",
+     "Правила переноса":
     "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe"
 };
 
@@ -46,7 +48,7 @@ const DATA = {
     "У плашек с авторами стоит hl isbuble=true",
     "Опрос на месте, там все склеено",
     "Верная плашка редакции",
-    "Мягкий перенос в заге",
+    "Мягкий перенос в заге. Правила переноса",
     "Расставить поля если нужно",
     "Проверить фичеры, баннеры, этажи"
   ],
@@ -227,7 +229,7 @@ const btn = {
               padding: "2px 8px",
               marginRight: 4,
               borderRadius: 8,
-              background: dark ? "#2a2a2e" : "#e8e8ea",
+              background: dark ? "#33334b" : "#e8e8ea",
               color: dark ? "#7ab7ff" : "#2563eb",
               textDecoration: "none",
               fontSize: 13,
