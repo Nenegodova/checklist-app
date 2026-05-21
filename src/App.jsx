@@ -209,56 +209,19 @@ const btn = {
 };
 
   const renderTextWithLinks = (text) => {
-  let elements = [text];
+  const parts = text.split(/(\*[^*]+\*)/g);
 
-  Object.keys(LINKS).forEach((key) => {
-    elements = elements.flatMap((part) => {
-      if (typeof part !== "string") return [part];
+  return parts.flatMap((part, index) => {
+    if (!part) return [];
 
-      const pieces = part.split(key);
-
-      return pieces.flatMap((piece, i) => {
-        const result = [piece];
-
-        if (i < pieces.length - 1) {
-          result.push(
-            <a
-              key={`${key}-${i}`}
-              href={LINKS[key]}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                display: "inline-block",
-                padding: "2px 8px",
-                marginRight: 6,
-                borderRadius: 8,
-                background: dark ? "#33334b" : "#e8e8ea",
-                color: dark ? "#7ab7ff" : "#2563eb",
-                textDecoration: "none",
-                fontSize: 13,
-                fontWeight: 500
-              }}
-            >
-              {key}
-            </a>
-          );
-        }
-
-        return result;
-      });
-    });
-  });
-
-  return elements.map((part, i) => {
-    if (typeof part !== "string") return part;
-
+    // жирный текст
     if (
       part.startsWith("*") &&
       part.endsWith("*")
     ) {
       return (
         <strong
-          key={i}
+          key={`bold-${index}`}
           style={{ fontWeight: 700 }}
         >
           {part.slice(1, -1)}
@@ -266,7 +229,57 @@ const btn = {
       );
     }
 
-    return <span key={i}>{part}</span>;
+    let elements = [part];
+
+    Object.keys(LINKS).forEach((key) => {
+      elements = elements.flatMap((piece) => {
+        if (typeof piece !== "string") {
+          return [piece];
+        }
+
+        const chunks = piece.split(key);
+
+        return chunks.flatMap((chunk, i) => {
+          const result = [chunk];
+
+          if (i < chunks.length - 1) {
+            result.push(
+              <a
+                key={`${key}-${index}-${i}`}
+                href={LINKS[key]}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-block",
+                  padding: "2px 8px",
+                  marginRight: 6,
+                  borderRadius: 8,
+                  background: dark
+                    ? "#33334b"
+                    : "#e8e8ea",
+                  color: dark
+                    ? "#7ab7ff"
+                    : "#2563eb",
+                  textDecoration: "none",
+                  fontSize: 13,
+                  fontWeight: 500
+                }}
+              >
+                {key}
+              </a>
+            );
+          }
+
+          return result;
+        });
+      });
+    });
+
+    return elements.map((el, i) =>
+      typeof el === "string"
+        ? <span key={`${index}-${i}`}>{el}</span>
+        : el
+    );
   });
 };
 
