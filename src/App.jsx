@@ -209,49 +209,66 @@ const btn = {
 };
 
   const renderTextWithLinks = (text) => {
-    const regex = /(\*[^*]+\*|https?:\/\/[^\s]+)/g;
-    const parts = text.split(regex);
+  let elements = [text];
 
-    return parts.map((part, i) => {
-      if (!part) return null;
+  Object.keys(LINKS).forEach((key) => {
+    elements = elements.flatMap((part) => {
+      if (typeof part !== "string") return [part];
 
-      const clean = part.replace(/[.,!?]/g, "");
+      const pieces = part.split(key);
 
-      if (LINKS[clean]) {
-        return (
-          <a
-            key={i}
-            href={LINKS[clean]}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              display: "inline-block",
-              padding: "2px 8px",
-              marginRight: 4,
-              borderRadius: 8,
-              background: dark ? "#33334b" : "#e8e8ea",
-              color: dark ? "#7ab7ff" : "#2563eb",
-              textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 500
-            }}
-          >
-            {part}
-          </a>
-        );
-      }
+      return pieces.flatMap((piece, i) => {
+        const result = [piece];
 
-      if (part.startsWith("*") && part.endsWith("*")) {
-        return (
-          <strong key={i} style={{ fontWeight: 700 }}>
-            {part.slice(1, -1)}
-          </strong>
-        );
-      }
+        if (i < pieces.length - 1) {
+          result.push(
+            <a
+              key={`${key}-${i}`}
+              href={LINKS[key]}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "inline-block",
+                padding: "2px 8px",
+                marginRight: 6,
+                borderRadius: 8,
+                background: dark ? "#33334b" : "#e8e8ea",
+                color: dark ? "#7ab7ff" : "#2563eb",
+                textDecoration: "none",
+                fontSize: 13,
+                fontWeight: 500
+              }}
+            >
+              {key}
+            </a>
+          );
+        }
 
-      return <span key={i}>{part}</span>;
+        return result;
+      });
     });
-  };
+  });
+
+  return elements.map((part, i) => {
+    if (typeof part !== "string") return part;
+
+    if (
+      part.startsWith("*") &&
+      part.endsWith("*")
+    ) {
+      return (
+        <strong
+          key={i}
+          style={{ fontWeight: 700 }}
+        >
+          {part.slice(1, -1)}
+        </strong>
+      );
+    }
+
+    return <span key={i}>{part}</span>;
+  });
+};
 
 const ui = {
   categoryTitle: {
