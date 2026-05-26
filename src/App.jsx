@@ -30,9 +30,8 @@ const PRESETS = {
       "В больших тестах под обложкой указан иллюстратор"
     ],
 
-   "Прочее": [
+    "Прочее": [
   {
-    text: "Методичка тесты",
     links: [
       {
         label: "Методичка тесты",
@@ -123,7 +122,6 @@ const DATA = {
 
 "Прочее": [
   {
-    text: "",
     links: [
       {
         label: "Методички общие",
@@ -291,55 +289,6 @@ const [tasks, setTasks] =
   );
 
 }, [preset]);
-
-
-useEffect(() => {
-
-  const initial = {};
-  const currentData = buildData();
-
-  Object.keys(currentData).forEach((cat) => {
-
-    initial[cat] =
-      currentData[cat]
-      .map((t) => ({
-        text:
-          typeof t === "string"
-            ? t
-            : t.text,
-
-        links:
-          typeof t === "string"
-            ? []
-            : t.links || [],
-
-        done: false
-      }));
-
-  });
-
-  setTasks(initial);
-
-}, [preset]);
-
-useEffect(() => {
-
-  const collapsedInitial = {};
-
-  Object.keys(
-    buildData()
-  ).forEach((cat) => {
-
-    collapsedInitial[cat] = true;
-
-  });
-
-  setCollapsed(
-    collapsedInitial
-  );
-
-}, [preset]);
-
 
 
 
