@@ -118,25 +118,41 @@ const DATA = {
 };
 
 export default function App() {
-const [dark, setDark] = useState(false);
+
+const [dark, setDark] =
+  useState(false);
+
 const [preset, setPreset] =
-  useState("default");
-  const [focusMode, setFocusMode] = useState(false);
-  const [notes, setNotes] = useState(() => {
-  return localStorage.getItem("notes") || "";
-});
-const [notesOpen, setNotesOpen] = useState(false);
-  const [tasks, setTasks] = useState(() => {
-    const savedVersion = localStorage.getItem("version");
-    const saved = localStorage.getItem("checklist");
+  useState(() => {
 
-    if (savedVersion !== DATA_VERSION) {
-      localStorage.removeItem("checklist");
-      localStorage.removeItem("collapsed");
-      localStorage.setItem("version", DATA_VERSION);
-    }
+    return (
+      localStorage.getItem(
+        "preset"
+      ) || "default"
 
-    if (saved) return JSON.parse(saved);
+    );
+
+  });
+
+const [focusMode, setFocusMode] =
+  useState(false);
+
+const [notes, setNotes] =
+  useState(() => {
+
+    return (
+      localStorage.getItem(
+        "notes"
+      ) || ""
+
+    );
+
+  });
+
+const [notesOpen, setNotesOpen] =
+  useState(false);
+
+
 const buildData = () => {
 
   const result =
@@ -149,9 +165,11 @@ const buildData = () => {
   ) {
 
     result["Прочее"] = [
+
       ...result["Прочее"],
 
       ...PRESETS[preset]
+
     ];
 
   }
@@ -159,36 +177,93 @@ const buildData = () => {
   return result;
 
 };
+
+
+const [tasks, setTasks] =
+  useState(() => {
+
+    const savedVersion =
+      localStorage.getItem(
+        "version"
+      );
+
+    const saved =
+      localStorage.getItem(
+        "checklist"
+      );
+
+    if (
+      savedVersion !==
+      DATA_VERSION
+    ) {
+
+      localStorage.removeItem(
+        "checklist"
+      );
+
+      localStorage.removeItem(
+        "collapsed"
+      );
+
+      localStorage.setItem(
+        "version",
+        DATA_VERSION
+      );
+
+    }
+
+    if (saved) {
+
+      return JSON.parse(
+        saved
+      );
+
+    }
+
     const initial = {};
 
-const currentData =
-  buildData();
+    const currentData =
+      buildData();
 
-Object.keys(currentData)
-.forEach((cat) => {
+    Object.keys(
+      currentData
+    ).forEach((cat) => {
 
-  initial[cat] =
-    currentData[cat]
-    .map((t) => ({
+      initial[cat] =
+        currentData[cat]
+        .map((t) => ({
 
-      text:
-        typeof t === "string"
-          ? t
-          : t.text,
+          text:
+            typeof t ===
+            "string"
+              ? t
+              : t.text,
 
-      links:
-        typeof t === "string"
-          ? []
-          : t.links || [],
+          links:
+            typeof t ===
+            "string"
+              ? []
+              : t.links || [],
 
-      done: false
+          done: false
 
-    }));
+        }));
 
-});
+    });
 
     return initial;
+
   });
+
+
+useEffect(() => {
+
+  localStorage.setItem(
+    "preset",
+    preset
+  );
+
+}, [preset]);
 
  const [collapsed, setCollapsed] = useState(() => {
   const saved = localStorage.getItem("collapsed");
