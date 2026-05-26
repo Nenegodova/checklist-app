@@ -764,7 +764,25 @@ style={{
         : "none"
     }}
   >
-    {renderTextWithLinks(task.text)}
+    {task.links?.length > 0 ? (
+  task.links.map((link) => (
+    <a
+      key={link.url}
+      href={link.url}
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        color: dark ? "#7ab7ff" : "#2563eb",
+        fontWeight: 600,
+        textDecoration: "none"
+      }}
+    >
+      {link.label}
+    </a>
+  ))
+) : (
+  task.text
+)}
   </div>
 
   {task.links?.length > 0 && (
