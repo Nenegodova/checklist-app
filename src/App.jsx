@@ -503,72 +503,49 @@ const ui = {
             <button style={btn} onClick={() => setDark(v => !v)}>Тема</button>
             
             
-            <select
- value={preset}
- onChange={(e)=>{
+          <select
+  value={preset}
+  onChange={(e) => {
+    localStorage.removeItem("checklist");
+    setPreset(e.target.value);
+    window.location.reload();
+  }}
+  style={{
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
 
-  localStorage.removeItem(
-    "checklist"
-  );
+    minWidth: 140,
+    padding: "8px 36px 8px 12px",
+    borderRadius: 10,
 
-  setPreset(
-    e.target.value
-  );
+    border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`,
+    background: dark ? "#18181b" : "#ffffff",
+    color: dark ? "#e8e8ea" : "#111827",
 
-  window.location.reload();
+    fontSize: 13,
+    cursor: "pointer",
 
- }}
-style={{
-  ...btn,
+    outline: "none",
 
-  minWidth: 120,
+    // важное: убираем странные системные эффекты
+    boxShadow: "none",
 
-  padding:
-    "6px 32px 6px 12px",
-
-  appearance:
-    "none",
-
-  WebkitAppearance:
-    "none",
-
-  MozAppearance:
-    "none",
-
-  background:
-    dark
-      ? "#18181b"
-      : "#fff",
-
-  color:
-    dark
-      ? "#e8e8ea"
-      : "#111827",
-
-  border:
-    `1px solid ${
-      dark
-        ? "#2a2a2e"
-        : "#d1d5db"
-    }`,
-
-  backgroundImage:
-    dark
+    // стрелка
+    backgroundImage: dark
       ? `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23a1a1aa' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`
       : `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23666' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
 
-  backgroundRepeat:
-    "no-repeat",
-
-  backgroundPosition:
-    "right 10px center",
-
-  backgroundSize:
-    "12px",
-
-  cursor:
-    "pointer"
-}}
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center",
+    backgroundSize: "12px"
+  }}
+  onFocus={(e) => {
+    e.target.style.borderColor = dark ? "#3f3f46" : "#9ca3af";
+  }}
+  onBlur={(e) => {
+    e.target.style.borderColor = dark ? "#2a2a2e" : "#d1d5db";
+  }}
 >
 
 
