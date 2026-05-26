@@ -2,7 +2,31 @@ import { useEffect, useState } from "react";
 
 const DATA_VERSION = "1.0";
 
+const PRESETS = {
+  default: [],
 
+  invest: [
+    "Заполнена выдержка",
+    "Заполнен тикер"
+  ],
+
+  things: [
+    "Напоминание о пересчете цен"
+  ],
+
+  tests: [
+    "В мини-тестах автор и подпись стоят перед лидом",
+    "В подвале больших тестов прописаны авторы и источники"
+  ],
+
+  compare: [
+    "Тег noads"
+  ],
+
+  spending: [
+    "Нажата кнопка из сообщества"
+  ]
+};
 
 const DATA = {
   "Админка": [
@@ -57,7 +81,7 @@ const DATA = {
   "Таблицы": [
     "Десктоп работает корректно",
     "Красиво отрегулированы ширины",
-    "Выравнивание по левому краю если: Числа не сравниваются между собой, а используются как обозначение или порядковый номер, в колонке есть диапазоны, в колонке смешаны разные единицы измерения, в колонке используются валютные фичеры (в том числе есть ячейки с ним, а есть без него), в части ячеек есть дополнительные слова или символы, в некоторых ячейках нет числовых значений",
+    "Выравнивание по левому краю если: числа не сравниваются между собой, а используются как обозначение или порядковый номер, в колонке есть диапазоны, в колонке смешаны разные единицы измерения, в колонке используются валютные фичеры (в том числе есть ячейки с ним, а есть без него), в части ячеек есть дополнительные слова или символы, в некоторых ячейках нет числовых значений",
     "Если нужно внутри стоят <br/> и •"
   ],
 
@@ -94,7 +118,9 @@ const DATA = {
 };
 
 export default function App() {
-  const [dark, setDark] = useState(false);
+const [dark, setDark] = useState(false);
+const [preset, setPreset] =
+  useState("default");
   const [focusMode, setFocusMode] = useState(false);
   const [notes, setNotes] = useState(() => {
   return localStorage.getItem("notes") || "";
@@ -111,24 +137,55 @@ const [notesOpen, setNotesOpen] = useState(false);
     }
 
     if (saved) return JSON.parse(saved);
+const buildData = () => {
 
+  const result =
+    JSON.parse(
+      JSON.stringify(DATA)
+    );
+
+  if (
+    PRESETS[preset]
+  ) {
+
+    result["Прочее"] = [
+      ...result["Прочее"],
+
+      ...PRESETS[preset]
+    ];
+
+  }
+
+  return result;
+
+};
     const initial = {};
-    Object.keys(DATA).forEach((cat) => {
-      initial[cat] = DATA[cat].map((t) => ({
-  text:
-    typeof t === "string"
-      ? t
-      : t.text,
 
-  links:
-    typeof t === "string"
-      ? []
-      : t.links || [],
+const currentData =
+  buildData();
 
-  done: false
-}));
+Object.keys(currentData)
+.forEach((cat) => {
 
-    });
+  initial[cat] =
+    currentData[cat]
+    .map((t) => ({
+
+      text:
+        typeof t === "string"
+          ? t
+          : t.text,
+
+      links:
+        typeof t === "string"
+          ? []
+          : t.links || [],
+
+      done: false
+
+    }));
+
+});
 
     return initial;
   });
@@ -375,6 +432,52 @@ const ui = {
 
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button style={btn} onClick={() => setDark(v => !v)}>Тема</button>
+            <select
+ value={preset}
+ onChange={(e)=>{
+
+  localStorage.removeItem(
+    "checklist"
+  );
+
+  setPreset(
+    e.target.value
+  );
+
+  window.location.reload();
+
+ }}
+ style={{
+  ...btn,
+  padding:"6px 10px"
+ }}
+>
+
+<option value="default">
+Обычный
+</option>
+
+<option value="invest">
+Инвест
+</option>
+
+<option value="things">
+Вещи
+</option>
+
+<option value="tests">
+Тест
+</option>
+
+<option value="compare">
+Сравнятор
+</option>
+
+<option value="spending">
+Дневник трат
+</option>
+
+</select>
             <button style={btn} onClick={resetAll}>Сброс</button>
             <button style={btn} onClick={() => setFocusMode(v => !v)}>
               {focusMode ? "Фокус ON" : "Фокус OFF"}
