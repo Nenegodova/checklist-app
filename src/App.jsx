@@ -41,7 +41,19 @@ const DATA = {
     "У плашек с авторами стоит hl isbuble=true",
     "Опрос на месте, там все склеено",
     "Верная плашка редакции",
-    "Мягкий перенос в заге [Символы](https://symbl.cc/ru/00AD/) [Правила](https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe)",
+    {
+  text: "Мягкий перенос в заге",
+  links: [
+    {
+      label: "Символы",
+      url: "https://symbl.cc/ru/00AD/"
+    },
+    {
+      label: "Правила",
+      url: "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe"
+    }
+  ]
+},
     "Расставить поля если нужно",
     "Проверить фичеры, баннеры, этажи"
   ],
@@ -62,8 +74,15 @@ const DATA = {
   ],
 
   "Прочее": [
-    "Методички [Открыть](https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994)",
-    "Проверить комментарии на полях",
+    {
+  text: "Методички",
+  links: [
+    {
+      label: "Открыть",
+      url: "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994"
+    }
+  ]
+},
     "Проверить метку в кайтене об обновлении",
     "Проверить комментарии в кайтене",
     "В кайтен прикрепить ссылки на драфт и опенграф-картинку",
@@ -94,9 +113,19 @@ const [notesOpen, setNotesOpen] = useState(false);
     const initial = {};
     Object.keys(DATA).forEach((cat) => {
       initial[cat] = DATA[cat].map((t) => ({
-        text: t,
-        done: false
-      }));
+  text:
+    typeof t === "string"
+      ? t
+      : t.text,
+
+  links:
+    typeof t === "string"
+      ? []
+      : t.links || [],
+
+  done: false
+}));
+
     });
 
     return initial;
@@ -419,14 +448,66 @@ const ui = {
   }}
 />
 
-                    <span style={{
-  ...ui.taskText,
-  textDecoration: task.done ? "line-through" : "none",
-  opacity: task.done ? 0.5 : 1
-}}>
-                      {renderTextWithLinks(task.text)}
-                    </span>
+                    <div
+  style={{
+    flex: 1,
+    opacity: task.done ? 0.5 : 1
+  }}
+>
+  <div
+    style={{
+      ...ui.taskText,
+      textDecoration: task.done
+        ? "line-through"
+        : "none"
+    }}
+  >
+    {renderTextWithLinks(task.text)}
+  </div>
+
+  {task.links?.length > 0 && (
+    <div
+      style={{
+        display: "flex",
+        gap: 8,
+        marginTop: 8,
+        flexWrap: "wrap"
+      }}
+    >
+      {task.links.map((link) => (
+        <a
+          key={link.url}
+          href={link.url}
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            padding: "4px 10px",
+            borderRadius: 999,
+            fontSize: 12,
+            fontWeight: 600,
+            textDecoration: "none",
+            background: dark
+              ? "#27272a"
+              : "#eef2f7",
+            color: dark
+              ? "#93c5fd"
+              : "#2563eb",
+            border: `1px solid ${
+              dark
+                ? "#3f3f46"
+                : "#d1d5db"
+            }`
+          }}
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+  )}
+</div>
                   </label>
+
+
                 ))}
               </div>
             )}
