@@ -30,9 +30,17 @@ const PRESETS = {
       "В больших тестах под обложкой указан иллюстратор"
     ],
 
-    "Прочее": [
-      "Методичка тесты"
+   "Прочее": [
+  {
+    text: "Методичка тесты",
+    links: [
+      {
+        label: "Методичка тесты",
+        url: "https://docs.google.com/document/d/1vBoENUtJI2UHtbBrLqVgPxuoEBE0yNvYhhATKmwiXzU/edit?tab=t.0#bookmark=id.sgzp2wu0gy8c" // вставь нужную ссылку
+      }
     ]
+  }
+]
   },
 
   compare: {
