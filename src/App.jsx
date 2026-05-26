@@ -116,7 +116,6 @@ const DATA = {
 
   "Прочее": [
     {
-      text: "Методички общие",
       links: [
         {
           label: "Методички общие",
@@ -630,29 +629,24 @@ style={{
   flexShrink: 0
 }}
 />
-
-                    <div
+<div
   style={{
     flex: 1,
     opacity: task.done ? 0.5 : 1
   }}
 >
-  <div
-  style={{
-    ...ui.taskText,
-    textDecoration: task.done ? "line-through" : "none"
-  }}
->
-  {task.text}
+  {task.text && (
+    <div style={ui.taskText}>
+      {task.text}
+    </div>
+  )}
 
-
-</div>
   {task.links?.length > 0 && (
     <div
       style={{
         display: "flex",
         gap: 8,
-        marginTop: 8,
+        marginTop: task.text ? 8 : 0,
         flexWrap: "wrap"
       }}
     >
@@ -668,17 +662,9 @@ style={{
             fontSize: 12,
             fontWeight: 600,
             textDecoration: "none",
-            background: dark
-              ? "#27272a"
-              : "#eef2f7",
-            color: dark
-              ? "#93c5fd"
-              : "#2563eb",
-            border: `1px solid ${
-              dark
-                ? "#3f3f46"
-                : "#d1d5db"
-            }`
+            background: dark ? "#27272a" : "#eef2f7",
+            color: dark ? "#93c5fd" : "#2563eb",
+            border: `1px solid ${dark ? "#3f3f46" : "#d1d5db"}`
           }}
         >
           {link.label}
