@@ -49,7 +49,7 @@ const DATA = {
     "Проверить подзаголовок, слаг, редакции, теги, потоки, формат, вопрос к читателям, нож (в тюнах), мету, ог⁠-⁠описание, краткий заг или краткое описание",
     "Ог⁠-⁠заг = заголовок статьи",
     "Проверить скрытие",
-    "Размер обложки, подпись к обложке в нужном месте (под облогой/в подвале), актуальность текста, 18+ не обрезается на ОГ",
+    "Размер обложки, подпись к обложке в нужном месте (под обложкой/в подвале), актуальность текста, 18+ не обрезается на ОГ",
     "Если в затравке отсутствует знак вопроса, то стоит двоеточие",
     "Проверить автора обложки или источники",
     "Иноагенты и прочие враги в подвале"
@@ -329,36 +329,7 @@ useEffect(() => {
 
 }, [preset]);
 
-useEffect(() => {
 
-  const initial = {};
-  const currentData = buildData();
-
-  Object.keys(currentData).forEach((cat) => {
-
-    initial[cat] =
-      currentData[cat]
-      .map((t) => ({
-
-        text:
-          typeof t === "string"
-            ? t
-            : t.text,
-
-        links:
-          typeof t === "string"
-            ? []
-            : t.links || [],
-
-        done: false
-
-      }));
-
-  });
-
-  setTasks(initial);
-
-}, [preset]);
 
 
  const [collapsed, setCollapsed] = useState(() => {
@@ -426,6 +397,7 @@ const hardReset = () => {
   localStorage.removeItem("collapsed");
   localStorage.removeItem("notes");
   localStorage.removeItem("preset");
+  localStorage.removeItem("version");
 
   setNotes("");
   setPreset("default");
