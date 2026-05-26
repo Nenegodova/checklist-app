@@ -75,10 +75,10 @@ const DATA = {
 
   "Прочее": [
     {
-  text: "Методички",
+  text: "",
   links: [
     {
-      label: "Открыть",
+      label: "Методички",
       url: "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994"
     }
   ]
