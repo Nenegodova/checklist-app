@@ -12,7 +12,7 @@ const PRESETS = {
     ]
   },
 
-  things: {
+  shopping: {
     "Админка": [
     "Напоминание о пересчете цен",
     "Тег noads"
@@ -706,8 +706,8 @@ const ui = {
       Инвест
     </option>
 
-    <option value="things">
-      Вещи
+    <option value="shopping">
+      Шопинг
     </option>
 
     <option value="tests">
