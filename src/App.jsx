@@ -1,26 +1,23 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 
-/* ===================== CONSTANTS (OUTSIDE COMPONENT = PERF) ===================== */
+/* ===================== CONSTANTS ===================== */
 
 const DATA_VERSION = "1.1";
 
 const PRESETS = {
   default: {},
-
   invest: {
     "Админка": [
       { text: "Заполнена выдержка" },
       { text: "Заполнен тикер" }
     ]
   },
-
   shopping: {
     "Админка": [
       { text: "Напоминание о пересчете цен" },
       { text: "Тег noads" }
     ]
   },
-
   tests: {
     "Текст": [
       { text: "В мини-тестах автор и подпись стоят перед лидом" }
@@ -42,14 +39,8 @@ const PRESETS = {
       }
     ]
   },
-
-  compare: {
-    "Админка": [{ text: "Тег noads" }]
-  },
-
-  spending: {
-    "Прочее": [{ text: "Нажата кнопка из сообщества" }]
-  }
+  compare: { "Админка": [{ text: "Тег noads" }] },
+  spending: { "Прочее": [{ text: "Нажата кнопка из сообщества" }] }
 };
 
 const DATA = {
@@ -123,7 +114,7 @@ const DATA = {
   ]
 };
 
-/* ===================== PURE HELPERS ===================== */
+/* ===================== HELPERS ===================== */
 
 const buildCollapsed = (data, prev = {}) => {
   const next = {};
@@ -138,111 +129,68 @@ const buildData = (preset) => {
   const presetData = PRESETS[preset];
 
   if (presetData) {
-    Object.keys(presetData).forEach((category) => {
-      if (!result[category]) result[category] = [];
-      result[category] = [...result[category], ...presetData[category]];
+    Object.keys(presetData).forEach((cat) => {
+      if (!result[cat]) result[cat] = [];
+      result[cat] = [...result[cat], ...presetData[cat]];
     });
   }
 
   return result;
 };
 
-/* ===================== COMPONENT ===================== */
+/* ===================== APP ===================== */
 
 export default function App() {
-
   const [dark, setDark] = useState(false);
-
-  const [preset, setPreset] = useState(() =>
-    localStorage.getItem("preset") || "default"
-  );
-
+  const [preset, setPreset] = useState(() => localStorage.getItem("preset") || "default");
   const [focusMode, setFocusMode] = useState(false);
-
-  const [notes, setNotes] = useState(() =>
-    localStorage.getItem("notes") || ""
-  );
-
+  const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
 
-  /* ---------- DATA (MEMO = PERF FIX #1) ---------- */
   const currentData = useMemo(() => buildData(preset), [preset]);
 
-  /* ---------- TASKS INIT ---------- */
   const [tasks, setTasks] = useState(() => {
-    const savedVersion = localStorage.getItem("version");
     const saved = localStorage.getItem("checklist");
-
-    if (savedVersion !== DATA_VERSION) {
-      localStorage.removeItem("checklist");
-      localStorage.removeItem("collapsed");
-      localStorage.setItem("version", DATA_VERSION);
-    }
-
     if (saved) return JSON.parse(saved);
 
-    const initial = {};
     const data = buildData("default");
+    const init = {};
 
     Object.keys(data).forEach((cat) => {
-      initial[cat] = data[cat].map((t) => ({
+      init[cat] = data[cat].map((t) => ({
         text: typeof t === "string" ? t : t.text,
         links: typeof t === "string" ? [] : t.links || [],
         done: false
       }));
     });
 
-    return initial;
+    return init;
   });
 
   const [collapsed, setCollapsed] = useState(() => {
     const saved = localStorage.getItem("collapsed");
-    if (saved) return JSON.parse(saved);
-    return buildCollapsed(buildData(preset));
+    return saved ? JSON.parse(saved) : buildCollapsed(buildData(preset));
   });
 
-  /* ===================== EFFECTS ===================== */
-
-  useEffect(() => {
-    localStorage.setItem("preset", preset);
-  }, [preset]);
+  useEffect(() => localStorage.setItem("preset", preset), [preset]);
+  useEffect(() => localStorage.setItem("checklist", JSON.stringify(tasks)), [tasks]);
+  useEffect(() => localStorage.setItem("collapsed", JSON.stringify(collapsed)), [collapsed]);
+  useEffect(() => localStorage.setItem("notes", notes), [notes]);
 
   useEffect(() => {
     setTasks((prev) => {
       const next = {};
-
       Object.keys(currentData).forEach((cat) => {
         next[cat] = currentData[cat].map((t) => {
           const text = typeof t === "string" ? t : t.text;
           const links = typeof t === "string" ? [] : t.links || [];
-
           const old = prev?.[cat]?.find(x => x.text === text);
-
           return { text, links, done: old?.done ?? false };
         });
       });
-
       return next;
     });
   }, [preset, currentData]);
-
-  useEffect(() => {
-    setCollapsed((prev) => buildCollapsed(currentData, prev));
-  }, [preset, currentData]);
-
-  useEffect(() => {
-    localStorage.setItem("checklist", JSON.stringify(tasks));
-  }, [tasks]);
-
-  useEffect(() => {
-    localStorage.setItem("collapsed", JSON.stringify(collapsed));
-  }, [collapsed]);
-
-  useEffect(() => {
-    localStorage.setItem("notes", notes);
-  }, [notes]);
-
-  /* ===================== HANDLERS (useCallback = PERF FIX #2) ===================== */
 
   const toggle = useCallback((cat, index) => {
     setTasks((prev) => {
@@ -250,232 +198,92 @@ export default function App() {
         i === index ? { ...t, done: !t.done } : t
       );
 
-      const completed = updated.every(t => t.done);
-
-      if (completed) {
-        setCollapsed(prev => ({ ...prev, [cat]: true }));
+      if (updated.every(t => t.done)) {
+        setCollapsed((p) => ({ ...p, [cat]: true }));
       }
 
       return { ...prev, [cat]: updated };
     });
   }, []);
 
-  const resetAll = useCallback(() => {
-    const cleared = {};
-    Object.keys(tasks).forEach((cat) => {
-      cleared[cat] = tasks[cat].map(t => ({ ...t, done: false }));
-    });
-    setTasks(cleared);
-  }, [tasks]);
-
-  const hardReset = useCallback(() => {
-    localStorage.clear();
-    setPreset("default");
-    setNotes("");
-
-    const data = buildData("default");
-    const initial = {};
-
-    Object.keys(data).forEach((cat) => {
-      initial[cat] = data[cat].map(t => ({
-        text: typeof t === "string" ? t : t.text,
-        links: typeof t === "string" ? [] : t.links || [],
-        done: false
-      }));
-    });
-
-    setTasks(initial);
-    setCollapsed(buildCollapsed(data));
-  }, []);
-
   const toggleCollapse = useCallback((cat) => {
-    setCollapsed(prev => ({ ...prev, [cat]: !prev[cat] }));
+    setCollapsed((p) => ({ ...p, [cat]: !p[cat] }));
   }, []);
 
-  /* ===================== STATS ===================== */
+  const resetAll = useCallback(() => {
+    setTasks((prev) => {
+      const next = {};
+      Object.keys(prev).forEach((cat) => {
+        next[cat] = prev[cat].map(t => ({ ...t, done: false }));
+      });
+      return next;
+    });
+  }, []);
 
-  const allTasks = useMemo(
-    () => Object.values(tasks ?? {}).flat(),
-    [tasks]
-  );
-
-  const doneTasks = allTasks.filter(t => t.done).length;
-  const totalTasks = allTasks.length;
-  const percent = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
-
-  /* ===================== UI STYLES (OUTSIDE RERENDER COST) ===================== */
+  const allTasks = useMemo(() => Object.values(tasks).flat(), [tasks]);
+  const done = allTasks.filter(t => t.done).length;
+  const total = allTasks.length;
 
   const textColor = dark ? "#e8e8ea" : "#111";
-  const mutedColor = dark ? "#a1a1aa" : "#555";
-  const card = dark ? "#18181b" : "#ffffff";
-  const border = dark ? "#2a2a2e" : "#e5e7eb";
   const bg = dark ? "#0f0f10" : "#f5f5f7";
-  const title = dark ? "#ffffff" : "#0a0a0a";
-  const category = dark ? "#e5e7eb" : "#111827";
-
-  const btn = {
-    height: 34,
-    padding: "6px 12px",
-    borderRadius: 10,
-    fontSize: 13,
-    cursor: "pointer",
-    border: `1px solid ${border}`,
-    background: card,
-    color: textColor
-  };
-
-  const ui = {
-    categoryTitle: {
-      cursor: "pointer",
-      marginBottom: 12,
-      fontSize: 15,
-      fontWeight: 600,
-      color: category,
-      display: "flex",
-      alignItems: "center",
-      gap: 16
-    },
-    card: {
-      display: "flex",
-      alignItems: "flex-start",
-      gap: 10,
-      padding: "10px 12px",
-      border: `1px solid ${border}`,
-      background: card,
-      borderRadius: 10
-    },
-    taskText: {
-      flex: 1,
-      fontSize: 13,
-      lineHeight: "18px",
-      color: textColor
-    }
-  };
-
-  /* ===================== RENDER (UNCHANGED UI) ===================== */
+  const card = dark ? "#18181b" : "#fff";
+  const border = dark ? "#2a2a2e" : "#e5e7eb";
 
   return (
-    <>
-      <div
-        className={dark ? "dark" : ""}
-        style={{
-          padding: 30,
-          minHeight: "100vh",
-          fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial",
-          background: bg,
-          color: textColor
-        }}
-      >
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ padding: 30, minHeight: "100vh", background: bg, color: textColor }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
 
-          {/* HEADER (UNCHANGED) */}
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 12,
-            marginBottom: 20
-          }}>
-            <div style={{ flex: 1, textAlign: "center" }}>
-              <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>
-                Чек-лист проверки
-              </h1>
+        {/* HEADER */}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h1>Чек-лист</h1>
 
-              <div style={{ marginTop: 6, fontSize: 13, color: mutedColor }}>
-                {doneTasks}/{totalTasks} ({percent}%)
-              </div>
-            </div>
-
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <button style={btn} onClick={() => setDark(v => !v)}>Тема</button>
-
-              <select
-                value={preset}
-                onChange={(e) => {
-                  localStorage.removeItem("checklist");
-                  localStorage.removeItem("collapsed");
-                  setPreset(e.target.value);
-                }}
-                style={{
-                  height: 34,
-                  minWidth: 140,
-                  padding: "0 36px 0 12px",
-                  borderRadius: 10,
-                  border: `1px solid ${border}`,
-                  background: card,
-                  color: textColor
-                }}
-              >
-                <option value="default">Обычный</option>
-                <option value="invest">Инвест</option>
-                <option value="shopping">Шопинг</option>
-                <option value="tests">Тест</option>
-                <option value="compare">Сравнятор</option>
-                <option value="spending">Дневник трат</option>
-              </select>
-
-              <button style={btn} onClick={resetAll}>Сброс</button>
-              <button style={btn} onClick={() => setFocusMode(v => !v)}>
-                {focusMode ? "Фокус: ON" : "Фокус: OFF"}
-              </button>
-              <button style={{ ...btn, color: "red" }} onClick={hardReset}>
-                RESET
-              </button>
-            </div>
+          <div style={{ display: "flex", gap: 10 }}>
+            <button onClick={() => setDark(v => !v)}>Тема</button>
+            <button onClick={() => setFocusMode(v => !v)}>
+              {focusMode ? "Фокус ON" : "Фокус OFF"}
+            </button>
+            <button onClick={resetAll}>Сброс</button>
           </div>
-
-          {/* LIST (UNCHANGED) */}
-          {Object.keys(tasks).map((cat) => (
-            <div key={cat} style={{ marginBottom: 20 }}>
-              <div
-                onClick={() => toggleCollapse(cat)}
-                style={ui.categoryTitle}
-              >
-                <span>{collapsed[cat] ? "▶" : "▼"}</span>
-                <span>{cat}</span>
-              </div>
-
-              {!collapsed[cat] && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                 {tasks[cat]
-  .filter(task => !(focusMode && task.done))
-  .map((task, i) => (
-    <label
-      key={task.text}
-      style={{
-        ...ui.card
-      }}
-    >
-                      <div style={ui.taskText}>
-                        {task.text}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
         </div>
-      </div>
 
-      {/* NOTES (UNCHANGED) */}
-      <div style={{ position: "fixed", right: 24, bottom: 24 }}>
-        <button onClick={() => setNotesOpen(v => !v)}>
-          ✍️
-        </button>
+        <div>{done}/{total}</div>
 
-        {notesOpen && (
-          <div style={{ width: 320 }}>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              style={{ width: "100%", height: 180 }}
-            />
+        {/* LIST */}
+        {Object.keys(tasks).map((cat) => (
+          <div key={cat} style={{ marginTop: 20 }}>
+            <div onClick={() => toggleCollapse(cat)}>
+              {cat}
+            </div>
+
+            {!collapsed[cat] && (
+              <div>
+                {tasks[cat].map((task, i) => (
+                  <label
+                    key={i}
+                    style={{
+                      display: focusMode && task.done ? "none" : "flex",
+                      padding: 10,
+                      border: `1px solid ${border}`,
+                      background: card,
+                      marginTop: 8
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={task.done}
+                      onChange={() => toggle(cat, i)}
+                    />
+                    <span style={{ marginLeft: 10 }}>
+                      {task.text}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        ))}
+
       </div>
-    </>
+    </div>
   );
 }
