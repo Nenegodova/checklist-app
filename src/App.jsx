@@ -32,7 +32,7 @@ const PRESETS = {
 
     "Прочее": [
   {
-  text: " ",
+  text: "смотри",
   links: [
       {
         label: "Методичка тесты",
@@ -123,7 +123,7 @@ const DATA = {
 
 "Прочее": [
  {
-  text: " ",
+  text: "смотри",
     links: [
       {
         label: "Методички общие",
