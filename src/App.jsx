@@ -645,27 +645,7 @@ style={{
 >
   {task.text}
 
-  {task.links?.map((link) => (
-    <a
-      key={link.url}
-      href={link.url}
-      target="_blank"
-      rel="noreferrer"
-      style={{
-        marginLeft: 8,
-        display: "inline-flex",
-        padding: "2px 8px",
-        borderRadius: 999,
-        fontSize: 12,
-        fontWeight: 600,
-        background: dark ? "#27272a" : "#eef2f7",
-        color: dark ? "#93c5fd" : "#2563eb",
-        textDecoration: "none"
-      }}
-    >
-      {link.label}
-    </a>
-  ))}
+
 </div>
   {task.links?.length > 0 && (
     <div
