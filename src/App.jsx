@@ -32,7 +32,8 @@ const PRESETS = {
 
     "Прочее": [
   {
-    links: [
+  text: " ",
+  links: [
       {
         label: "Методичка тесты",
         url: "https://docs.google.com/document/d/1vBoENUtJI2UHtbBrLqVgPxuoEBE0yNvYhhATKmwiXzU/edit?tab=t.0#bookmark=id.sgzp2wu0gy8c" // вставь нужную ссылку
@@ -121,7 +122,8 @@ const DATA = {
   ],
 
 "Прочее": [
-  {
+ {
+  text: " ",
     links: [
       {
         label: "Методички общие",
