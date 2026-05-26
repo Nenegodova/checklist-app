@@ -249,8 +249,7 @@ const [tasks, setTasks] =
 
   });
 
-
-useEffect(() => {
+  useEffect(() => {
 
   localStorage.setItem(
     "preset",
@@ -259,16 +258,49 @@ useEffect(() => {
 
 }, [preset]);
 
+
+useEffect(() => {
+
+  const initial = {};
+  const currentData = buildData();
+
+  Object.keys(currentData).forEach((cat) => {
+
+    initial[cat] =
+      currentData[cat]
+      .map((t) => ({
+
+        text:
+          typeof t === "string"
+            ? t
+            : t.text,
+
+        links:
+          typeof t === "string"
+            ? []
+            : t.links || [],
+
+        done: false
+
+      }));
+
+  });
+
+  setTasks(initial);
+
+}, [preset]);
+
+
  const [collapsed, setCollapsed] = useState(() => {
   const saved = localStorage.getItem("collapsed");
 
   if (saved) return JSON.parse(saved);
 
   // все категории закрыты по умолчанию
-  const initial = {};
-  Object.keys(DATA).forEach((cat) => {
-    initial[cat] = true;
-  });
+const initial = {};
+Object.keys(buildData()).forEach((cat) => {
+  initial[cat] = true;
+});
 
   return initial;
 });
@@ -318,14 +350,53 @@ useEffect(() => {
     setTasks(cleared);
   };
 
- const hardReset = () => {
+const hardReset = () => {
+
   localStorage.removeItem("checklist");
   localStorage.removeItem("collapsed");
   localStorage.removeItem("notes");
+  localStorage.removeItem("preset");
 
   setNotes("");
+  setPreset("default");
 
-  window.location.reload();
+  const currentData = JSON.parse(
+    JSON.stringify(DATA)
+  );
+
+  const initial = {};
+
+  Object.keys(currentData).forEach((cat) => {
+
+    initial[cat] =
+      currentData[cat].map((t) => ({
+
+        text:
+          typeof t === "string"
+            ? t
+            : t.text,
+
+        links:
+          typeof t === "string"
+            ? []
+            : t.links || [],
+
+        done: false
+
+      }));
+
+  });
+
+  setTasks(initial);
+
+  const collapsedInitial = {};
+
+  Object.keys(currentData).forEach((cat) => {
+    collapsedInitial[cat] = true;
+  });
+
+  setCollapsed(collapsedInitial);
+
 };
 
   const toggleCollapse = (cat) => {
@@ -347,32 +418,32 @@ const border = dark ? "#2a2a2e" : "#e5e7eb";
   const bg = dark ? "#0f0f10" : "#f5f5f7";
   const title = dark ? "#ffffff" : "#0a0a0a";
 const category = dark ? "#e5e7eb" : "#111827";
-const btn = {
-  ...control,
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center"
-};
-
-const control = {
+const controlBase = {
   height: 34,
   padding: "6px 12px",
   borderRadius: 10,
 
-  border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`,
-  background: dark ? "#18181b" : "#ffffff",
-  color: dark ? "#e8e8ea" : "#111827",
-
   fontSize: 13,
   lineHeight: "20px",
 
-  outline: "none",
-  boxShadow: "none",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
 
+  cursor: "pointer",
   transition: "all 0.15s ease",
-
-  cursor: "pointer"
+  boxShadow: "none",
+  outline: "none"
 };
+
+const makeControl = (dark) => ({
+  ...controlBase,
+  border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`,
+  background: dark ? "#18181b" : "#ffffff",
+  color: dark ? "#e8e8ea" : "#111827"
+});
+
+const btn = makeControl(dark);
 
  const renderTextWithLinks = (text) => {
   const regex =
@@ -522,13 +593,13 @@ const ui = {
             
           <select
   value={preset}
-  onChange={(e) => {
-    localStorage.removeItem("checklist");
-    setPreset(e.target.value);
-    window.location.reload();
-  }}
+onChange={(e) => {
+  localStorage.removeItem("checklist");
+  localStorage.removeItem("collapsed");
+  setPreset(e.target.value);
+}}
 style={{
-  ...control,
+  ...btn,
   minWidth: 140,
   padding: "6px 36px 6px 12px",
 
@@ -581,8 +652,8 @@ style={{
 </select>
             <button style={btn} onClick={resetAll}>Сброс</button>
             <button style={btn} onClick={() => setFocusMode(v => !v)}>
-              {focusMode ? "Фокус ON" : "Фокус OFF"}
-            </button>
+  {focusMode ? "Фокус: ON" : "Фокус: OFF"}
+</button>
             <button style={{ ...btn, color: "red" }} onClick={hardReset}>
               RESET
             </button>
