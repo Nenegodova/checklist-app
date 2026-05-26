@@ -501,6 +501,8 @@ const ui = {
 
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button style={btn} onClick={() => setDark(v => !v)}>Тема</button>
+            
+            
             <select
  value={preset}
  onChange={(e)=>{
@@ -516,11 +518,46 @@ const ui = {
   window.location.reload();
 
  }}
- style={{
+style={{
   ...btn,
-  padding:"6px 10px"
- }}
+
+  minWidth: 120,
+
+  padding:
+    "6px 32px 6px 12px",
+
+  appearance:
+    "none",
+
+  WebkitAppearance:
+    "none",
+
+  MozAppearance:
+    "none",
+
+  background:
+    dark
+      ? "#18181b"
+      : "#fff",
+
+  backgroundImage:
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23666' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+
+  backgroundRepeat:
+    "no-repeat",
+
+  backgroundPosition:
+    "right 10px center",
+
+  backgroundSize:
+    "12px",
+
+  cursor:
+    "pointer"
+}}
 >
+
+
 
 <option value="default">
 Обычный
