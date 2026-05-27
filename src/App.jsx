@@ -258,19 +258,59 @@ const [collapsed, setCollapsed] = useState(() => {
     localStorage.setItem("notes", notes);
   }, [notes]);
 
-  const toggle = (cat, index) => {
-    setTasks((prev) => {
-      const updated = prev[cat].map((t, i) =>
-        i === index ? { ...t, done: !t.done } : t
-      );
+const toggle = (cat, index) => {
+  setTasks((prev) => {
+    const updated = prev[cat].map((t, i) =>
+      i === index
+        ? { ...t, done: !t.done }
+        : t
+    );
 
-      if (updated.every((t) => t.done)) {
-        setCollapsed((p) => ({ ...p, [cat]: true }));
-      }
+    const nextTasks = {
+      ...prev,
+      [cat]: updated
+    };
 
-      return { ...prev, [cat]: updated };
-    });
-  };
+    // если категория закончилась
+    if (updated.every((t) => t.done)) {
+
+      setCollapsed((old) => {
+        const next = {
+          ...old,
+          [cat]: true
+        };
+
+        const categories =
+          Object.keys(nextTasks);
+
+        const currentIndex =
+          categories.indexOf(cat);
+
+        for (
+          let i = currentIndex + 1;
+          i < categories.length;
+          i++
+        ) {
+          const nextCat =
+            categories[i];
+
+          const hasUndone =
+            nextTasks[nextCat]
+              .some((t) => !t.done);
+
+          if (hasUndone) {
+            next[nextCat] = false;
+            break;
+          }
+        }
+
+        return next;
+      });
+    }
+
+    return nextTasks;
+  });
+};
 
   const resetAll = () => {
     const cleared = {};
