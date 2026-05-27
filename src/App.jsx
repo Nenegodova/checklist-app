@@ -814,6 +814,59 @@ style={{
         Заметки
       </div>
 
+      <div
+  style={{
+    display: "flex",
+    gap: 8,
+    marginBottom: 10
+  }}
+>
+  <button
+    onClick={() => {
+      if (!notes.trim()) {
+        setNotes(NOTES_TEMPLATE);
+      }
+    }}
+    style={{
+      padding: "6px 10px",
+      borderRadius: 10,
+      border: "none",
+
+      background: dark
+        ? "#27272a"
+        : "#eef2f7",
+
+      color: textColor,
+      fontSize: 12,
+      cursor: "pointer"
+    }}
+  >
+    Вставить шаблон
+  </button>
+
+  <button
+    onClick={() => setNotes("")}
+    style={{
+      padding: "6px 10px",
+      borderRadius: 10,
+      border: "none",
+
+      background: dark
+        ? "#3a1f1f"
+        : "#fee2e2",
+
+      color: dark
+        ? "#fca5a5"
+        : "#991b1b",
+
+      fontSize: 12,
+      cursor: "pointer"
+    }}
+  >
+    Очистить
+  </button>
+</div>
+
       <textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
@@ -836,34 +889,6 @@ style={{
     </div>
   )}
 
-{notesOpen && (
-  <button
-    onClick={() => {
-      if (!notes.trim()) {
-        setNotes(NOTES_TEMPLATE);
-      }
-    }}
-    style={{
-      width: 58,
-      height: 40,
-      marginBottom: 8,
-
-      borderRadius: 12,
-      border: "none",
-
-      background: dark
-        ? "#27272a"
-        : "#e5e7eb",
-
-      color: textColor,
-
-      cursor: "pointer",
-      fontSize: 12
-    }}
-  >
-    Шаблон
-  </button>
-)}
 
   <button
     onClick={() => setNotesOpen(v => !v)}
