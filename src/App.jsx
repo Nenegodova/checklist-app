@@ -137,6 +137,28 @@ const buildCollapsed = (data, prev = {}) => {
   return next;
 };
 
+
+
+const buildTasks = (data) => {
+  const initial = {};
+
+  Object.keys(data).forEach((cat) => {
+    initial[cat] = data[cat].map((t) => ({
+      text: typeof t === "string"
+        ? t
+        : t.text,
+
+      links: typeof t === "string"
+        ? []
+        : t.links || [],
+
+      done: false
+    }));
+  });
+
+  return initial;
+};
+
 export default function App() {
   const [dark, setDark] = useState(false);
 
@@ -152,7 +174,6 @@ export default function App() {
 
   const [notesOpen, setNotesOpen] = useState(false);
 
-  // ✅ ЕДИНЫЙ ИСТОЧНИК ДАННЫХ (фикс потери категорий)
   const currentData = useMemo(() => {
     const result = JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
@@ -167,36 +188,33 @@ export default function App() {
     return result;
   }, [preset]);
 
-  const [tasks, setTasks] = useState(() => {
-    const savedVersion = localStorage.getItem("version");
-    const saved = localStorage.getItem("checklist");
+const [tasks, setTasks] = useState(() => {
+  const savedVersion = localStorage.getItem("version");
+  const saved = localStorage.getItem("checklist");
 
-    if (savedVersion !== DATA_VERSION) {
-      localStorage.removeItem("checklist");
-      localStorage.removeItem("collapsed");
-      localStorage.setItem("version", DATA_VERSION);
-    }
+  if (savedVersion !== DATA_VERSION) {
+    localStorage.removeItem("checklist");
+    localStorage.removeItem("collapsed");
+    localStorage.setItem("version", DATA_VERSION);
+  }
 
-    if (saved) return JSON.parse(saved);
+  if (saved) {
+    return JSON.parse(saved);
+  }
 
-    const initial = {};
-    Object.keys(currentData).forEach((cat) => {
-      initial[cat] = currentData[cat].map((t) => ({
-        text: typeof t === "string" ? t : t.text,
-        links: typeof t === "string" ? [] : t.links || [],
-        done: false
-      }));
-    });
+  return buildTasks(currentData);
+});
 
-    return initial;
-  });
+const [collapsed, setCollapsed] = useState(() => {
+  const saved =
+    localStorage.getItem("collapsed");
 
-  const [collapsed, setCollapsed] = useState(() => {
-    const saved = localStorage.getItem("collapsed");
-    if (saved) return JSON.parse(saved);
-    return buildCollapsed(currentData);
-  });
+  if (saved) {
+    return JSON.parse(saved);
+  }
 
+  return buildCollapsed(currentData);
+});
   // sync preset
   useEffect(() => {
     localStorage.setItem("preset", preset);
@@ -262,23 +280,34 @@ export default function App() {
     setTasks(cleared);
   };
 
-  const hardReset = () => {
-    localStorage.clear();
-    setPreset("default");
-    setNotes("");
+const hardReset = () => {
+  [
+    "preset",
+    "notes",
+    "checklist",
+    "collapsed",
+    "version"
+  ].forEach((key) => {
+    localStorage.removeItem(key);
+  });
 
-    const initial = {};
-    Object.keys(currentData).forEach((cat) => {
-      initial[cat] = currentData[cat].map((t) => ({
-        text: typeof t === "string" ? t : t.text,
-        links: typeof t === "string" ? [] : t.links || [],
-        done: false
-      }));
-    });
+  localStorage.setItem(
+    "version",
+    DATA_VERSION
+  );
 
-    setTasks(initial);
-    setCollapsed(buildCollapsed(currentData));
-  };
+  setPreset("default");
+  setNotes("");
+
+  const cleanData = buildTasks(DATA);
+
+  setTasks(cleanData);
+  setCollapsed(
+    buildCollapsed(DATA)
+  );
+
+  setFocusMode(false);
+};
 
   const toggleCollapse = (cat) => {
     setCollapsed((prev) => ({
@@ -635,7 +664,14 @@ style={{
   }}
 >
 {task.text && (
-  <div style={ui.taskText}>
+  <div
+    style={{
+      ...ui.taskText,
+      textDecoration: task.done
+        ? "line-through"
+        : "none"
+    }}
+  >
     {renderTextWithLinks(task.text)}
   </div>
 )}
