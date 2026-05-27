@@ -305,8 +305,6 @@ const [collapsed, setCollapsed] = useState(() => {
     localStorage.setItem("preset", preset);
   }, [preset]);
 
-  
-
   // rebuild tasks safely
   useEffect(() => {
     setTasks((prev) => {
@@ -342,12 +340,8 @@ const [collapsed, setCollapsed] = useState(() => {
   }, [collapsed]);
 
   useEffect(() => {
-  localStorage.setItem(
-    "collapsed",
-    JSON.stringify(collapsed)
-  );
-}, [collapsed]);
-
+    localStorage.setItem("notes", notes);
+  }, [notes]);
 useEffect(() => {
   localStorage.setItem(
     "notesByTemplate",
@@ -442,7 +436,7 @@ const hardReset = () => {
   );
 
   setPreset("default");
-
+  setNotes("");
 
   const cleanData = buildTasks(DATA);
 
@@ -912,58 +906,56 @@ style={{
   }}
 >
   {Object.keys(NOTES_TEMPLATES).map((key) => (
-  <button
-    key={key}
-onClick={() => {
-  setNoteTemplate(key);
+    <button
+      key={key}
+      onClick={() => {
+        setNoteTemplate(key);
+        setNotes(
+          NOTES_TEMPLATES[key]
+        );
+      }}
+      style={{
+        border: "none",
+        cursor: "pointer",
+
+        padding: "6px 10px",
+
+        borderRadius: 999,
+
+        background:
+          noteTemplate === key
+            ? "#6b7280"
+            : dark
+            ? "#27272a"
+            : "#e5e7eb",
+
+        color:
+          noteTemplate === key
+            ? "#fff"
+            : textColor,
+
+        fontSize: 12,
+
+        transition:
+          "all .15s ease"
+      }}
+    >
+      {{
+        empty: "Пусто",
+        default: "База",
+        tests: "Тест",
+        invest: "Инвест",
+        shopping: "Шопинг",
+        compare: "Сравнятор"
+      }[key]}
+    </button>
+  ))}
   
-  setNotesByTemplate((prev) => ({
-    ...prev,
-    [key]: prev[key] ?? NOTES_TEMPLATES[key]
-  }));
-}}
-    style={{
-      border: "none",
-      cursor: "pointer",
-      padding: "6px 10px",
-      borderRadius: 999,
-
-      background:
-        noteTemplate === key
-          ? "#6b7280"
-          : dark
-          ? "#27272a"
-          : "#e5e7eb",
-
-      color:
-        noteTemplate === key
-          ? "#fff"
-          : textColor
-    }}
-  >
-    {{
-      empty: "Пусто",
-      default: "База",
-      tests: "Тест",
-      invest: "Инвест",
-      shopping: "Шопинг",
-      compare: "Сравнятор"
-    }[key]}
-  </button>
-))}
-
 </div>
 
       <textarea
-        value={notesByTemplate[noteTemplate]}
-onChange={(e) => {
-  const value = e.target.value;
-
-  setNotesByTemplate((prev) => ({
-    ...prev,
-    [noteTemplate]: value
-  }));
-}}
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
         placeholder="Заметки по ходу проверки: вопросы, правки и всё, что ​не хочется потерять — можно записывать сюда, чтобы не держать в голове"
         style={{
           width: "100%",
