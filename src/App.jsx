@@ -2,6 +2,23 @@ import { useEffect, useState, useMemo } from "react";
 
 const DATA_VERSION = "1.1";
 
+const NOTES_TEMPLATE =
+`Вопросы к редакции:
+
+—
+
+Вопросы к выпускающему:
+
+—
+
+Поставить блокер:
+
+—
+
+Правки для фотореда/дизайнера:
+
+—`;
+
 const PRESETS = {
   default: {},
 
@@ -818,6 +835,35 @@ style={{
       />
     </div>
   )}
+
+{notesOpen && (
+  <button
+    onClick={() => {
+      if (!notes.trim()) {
+        setNotes(NOTES_TEMPLATE);
+      }
+    }}
+    style={{
+      width: 58,
+      height: 40,
+      marginBottom: 8,
+
+      borderRadius: 12,
+      border: "none",
+
+      background: dark
+        ? "#27272a"
+        : "#e5e7eb",
+
+      color: textColor,
+
+      cursor: "pointer",
+      fontSize: 12
+    }}
+  >
+    Шаблон
+  </button>
+)}
 
   <button
     onClick={() => setNotesOpen(v => !v)}
