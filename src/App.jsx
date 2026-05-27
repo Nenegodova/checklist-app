@@ -2,11 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 
 const DATA_VERSION = "1.1";
 
-const NOTES_TEMPLATES = {
-  empty: "",
-
-  default:
-`Вопросы к редакции:
+const NOTES_TEMPLATE =
+`Вопросы к редакции:
 
 —
 
@@ -14,62 +11,13 @@ const NOTES_TEMPLATES = {
 
 —
 
-Блокеры:
+Поставить блокер:
 
 —
 
-Фоторед:
+Правки для фотореда/дизайнера:
 
-—`,
-
-  tests:
-`Проверить:
-
-—
-
-Замечания по тесту:
-
-—
-
-Блокеры:
-
-—`,
-
-  invest:
-`Тикер:
-
-—
-
-Выдержка:
-
-—
-
-Замечания:
-
-—`,
-
-  shopping:
-`Пересчет цен:
-
-—
-
-Теги:
-
-—
-
-Замечания:
-
-—`,
-
-  compare:
-`Что сравнить:
-
-—
-
-Замечания:
-
-—`
-};
+—`;
 
 const PRESETS = {
   default: {},
@@ -237,25 +185,9 @@ export default function App() {
 
   const [focusMode, setFocusMode] = useState(false);
 
-const [noteTemplate, setNoteTemplate] = useState(
-  () => localStorage.getItem("noteTemplate") || "empty"
-);
-
-const [notesByTemplate, setNotesByTemplate] =
-useState(() => {
-  const saved =
-    localStorage.getItem("notesByTemplate");
-
-  return saved
-    ? JSON.parse(saved)
-    : Object.fromEntries(
-        Object.keys(NOTES_TEMPLATES)
-          .map((key) => [
-            key,
-            NOTES_TEMPLATES[key]
-          ])
-      );
-});
+  const [notes, setNotes] = useState(() => {
+    return localStorage.getItem("notes") || "";
+  });
 
   const [notesOpen, setNotesOpen] = useState(false);
 
@@ -342,20 +274,6 @@ const [collapsed, setCollapsed] = useState(() => {
   useEffect(() => {
     localStorage.setItem("notes", notes);
   }, [notes]);
-useEffect(() => {
-  localStorage.setItem(
-    "notesByTemplate",
-    JSON.stringify(notesByTemplate)
-  );
-}, [notesByTemplate]);
-
-useEffect(() => {
-  localStorage.setItem(
-    "noteTemplate",
-    noteTemplate
-  );
-}, [noteTemplate]);
-
 
 const toggle = (cat, index) => {
   setTasks((prev) => {
@@ -885,72 +803,69 @@ style={{
           : "0 12px 30px rgba(0,0,0,0.12)"
       }}
     >
-      <div
-        style={{
-          fontWeight: 700,
-          marginBottom: 10,
-          color: title,
-          fontSize: 15
-        }}
-      >
-        Заметки
-      </div>
-
-
+<div
+  style={{
+    fontWeight: 700,
+    marginBottom: 10,
+    color: title,
+    fontSize: 15
+  }}
+>
+  Заметки
+</div>
 <div
   style={{
     display: "flex",
-    gap: 6,
-    flexWrap: "wrap",
-    marginBottom: 12
+    gap: 8,
+    marginBottom: 10
   }}
 >
-  {Object.keys(NOTES_TEMPLATES).map((key) => (
-    <button
-      key={key}
-      onClick={() => {
-        setNoteTemplate(key);
-        setNotes(
-          NOTES_TEMPLATES[key]
-        );
-      }}
-      style={{
-        border: "none",
-        cursor: "pointer",
+  <button
+    onClick={() => {
+      if (!notes.trim()) {
+        setNotes(NOTES_TEMPLATE);
+      }
+    }}
+    style={{
+      padding: "6px 10px",
+      borderRadius: 10,
+      border: "none",
 
-        padding: "6px 10px",
+      background: dark
+        ? "#27272a"
+        : "#eef2f7",
 
-        borderRadius: 999,
+      color: textColor,
+      fontSize: 12,
+      cursor: "pointer"
+    }}
+  >
+    Вставить шаблон
+  </button>
 
-        background:
-          noteTemplate === key
-            ? "#6b7280"
-            : dark
-            ? "#27272a"
-            : "#e5e7eb",
+  <button
+    onClick={() => setNotes("")}
+    style={{
+      padding: "6px 10px",
+      borderRadius: 10,
+      border: "none",
 
-        color:
-          noteTemplate === key
-            ? "#fff"
-            : textColor,
+      background: dark
+        ? "#3a1f1f"
+        : "#fee2e2",
 
-        fontSize: 12,
+      color: dark
+        ? "#fca5a5"
+        : "#991b1b",
 
-        transition:
-          "all .15s ease"
-      }}
-    >
-      {{
-        empty: "Пусто",
-        default: "База",
-        tests: "Тест",
-        invest: "Инвест",
-        shopping: "Шопинг",
-        compare: "Сравнятор"
-      }[key]}
-    </button>
-  ))}
+      fontSize: 12,
+      cursor: "pointer"
+    }}
+  >
+    Очистить
+  </button>
 </div>
+      
 
       <textarea
         value={notes}
@@ -997,7 +912,6 @@ style={{
 );
 }
   
-
 
 
 
