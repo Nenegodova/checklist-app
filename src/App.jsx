@@ -67,8 +67,8 @@ const PRESETS = {
 
   spending: {
      "Текст": [
-      { text: "Траты обозначены class="negative"" },
-      { text: "Доходы обозначены class="positive"" }
+      { text: "Траты обозначены class=negative" },
+      { text: "Доходы обозначены class=positive" }
     ],
     "Админка": [
       { text: "Нажата кнопка из сообщества" }
