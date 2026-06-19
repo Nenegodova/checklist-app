@@ -66,6 +66,10 @@ const PRESETS = {
   },
 
   spending: {
+     "Текст": [
+      { text: "Траты обозначены class="negative"" },
+      { text: "Доходы обозначены class="positive"" }
+    ],
     "Админка": [
       { text: "Нажата кнопка из сообщества" }
     ]
@@ -619,6 +623,14 @@ const ui = {
 
     <option value="spending">
       Дневник трат
+    </option>
+
+      <option value="spending">
+      ЧД
+    </option>
+
+      <option value="spending">
+      UGС
     </option>
   </select>
 
