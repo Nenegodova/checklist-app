@@ -41,7 +41,7 @@ const CONTENT_FILTERS = {
     default: true
   },
   infographic: {
-    label: "Инфографику",
+    label: "Инфографика",
     default: true
   }
 };
