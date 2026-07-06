@@ -762,9 +762,9 @@ const ui = {
 <div
   style={{
     display: "flex",
-    flexDirection: isMobile ? "column" : "row",
     justifyContent: "space-between",
-    alignItems: isMobile ? "center" : "flex-start",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
     gap: 24,
     marginBottom: 24
   }}
@@ -772,7 +772,11 @@ const ui = {
 
 
           
-       <div style={{ flexShrink: 0 }}>
+   <div
+  style={{
+    flex: "1 1 320px"
+  }}
+>
   <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>
     Чек-лист проверки
   </h1>
@@ -786,10 +790,10 @@ const ui = {
   style={{
     display: "flex",
     flexDirection: "column",
-    alignItems: isMobile ? "center" : "flex-end",
+    alignItems: "flex-end",
     gap: 12,
-    width: isMobile ? "100%" : "auto",
-    marginLeft: isMobile ? 0 : "auto"
+    marginLeft: "auto",
+    flex: "0 1 520px"
   }}
 >
 
