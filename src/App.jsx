@@ -884,7 +884,7 @@ const ui = {
 >
   <div
     style={{
-      alignItems: "right",
+      align: "right",
       fontSize: 12,
       fontWeight: 600,
       color: mutedColor,
@@ -896,7 +896,7 @@ const ui = {
 
   <div
     style={{
-     alignItems: "right",
+     align: "right",
       display: "flex",
       flexWrap: "wrap",
       gap: 6
