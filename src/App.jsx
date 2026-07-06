@@ -19,6 +19,39 @@ const NOTES_TEMPLATE =
 
 —`;
 
+const CONTENT_FILTERS = {
+  tables: {
+    label: "Таблицы",
+    default: true
+  },
+  screenshots: {
+    label: "Скрины",
+    default: true
+  },
+  images: {
+    label: "Картинки",
+    default: true
+  },
+  infographic: {
+    label: "Инфографику",
+    default: true
+  },
+  poll: {
+    label: "Опрос",
+    default: true
+  }
+};
+
+const buildContentFilters = () => {
+  const result = {};
+
+  Object.entries(CONTENT_FILTERS).forEach(([key, value]) => {
+    result[key] = value.default;
+  });
+
+  return result;
+};
+
 const PRESETS = {
   default: {},
 
@@ -130,10 +163,10 @@ shopping: {
       { text: "Проверить у ссылки на курс наличие хвоста, если его нет, запросить у редактора"},  
       { text: "Проверить у ссылки на статью или поток наличие хвоста ?internal_source=tj_short_слаг-этого-шорта_any-page_button"},
       { text: "В дискрипшен под последней карточкой вынесена информация об актуальности цен и ценах в валюте (поскольку не используем тултипы), источниках данных, метках об иноагентах и т. д."},
+      { text: "Дискрипшн находится внутри *<tiles></tiles>*."},
       { text: "Дескрипшн внутри тега *p grade=”small”*"},
-      { text: "У списка в конце шортов *grade=”secondary”*"},
-      { text: "Дискрипшен находится внутри *<tiles></tiles>*."},
-      { text: "В конце список из 3–4 ссылок выстроен «лесенкой» если позволяет смысл. Вводное предложение — без жирного выделения" }
+      { text: "У списка в конце шортов *p grade=”secondary”*"},
+      { text: "Список в конце шортов из 3–4 ссылок выстроен «лесенкой» если позволяет смысл. Вводное предложение — без жирного выделения" }
     ],
 
     "Прочее": [
@@ -193,7 +226,9 @@ const DATA = {
     { text: "У всех тултипов правильный *align* (=”center” если далее есть знак препинания, =”left” если нет занка препинания)" },
     { text: "Проверить списки: болды с точказапятыми с маленькой буквы, цифры с большой буквы и точки" },
     { text: "У плашек с авторами стоит *hl isbubble=”true”*" },
-    { text: "Опрос на месте, в нем все склеено" },
+    { text: "Опрос на месте, в нем все склеено" ,
+  feature: "poll"
+},
     { text: "Верная плашка редакции" },
     {
       text: "Мягкий перенос в заге",
@@ -217,14 +252,31 @@ const DATA = {
   ],
 
   "Картинки": [
-    { text: "Сверить с доком все картинки и подписи к ним" },
-    { text: "Источники под фотками заменены на © кроме инфографики" },
-    { text: "Фоторамы нужного размера" },
-    { text: "Скрины ретиновые и чистые, текст читаем, соблюдены поля, проставлен *prop=”bordered”* если фон сливается с фоном страницы" },
-    { text: "Проверить необходимость *prop=”bordered”* у видео" },
-    { text: "Для инфографики проставлен *prop=”bordered rounded”*" },
-    { text: "Проверить есть ли засветы или вотермарки на картинках от фотореда" },
-    { text: "При необхоимости заблюрены все персональные данные" }
+    { 
+  text: "Сверить с доком все картинки и подписи к ним",
+  feature: "images"
+},
+    { text: "Источники под фотками заменены на © кроме инфографики" ,
+  feature: "images"
+},
+    { text: "Фоторамы нужного размера" ,
+  feature: "images"
+},
+    { text: "Скрины ретиновые и чистые, текст читаем, соблюдены поля, проставлен *prop=”bordered”* если фон сливается с фоном страницы" ,
+  feature: "screenshots"
+},
+    { text: "Проверить необходимость *prop=”bordered”* у видео" ,
+  feature: "images"
+},
+    { text: "Для инфографики проставлен *prop=”bordered rounded”*" ,
+  feature: "infographic"
+},
+    { text: "Проверить есть ли засветы или вотермарки на картинках от фотореда" ,
+  feature: "images"
+},
+    { text: "При необхоимости заблюрены все персональные данные" ,
+  feature: "images"
+}
   ],
 
 "Прочее": [
@@ -260,16 +312,23 @@ const buildTasks = (data) => {
 
   Object.keys(data).forEach((cat) => {
     initial[cat] = data[cat].map((t) => ({
-      text: typeof t === "string"
-        ? t
-        : t.text,
+  text:
+    typeof t === "string"
+      ? t
+      : t.text,
 
-      links: typeof t === "string"
-        ? []
-        : t.links || [],
+  links:
+    typeof t === "string"
+      ? []
+      : t.links || [],
 
-      done: false
-    }));
+  feature:
+    typeof t === "string"
+      ? null
+      : t.feature || null,
+
+  done: false
+}));
   });
 
   return initial;
@@ -303,6 +362,15 @@ export default function App() {
   const [preset, setPreset] = useState(() => {
     return localStorage.getItem("preset") || "default";
   });
+const [contentFilters, setContentFilters] = useState(() => {
+  const saved =
+    readStorageJSON("contentFilters");
+
+  return (
+    saved ||
+    buildContentFilters()
+  );
+});
 
   const [focusMode, setFocusMode] = useState(false);
 
@@ -360,6 +428,13 @@ return saved;
     localStorage.setItem("preset", preset);
   }, [preset]);
 
+  useEffect(() => {
+  localStorage.setItem(
+    "contentFilters",
+    JSON.stringify(contentFilters)
+  );
+}, [contentFilters]);
+
   // rebuild tasks safely
   useEffect(() => {
     setTasks((prev) => {
@@ -372,11 +447,17 @@ return saved;
 
           const old = prev?.[cat]?.find((x) => x.text === text);
 
-          return {
-            text,
-            links,
-            done: old?.done ?? false
-          };
+       return {
+  text,
+  links,
+
+  feature:
+    typeof t === "string"
+      ? null
+      : t.feature || null,
+
+  done: old?.done ?? false
+};
         });
       });
 
@@ -466,6 +547,7 @@ const hardReset = () => {
     "notes",
     "checklist",
     "collapsed",
+    "contentFilters",
     "version"
   ].forEach((key) => {
     localStorage.removeItem(key);
@@ -477,6 +559,9 @@ const hardReset = () => {
   );
 
   setPreset("default");
+  setContentFilters(
+  buildContentFilters()
+);
   setNotes("");
 
   const cleanData = buildTasks(DATA);
@@ -776,6 +861,70 @@ const ui = {
   </span>
 </div>
             <button style={btn} onClick={resetAll}>Сброс</button>
+            <div
+  style={{
+    width: "100%",
+    marginTop: 14
+  }}
+>
+  <div
+    style={{
+      fontSize: 13,
+      fontWeight: 600,
+      color: mutedColor,
+      marginBottom: 8
+    }}
+  >
+    Материал содержит
+  </div>
+
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 8
+    }}
+  >
+    {Object.entries(CONTENT_FILTERS).map(
+      ([key, item]) => (
+        <button
+          key={key}
+          type="button"
+          onClick={() =>
+            setContentFilters((prev) => ({
+              ...prev,
+              [key]: !prev[key]
+            }))
+          }
+          style={{
+            ...btn,
+
+            background:
+              contentFilters[key]
+                ? dark
+                  ? "#2d3748"
+                  : "#dbeafe"
+                : dark
+                  ? "#18181b"
+                  : "#fff",
+
+            color: textColor,
+
+            fontWeight:
+              contentFilters[key]
+                ? 600
+                : 400
+          }}
+        >
+          {contentFilters[key]
+            ? "✓ "
+            : ""}
+          {item.label}
+        </button>
+      )
+    )}
+  </div>
+</div>
             <button style={btn} onClick={() => setFocusMode(v => !v)}>
   {focusMode ? "Фокус: ON" : "Фокус: OFF"}
 </button>
@@ -791,6 +940,8 @@ const ui = {
         {/* LIST */}
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 20 }}>
+
+   
 <div
   onClick={() => toggleCollapse(cat)}
   style={{
@@ -827,7 +978,16 @@ const ui = {
 
             {!collapsed[cat] && (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {tasks[cat].map((task, i) => (
+                {tasks[cat].map((task, i) => {
+
+  if (
+    (cat === "Таблицы" && !contentFilters.tables) ||
+    (task.feature && !contentFilters[task.feature])
+  ) {
+    return null;
+  }
+
+  return (
                   <label
   key={i}
   className="task-card"
@@ -900,10 +1060,9 @@ style={{
     </div>
   )}
 </div>
-                  </label>
-
-
-                ))}
+                                  </label>
+                );
+              })}
               </div>
             )}
 
