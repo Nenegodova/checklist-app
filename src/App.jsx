@@ -883,14 +883,13 @@ const ui = {
               RESET
             </button>
           </div>
-        </div>
 
-
-<div
- style={{
-  width: "100%",
-  marginTop: 12,
-  marginBottom: 18
+          <div
+style={{
+  marginTop: 14,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-end"
 }}
 >
   <div
@@ -908,10 +907,12 @@ style={{
   <div
 
 style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 6
-    }}
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "flex-end",
+  gap: 6,
+  maxWidth: 360
+}}
   >
     {Object.entries(CONTENT_FILTERS).map(
       ([key, item]) => (
@@ -957,6 +958,9 @@ style={{
     )}
   </div>
 </div>
+        </div>
+
+
 
         {/* LIST */}
         {Object.keys(tasks).map((cat) => (
