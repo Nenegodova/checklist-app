@@ -861,7 +861,18 @@ const ui = {
   </span>
 </div>
             <button style={btn} onClick={resetAll}>Сброс</button>
-            <div
+           
+            <button style={btn} onClick={() => setFocusMode(v => !v)}>
+  {focusMode ? "Фокус: ON" : "Фокус: OFF"}
+</button>
+            <button style={{ ...btn, color: "red" }} onClick={hardReset}>
+              RESET
+            </button>
+          </div>
+        </div>
+
+
+ <div
   style={{
     width: "100%",
     marginTop: 14
@@ -925,17 +936,6 @@ const ui = {
     )}
   </div>
 </div>
-            <button style={btn} onClick={() => setFocusMode(v => !v)}>
-  {focusMode ? "Фокус: ON" : "Фокус: OFF"}
-</button>
-            <button style={{ ...btn, color: "red" }} onClick={hardReset}>
-              RESET
-            </button>
-          </div>
-        </div>
-
-
-
 
         {/* LIST */}
         {Object.keys(tasks).map((cat) => (
