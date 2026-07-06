@@ -778,7 +778,23 @@ const ui = {
   </div>
 </div>
 
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    gap: 12
+  }}
+>
+
+  <div
+    style={{
+      display: "flex",
+      gap: 10,
+      flexWrap: "wrap",
+      justifyContent: "flex-end"
+    }}
+  >
             <button style={btn} onClick={() => setDark(v => !v)}>Тема</button>
             
             
@@ -907,12 +923,10 @@ style={{
   <div
 
 style={{
-  display: "flex",
-  flexWrap: "wrap",
-  justifyContent: "flex-end",
-  gap: 6,
-  maxWidth: 360
-}}
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 6
+    }}
   >
     {Object.entries(CONTENT_FILTERS).map(
       ([key, item]) => (
@@ -958,6 +972,7 @@ style={{
     )}
   </div>
 </div>
+        </div>
         </div>
 
 
