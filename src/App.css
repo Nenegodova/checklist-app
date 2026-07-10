@@ -58,3 +58,45 @@ input:focus{
     background:#333;
     border-radius:20px;
 }
+
+/* Желтая линия сверху карточек */
+.card,
+.task-card{
+    position:relative;
+    overflow:hidden;
+}
+
+.card::before,
+.task-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:4px;
+    background:#FFDD2D;
+}
+
+/* Красивый чекбокс */
+input[type="checkbox"]{
+    accent-color:#FFDD2D;
+    width:18px;
+    height:18px;
+}
+
+/* Выделение текста */
+::selection{
+    background:#FFDD2D;
+    color:#111;
+}
+
+/* Заголовки */
+h1,h2,h3{
+    color:#fff;
+    font-weight:700;
+}
+
+small,
+.subtitle{
+    color:#9CA3AF;
+}
