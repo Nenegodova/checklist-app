@@ -127,10 +127,16 @@ shopping: {
       cd: {
 
      "Админка": [
-      { text: "В классических ЧД нет подзага" },
-      { text: "В подборке ЧД есть подзаг" },  
-      { text: "Обложка с эмодзи с типом мейна «мини над заголовком»" },
-      { text: "Редакция Что делать + тематическая" },
+       { 
+      _sortOrder: 1, 
+       text: "В классических ЧД нет подзага" },
+      { 
+        _sortOrder: 2, 
+        text: "В подборке ЧД есть подзаг" },  
+      { text: "Обложка с эмодзи с типом мейна «мини над заголовком»" }, 
+      {
+        _sortOrder: 2, 
+        text: "Редакция Что делать + тематическая" },
       { text: "Нажаты кнопки из сообщества и выбор редакции" },
       { text: "Обязательно указываем краткое описание. В это поле дублируем текст из ог-описания" },
       { text: "В реальных вопросах проверяем наличие технического *тега noadswhattodo* (скрывает некоторые рекламные баннеры). Если его нет, то добавляем. В выдуманных проставляем тег вместе с другими. Если в статье присутствуют фичеры (калькуляторы, тесты), то добавляем еще один технический тег: *feature-out.* Для опросов этот тег не нужен" },
@@ -509,19 +515,39 @@ const currentData = useMemo(() => {
   if (presetData) {
     Object.keys(presetData).forEach((cat) => {
       if (!result[cat]) result[cat] = [];
-      result[cat] = [...result[cat], ...presetData[cat]];
+
+      // 1. Базовые элементы сохраняют свой исходный индекс как default-порядок
+      const baseItems = result[cat].map((item, i) => ({
+        ...item,
+        _sortOrder: item._sortOrder ?? i
+      }));
+
+      // 2. Элементы пресета: если sortOrder не указан вручную, они уйдут в конец (9999)
+      const presetItems = presetData[cat].map(item => ({
+        ...item,
+        _sortOrder: item._sortOrder ?? 9999
+      }));
+
+      // 3. Объединяем и сортируем по полю _sortOrder
+      result[cat] = [...baseItems, ...presetItems].sort(
+        (a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity)
+      );
+    });
+  } else {
+    // Если пресет не выбран, просто гарантируем наличие _sortOrder в базе
+    Object.keys(result).forEach((cat) => {
+      result[cat] = result[cat].map((item, i) => ({
+        ...item,
+        _sortOrder: item._sortOrder ?? i
+      })).sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
     });
   }
 
   const excludes = PRESET_EXCLUDES[preset];
-
   if (excludes) {
     Object.entries(excludes).forEach(([cat, ids]) => {
       if (!result[cat]) return;
-
-      result[cat] = result[cat].filter(
-        (item) => !ids.includes(item.id)
-      );
+      result[cat] = result[cat].filter((item) => !ids.includes(item.id));
     });
   }
 
