@@ -490,6 +490,14 @@ export default function App() {
 
   return (
     <div className={dark ? "dark" : ""} style={{ padding: 30, minHeight: "100vh", fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial", background: bg, color: textColor }}>
+        <style>{`
+    body.dark, html.dark {
+      background: #111315 !important;
+    }
+    body.dark {
+      margin: 0 !important;
+    }
+  `}</style>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24, marginBottom: 24 }}>
           <div style={{ flex: "1 1 320px" }}>
