@@ -82,7 +82,10 @@ shopping: {
     ],
 
     "Админка": [
-      { text: "В подвале больших тестов прописаны авторы и источники" },
+     {
+  id: "cover-author",
+  text: "Проверить автора обложки или источники"
+},
       { text: "Тег *noadscalctest*" },
       { text: "В больших тестах под обложкой указан иллюстратор" }
     ],
@@ -210,6 +213,30 @@ shopping: {
   },
 };
 
+const PRESET_EXCLUDES = {
+  cd: {
+    "Текст": [
+      "lead",
+      "heading-levels",
+      "editor-badge"
+    ],
+
+    "Админка": [
+      "cover-author",
+      "cover-type"
+    ]
+  },
+
+  shorts: {
+    "Текст": [
+      "tooltip-link",
+      "currency-tooltip",
+      "lists-style"
+    ]
+  }
+};
+
+
 const DATA = {
   "Админка": [
     { text: "Проверить, что коллеги закрыли вкладку с визивигом" },
@@ -217,7 +244,10 @@ const DATA = {
     { text: "Ог-заг = заголовок статьи, ОГ-описание на месте" },
    { text: "Перенести мету из комментария в кайтене в админку" },
     { text: "Проверить скрытие" },
-    { text: "Проверить тип обложки, кредит к обложке в нужном месте (под обложкой/в подвале), наличие бирки на ОГ, текст на ОГ оттипирован (проставлены склейки)" },
+  {
+  id: "cover-type",
+  text: "Проверить тип обложки, кредит к обложке в нужном месте (под обложкой/в подвале), наличие бирки на ОГ, текст на ОГ оттипирован (проставлены склейки)"
+},
     { text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие" },
     { text: "Проверить автора обложки или источники" },
          {
@@ -239,9 +269,15 @@ const DATA = {
 
   "Текст": [
     { text: "Подпись автора с маленькой буквы" },
-    { text: "Лид на месте, в конце точка" },
+   {
+  id: "lead",
+  text: "Лид на месте, в конце точка"
+},
     { text: "Якоря в оглавлении стоят верно. Двоеточие в оглавлении убрать" },
-    { text: "Везде проставлены верные уровни заголовков (*h2*, *h2 level=”2”*, *h3* для плашек)"  },
+  {
+  id: "heading-levels",
+  text: "Везде проставлены верные уровни заголовков (*h2*, *h2 level=”2”*, *h3* для плашек)"
+},
     { text: "Проверить бирки над заголовками"  },
     { text: "После эмодзи в загах пробел" },
      { text: "Проверить необходимость ката" },
@@ -253,14 +289,26 @@ const DATA = {
     { text: "У сервисных плашек в последнем предложении отсутствует точка" },
     { text: "Нет пустых атрибутов" },
     { text: "UTM метки отсутствуют" },
-    { text: "У первого валютного фичера тултип: Суммы в рублях пересчитываются по актуальному курсу раз в день" },
-    { text: "Тултип не стоит рядом с ссылкой" },
-    { text: "Списки с цифрами и кастомные — с большой буквы, в конце точки. Список с буллитами — с маленькой буквы, в конце точказапятые." },
+{
+  id: "currency-tooltip",
+  text: "У первого валютного фичера тултип: Суммы в рублях пересчитываются по актуальному курсу раз в день"
+},
+    {
+  id: "tooltip-link",
+  text: "Тултип не стоит рядом с ссылкой"
+},
+    {
+  id: "lists-style",
+  text: "Списки с цифрами и кастомные — с большой буквы, в конце точки. Список с буллитами — с маленькой буквы, в конце точказапятые."
+},
     { text: "У плашек с авторами стоит *hl isbubble=”⁠true⁠”*" },
     { text: "Опрос на месте, в нем все склеено" ,
   feature: "poll"
 },
-    { text: "Верная плашка редакции" },
+  {
+  id: "editor-badge",
+  text: "Верная плашка редакции"
+},
     { text: "Расставить поля если нужно, они не должны стоять рядом с баннерами, анкетами, картинками и таблицами" },
     { text: "Проверить виджеты, фичеры, баннеры, этажи" }
   ],
@@ -332,24 +380,33 @@ const buildTasks = (data) => {
   const initial = {};
 
   Object.keys(data).forEach((cat) => {
-    initial[cat] = data[cat].map((t) => ({
-  text:
-    typeof t === "string"
-      ? t
-      : t.text,
+    initial[cat] = data[cat].map((t) => {
+      const text =
+        typeof t === "string"
+          ? t
+          : t.text;
 
-  links:
-    typeof t === "string"
-      ? []
-      : t.links || [],
+      return {
+        id:
+          typeof t === "string"
+            ? text
+            : t.id || text,
 
-  feature:
-    typeof t === "string"
-      ? null
-      : t.feature || null,
+        text,
 
-  done: false
-}));
+        links:
+          typeof t === "string"
+            ? []
+            : t.links || [],
+
+        feature:
+          typeof t === "string"
+            ? null
+            : t.feature || null,
+
+        done: false
+      };
+    });
   });
 
   return initial;
@@ -440,19 +497,31 @@ const [contentFilters, setContentFilters] = useState(() => {
 
   const [notesOpen, setNotesOpen] = useState(false);
 
-  const currentData = useMemo(() => {
-    const result = JSON.parse(JSON.stringify(DATA));
-    const presetData = PRESETS[preset];
+const currentData = useMemo(() => {
+  const result = JSON.parse(JSON.stringify(DATA));
+  const presetData = PRESETS[preset];
 
-    if (presetData) {
-      Object.keys(presetData).forEach((cat) => {
-        if (!result[cat]) result[cat] = [];
-        result[cat] = [...result[cat], ...presetData[cat]];
-      });
-    }
+  if (presetData) {
+    Object.keys(presetData).forEach((cat) => {
+      if (!result[cat]) result[cat] = [];
+      result[cat] = [...result[cat], ...presetData[cat]];
+    });
+  }
 
-    return result;
-  }, [preset]);
+  const excludes = PRESET_EXCLUDES[preset];
+
+  if (excludes) {
+    Object.entries(excludes).forEach(([cat, ids]) => {
+      if (!result[cat]) return;
+
+      result[cat] = result[cat].filter(
+        (item) => !ids.includes(item.id)
+      );
+    });
+  }
+
+  return result;
+}, [preset]);
 
 const [tasks, setTasks] = useState(() => {
   const savedVersion = localStorage.getItem("version");
@@ -507,8 +576,14 @@ return saved;
 
           const old = prev?.[cat]?.find((x) => x.text === text);
 
-       return {
+return {
+  id:
+    typeof t === "string"
+      ? text
+      : t.id || text,
+
   text,
+
   links,
 
   feature:
