@@ -29,14 +29,31 @@ const buildContentFilters = () => {
 
 const PRESETS = {
   default: {},
-  invest: { "Админка": [{ text: "Заполнено краткое описание" }, { text: "Заполнен тикер" }] },
+  invest: {
+    "Админка": [
+      { text: "Заполнено краткое описание" },
+      { text: "Заполнен тикер" },
+    ],
+  },
   shopping: {
-    "Админка": [{ text: "В подвале стоит: Цены действительны на момент публикации" }, { _sortOrder: 3, text: "Тег noads" }],
-    "Текст": [{ text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, отбиты <br/>" }],
+    "Админка": [
+      { text: "В подвале стоит: Цены действительны на момент публикации" },
+      { _sortOrder: 3, text: "Тег noads" },
+    ],
+    "Текст": [
+      { text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, отбиты <br/>" },
+    ],
   },
   tests: {
-    "Текст": [{ text: "В мини-тестах автор и подпись стоят перед лидом" }, { _sortOrder: 6, text: "Внутри конфига есть все необходимые склейки" }],
-    "Админка": [{ text: "Проверить автора обложки или источники" }, { text: "Тег *noadscalctest*" }, { text: "В больших тестах под обложкой указан иллюстратор" }],
+    "Текст": [
+      { text: "В мини-тестах автор и подпись стоят перед лидом" },
+      { _sortOrder: 6, text: "Внутри конфига есть все необходимые склейки" },
+    ],
+    "Админка": [
+      { text: "Проверить автора обложки или источники" },
+      { text: "Тег *noadscalctest*" },
+      { text: "В больших тестах под обложкой указан иллюстратор" },
+    ],
     "Прочее": [
       { text: "В кайтене прикреплены ссылки на админку и конфиг" },
       { links: [{ label: "Методичка тесты", url: "https://docs.google.com/document/d/1vBoENUtJI2UHtbBrLqVgPxuoEBE0yNvYhhATKmwiXzU/edit?tab=t.0#bookmark=id.sgzp2wu0gy8c" }] },
@@ -51,12 +68,17 @@ const PRESETS = {
       { text: "Доходы обозначены *class=\"positive\"*" },
       { text: "Все заголовки в дневниках трат кроме заголовков дней *h2 level=\"2\"*" },
     ],
-    "Админка": [{ text: "Нажата кнопка из сообщества" }, { text: "Подпись к обложке: Фотография — Ксения Михайлова" }],
+    "Админка": [
+      { text: "Нажата кнопка из сообщества" },
+      { text: "Подпись к обложке: Фотография — Ксения Михайлова" },
+    ],
   },
   cd: {
     "Админка": [
-      { _sortOrder: 1, text: "В классических ЧД нет подзаг" }, { _sortOrder: 2, text: "В подборке ЧД есть подзаг" },
-      { text: "Обложка с эмодзи с типом мейна «мини над заголовком»" }, { _sortOrder: 3, text: "Редакция Что делать + тематическая" },
+      { _sortOrder: 1, text: "В классических ЧД нет подзаг" },
+      { _sortOrder: 2, text: "В подборке ЧД есть подзаг" },
+      { text: "Обложка с эмодзи с типом мейна «мини над заголовком»" },
+      { _sortOrder: 3, text: "Редакция Что делать + тематическая" },
       { text: "Нажаты кнопки из сообщества и выбор редакции" },
       { text: "Обязательно указываем краткое описание. В это поле дублируем текст из ог-описания" },
       { text: "В реальных вопросах проверяем наличие технического *тега noadswhattodo* (скрывает некоторые рекламные баннеры). Если его нет, то добавляем. В выдуманных проставляем тег вместе с другими. Если в статье присутствуют фичеры (калькуляторы, тесты), то добавляем еще один технический тег: *feature-out.* Для опросов этот тег не нужен" },
@@ -66,10 +88,13 @@ const PRESETS = {
       { text: "В подборке ЧД на обложке ОГ по три эмодзи" },
     ],
     "Текст": [
-      { _sortOrder: 0, text: "В классических ЧД нет лида" }, { _sortOrder: 1, text: "В подборке ЧД есть лид" },
-      { text: "Есть автор вопроса и вопрос в плашке с *isbuble=\"true\"*" }, { _sortOrder: 2, text: "Есть автор ответа" },
+      { _sortOrder: 0, text: "В классических ЧД нет лида" },
+      { _sortOrder: 1, text: "В подборке ЧД есть лид" },
+      { text: "Есть автор вопроса и вопрос в плашке с *isbuble=\"true\"*" },
+      { _sortOrder: 2, text: "Есть автор ответа" },
       { _sortOrder: 3, text: "В классических ЧД написание автора вопроса «спросил в Сообществе»/«спросила в Сообществе»" },
-      { _sortOrder: 4, text: "В классических ЧД заголовки *h2 level=\"2\"*" }, { _sortOrder: 5, text: "В подборке ЧД заголовки *h2*" },
+      { _sortOrder: 4, text: "В классических ЧД заголовки *h2 level=\"2\"*" },
+      { _sortOrder: 5, text: "В подборке ЧД заголовки *h2*" },
       { _sortOrder: 6, text: "В подборке ЧД у каждого вопроса стоит бирка с эмодзи" },
       { text: "Если в конце статьи стоит список статей: вводное предложение выделяем болдом, для вводного предложения и списка используем шифт с *p grade=\"large\"*" },
       { _sortOrder: 7, text: "В микро ЧД ответ на вопрос в плашке" },
@@ -81,12 +106,17 @@ const PRESETS = {
       { text: "В случае, когда после выпуска меняется обложка, пишем в тематическом чате соответствующей редакции и чате «Т–Ж + соцсети», что поменялась обложка, прикладываем ссылку на статью и новую обложку" },
       { text: "Проверить комментарии редактора на наличие нового url. Если комментария нет, то выпускаем со старым url и редирект делать не нужно" },
     ],
-    "Прочее": [{ links: [{ label: "Методичка ЧД", url: "https://tinkoffjournal.kaiten.ru/documents/g/c4db513a-6478-46ae-967b-984c87b15af0" }] }],
+    "Прочее": [
+      { links: [{ label: "Методичка ЧД", url: "https://tinkoffjournal.kaiten.ru/documents/g/c4db513a-6478-46ae-967b-984c87b15af0" }] },
+    ],
   },
   shorts: {
     "Админка": [
-      { _sortOrder: 2, text: "Проставлен *тег noadsshort*" }, { text: "Среди потоков добавлены «Шорты», но не основным потоком" },
-      { text: "Нажата кнопка из сообщества и выбор редакции если вторая редакция UGC" }, { text: "Обложка внутри статьи отсутствует" }, { text: "Источник фото в подвале" },
+      { _sortOrder: 2, text: "Проставлен *тег noadsshort*" },
+      { text: "Среди потоков добавлены «Шорты», но не основным потоком" },
+      { text: "Нажата кнопка из сообщества и выбор редакции если вторая редакция UGC" },
+      { text: "Обложка внутри статьи отсутствует" },
+      { text: "Источник фото в подвале" },
     ],
     "Текст": [
       { _sortOrder: 4, text: "Подводка размещается в теге *p grade=\"secondary\"*, если она слишком длинная, то часть скрывается под кат" },
@@ -103,11 +133,18 @@ const PRESETS = {
       { text: "У списка в конце шортов *p grade=\"secondary\"*" },
       { text: "Список в конце шортов из 3–4 ссылок выстроен «лесенкой» если позволяет смысл. Вводное предложение — без жирного выделения" },
     ],
-    "Прочее": [{ links: [{ label: "Методичка шорты", url: "https://tinkoffjournal.kaiten.ru/documents/g/c4db513a-6478-46ae-967b-984c87b15af0" }] }],
+    "Прочее": [
+      { links: [{ label: "Методичка шорты", url: "https://tinkoffjournal.kaiten.ru/documents/g/c4db513a-6478-46ae-967b-984c87b15af0" }] },
+    ],
   },
   ugc: {
     "Админка": [{ text: "Нажата кнопка из сообщества" }],
-    "Текст": [{ _sortOrder: 2, links: [{ label: "В текст добавлена актуальная плашка сообщества", url: "https://docs.google.com/document/d/1U_YBVur4Rtjv5jEMY1Xas9Rr4TxdvenLlIBFbVxIBjg/edit?tab=t.0" }] }],
+    "Текст": [
+      {
+        _sortOrder: 2,
+        links: [{ label: "В текст добавлена актуальная плашка сообщества", url: "https://docs.google.com/document/d/1U_YBVur4Rtjv5jEMY1Xas9Rr4TxdvenLlIBFbVxIBjg/edit?tab=t.0" }],
+      },
+    ],
   },
 };
 
@@ -118,8 +155,10 @@ const PRESET_EXCLUDES = {
 
 const DATA = {
   "Админка": [
-    { text: "Проверить, что коллеги закрыли вкладку с визивигом" }, { text: "Проверить формат" },
-    { text: "Ог-заг = заголовок статьи, ОГ-описание на месте" }, { text: "Перенести мету из комментария в кайтене в админку" },
+    { text: "Проверить, что коллеги закрыли вкладку с визивигом" },
+    { text: "Проверить формат" },
+    { text: "Ог-заг = заголовок статьи, ОГ-описание на месте" },
+    { text: "Перенести мету из комментария в кайтене в админку" },
     { text: "Проверить скрытие" },
     { id: "cover-type", text: "Проверить тип обложки, кредит к обложке в нужном месте (под обложкой/в подвале), наличие бирки на ОГ, текст на ОГ оттипирован (проставлены склейки)" },
     { text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие" },
@@ -128,7 +167,8 @@ const DATA = {
     { text: "Мягкий перенос в заге", links: [{ label: "Символы", url: "https://symbl.cc/ru/00AD/" }, { label: "Правила", url: "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe" }] },
   ],
   "Текст": [
-    { text: "Подпись автора с маленькой буквы" }, { id: "lead", text: "Лид на месте, в конце точка" },
+    { text: "Подпись автора с маленькой буквы" },
+    { id: "lead", text: "Лид на месте, в конце точка" },
     { text: "Якоря в оглавлении стоят верно. Двоеточие в оглавлении убрать" },
     { id: "heading-levels", text: "Везде проставлены верные уровни заголовков (*h2*, *h2 level=\"2\"*, *h3* для плашек)" },
     { text: "Проверить бирки над заголовками" },
@@ -139,12 +179,14 @@ const DATA = {
     { text: "Поправить типографирование: м², а не м2, 1/2, а не ½" },
     { text: "Предлог, точка, восклицательный, вопросительный знак, двоеточие в ссылках, запятые вне ссылок" },
     { text: "Точка, запятая, восклицательный, вопросительный знаки, двоеточие, точка с запятой в жире/марке" },
-    { text: "У сервисных плашек в последнем предложении отсутствует точка" }, { text: "Нет пустых атрибутов" },
+    { text: "У сервисных плашек в последнем предложении отсутствует точка" },
+    { text: "Нет пустых атрибутов" },
     { id: "utm", text: "UTM метки отсутствуют" },
     { id: "currency-tooltip", text: "У первого валютного фичера тултип: Суммы в рублях пересчитываются по актуальному курсу раз в день" },
     { id: "tooltip-link", text: "Тултип не стоит рядом с ссылкой" },
     { id: "lists-style", text: "Списки с цифрами и кастомные — с большой буквы, в конце точки. Список с буллитами — с маленькой буквы, в конце точка, запятые" },
-    { text: "У плашек с авторами стоит *hl isbubble=\"true\"*" }, { text: "Опрос на месте, в нем все склеено", feature: "poll" },
+    { text: "У плашек с авторами стоит *hl isbubble=\"true\"*" },
+    { text: "Опрос на месте, в нем все склеено", feature: "poll" },
     { id: "editor-badge", text: "Верная плашка редакции" },
     { text: "Расставить поля если нужно, они не должны стоять рядом с баннерами, анкетами, картинками и таблицами" },
     { text: "Проверить виджеты, фичеры, баннеры, этажи, кат" },
@@ -167,7 +209,12 @@ const DATA = {
     { text: "Проверить есть ли засветы или вотермарки на картинках от фотореда", feature: "images" },
     { text: "При необходимости заблюрены все персональные данные", feature: "images" },
   ],
-  "Выпуск": [{ text: "Проверить метку разметка, если есть доп. авторы" }, { text: "Проверить комментарии в кайтене" }, { text: "В кайтен прикрепить ссылку на материал после выпуска и опенграф-картинку" }, { text: "После выпуска проверить материал на главной" }],
+  "Выпуск": [
+    { text: "Проверить метку разметка, если есть доп. авторы" },
+    { text: "Проверить комментарии в кайтене" },
+    { text: "В кайтен прикрепить ссылку на материал после выпуска и опенграф-картинку" },
+    { text: "После выпуска проверить материал на главной" },
+  ],
   "Прочее": [
     { text: "В ссылке шаблона гугл-дока для копирования */edit* заменен на */copy*." },
     { links: [{ label: "Методички общие", url: "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994" }] },
@@ -179,12 +226,18 @@ const readStorageJSON = (key) => {
   try {
     const value = localStorage.getItem(key);
     return value ? JSON.parse(value) : null;
-  } catch { return null; }
+  } catch (err) {
+    console.warn(`localStorage corrupted: ${key}`, err);
+    localStorage.removeItem(key);
+    return null;
+  }
 };
 
 const buildCollapsed = (data, prev = {}) => {
   const next = {};
-  Object.keys(data).forEach((cat) => { next[cat] = prev?.[cat] ?? true; });
+  Object.keys(data).forEach((cat) => {
+    next[cat] = prev?.[cat] ?? true;
+  });
   return next;
 };
 
@@ -192,8 +245,11 @@ const buildTasks = (data) => {
   const initial = {};
   Object.keys(data).forEach((cat) => {
     initial[cat] = data[cat].map((t) => ({
-      id: t.id || t.text, text: typeof t === "string" ? t : t.text,
-      links: typeof t === "string" ? [] : t.links || [], feature: typeof t === "string" ? null : t.feature || null, done: false,
+      id: t.id || t.text,
+      text: typeof t === "string" ? t : t.text,
+      links: typeof t === "string" ? [] : t.links || [],
+      feature: typeof t === "string" ? null : t.feature || null,
+      done: false,
     }));
   });
   return initial;
@@ -211,6 +267,7 @@ function useMediaQuery(query) {
   return matches;
 }
 
+// Исправлено: стабильные key через счетчик вместо индекса split-массива
 const renderTextWithLinks = (text, dark) => {
   if (!text) return null;
   const parts = text.split(/(\*[^*]+\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g);
@@ -227,26 +284,35 @@ const renderTextWithLinks = (text, dark) => {
         <a key={keyIdx++} href={url} target="_blank" rel="noreferrer"
            style={{ display: "inline-flex", alignItems: "center", padding: "2px 8px", marginLeft: 6,
              borderRadius: 8, background: dark ? "#33334b" : "#e8e8ea", color: dark ? "#7ab7ff" : "#2563eb",
-             textDecoration: "none", fontSize: 13, fontWeight: 500 }}>{label}</a>
+             textDecoration: "none", fontSize: 13, fontWeight: 500 }}
+        >{label}</a>
       );
     }
     return <span key={keyIdx++}>{part}</span>;
   });
 };
 
+// --- Component ---
 export default function App() {
   const [dark, setDark] = useState(() => {
     try {
       const saved = localStorage.getItem("dark");
       if (saved !== null) return saved === "true";
       return typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   });
 
+  // Живое отслеживание системной темы (если пользователь не переключал вручную)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = (e) => { if (localStorage.getItem("dark") === null) setDark(e.matches); };
+    const handler = (e) => {
+      if (localStorage.getItem("dark") === null) {
+        setDark(e.matches);
+      }
+    };
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
@@ -257,14 +323,19 @@ export default function App() {
   const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
 
+  // Синхронизация темы с DOM и localStorage (безопасная, без лишних записей)
   useLayoutEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
-    if (localStorage.getItem("dark") !== String(dark)) localStorage.setItem("dark", dark);
+    const currentValue = localStorage.getItem("dark");
+    if (currentValue !== String(dark)) {
+      localStorage.setItem("dark", dark);
+    }
   }, [dark]);
 
   const currentData = useMemo(() => {
     const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
+    
     if (presetData) {
       Object.keys(presetData).forEach((cat) => {
         if (!clone[cat]) clone[cat] = [];
@@ -274,10 +345,12 @@ export default function App() {
       });
     } else {
       Object.keys(clone).forEach((cat) => {
-        clone[cat] = clone[cat].map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }))
+        clone[cat] = clone[cat]
+          .map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }))
           .sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
       });
     }
+
     const excludes = PRESET_EXCLUDES[preset];
     if (excludes) {
       Object.entries(excludes).forEach(([cat, ids]) => {
@@ -295,7 +368,8 @@ export default function App() {
     const savedVersion = localStorage.getItem("version");
     const saved = readStorageJSON("checklist");
     if (savedVersion !== DATA_VERSION) {
-      localStorage.removeItem("checklist"); localStorage.removeItem("collapsed");
+      localStorage.removeItem("checklist");
+      localStorage.removeItem("collapsed");
       localStorage.setItem("version", DATA_VERSION);
       return buildTasks(currentData);
     }
@@ -345,7 +419,10 @@ export default function App() {
         next[lastDoneCat] = true;
         const idx = cats.indexOf(lastDoneCat);
         for (let i = idx + 1; i < cats.length; i++) {
-          if (tasks[cats[i]]?.some(t => !t.done)) { next[cats[i]] = false; break; }
+          if (tasks[cats[i]]?.some(t => !t.done)) {
+            next[cats[i]] = false;
+            break;
+          }
         }
       }
       return next;
@@ -355,7 +432,9 @@ export default function App() {
   const resetAll = useCallback(() => {
     setTasks((prev) => {
       const cleared = {};
-      Object.keys(prev).forEach((cat) => { cleared[cat] = prev[cat].map((t) => ({ ...t, done: false })); });
+      Object.keys(prev).forEach((cat) => {
+        cleared[cat] = prev[cat].map((t) => ({ ...t, done: false }));
+      });
       return cleared;
     });
   }, []);
@@ -363,11 +442,18 @@ export default function App() {
   const hardReset = useCallback(() => {
     ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark"].forEach((key) => localStorage.removeItem(key));
     localStorage.setItem("version", DATA_VERSION);
-    setPreset("default"); setContentFilters(buildContentFilters()); setNotes(""); setFocusMode(false); setDark(false);
-    setTasks(buildTasks(DATA)); setCollapsed(buildCollapsed(DATA));
+    setPreset("default");
+    setContentFilters(buildContentFilters());
+    setNotes("");
+    setFocusMode(false);
+    setDark(false);
+    setTasks(buildTasks(DATA));
+    setCollapsed(buildCollapsed(DATA));
   }, []);
 
-  const toggleCollapse = useCallback((cat) => { setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] })); }, []);
+  const toggleCollapse = useCallback((cat) => {
+    setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
+  }, []);
 
   const allTasks = Object.values(tasks ?? {}).flat();
   const doneTasks = allTasks.filter((t) => t.done).length;
@@ -388,10 +474,12 @@ export default function App() {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     cursor: "pointer", transition: "all 0.15s ease", boxShadow: "none", outline: "none",
   };
+  
   const makeControl = (isDark) => ({
     ...controlBase, border: `1px solid ${isDark ? "#2a2a2e" : "#d1d5db"}`,
     background: isDark ? "#1A1D21" : "#ffffff", color: isDark ? "#e8e8ea" : "#111827",
   });
+  
   const btn = makeControl(dark);
   
   const ui = {
@@ -408,27 +496,22 @@ export default function App() {
             <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: title }}>Чек-лист проверки</h1>
             <div style={{ marginTop: 6, fontSize: 13, color: mutedColor }}>{doneTasks}/{totalTasks} ({percent}%)</div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-end", gap: 12, marginLeft: "auto", flex: "1 1 0", width: "100%" }}>
-            
-            {/* 🔽 АДАПТИВНЫЙ ТУЛБАР: flexWrap: "wrap" + автоматический перенос */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12, marginLeft: "auto", flex: "0 1 520px" }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
                 {dark ? "☀️" : "🌙"}
               </button>
-              <div style={{ position: "relative", minWidth: 100 }}>
+              <div style={{ position: "relative" }}>
                 <select value={preset} onChange={(e) => { localStorage.removeItem("checklist"); localStorage.removeItem("collapsed"); setPreset(e.target.value); }}
-                  style={{ height: 34, width: "100%", padding: "0 32px 0 10px", borderRadius: 10, border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, background: dark ? "#18181b" : "#ffffff", color: dark ? "#e8e8ea" : "#111827", fontSize: 13, cursor: "pointer", outline: "none", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}>
+                  style={{ height: 34, minWidth: 140, padding: "0 36px 0 12px", borderRadius: 10, border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, background: dark ? "#18181b" : "#ffffff", color: dark ? "#e8e8ea" : "#111827", fontSize: 13, cursor: "pointer", outline: "none", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}>
                   <option value="default">Обычный</option><option value="invest">Инвест</option><option value="shopping">Шопинг</option><option value="tests">Тест</option><option value="compare">Сравнятор</option><option value="spending">Дневник трат</option><option value="cd">ЧД</option><option value="shorts">Шорты</option><option value="ugc">UGC</option>
                 </select>
-                <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: 10, color: dark ? "#a1a1aa" : "#666" }}>▼</span>
+                <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: 10, color: dark ? "#a1a1aa" : "#666" }}>▼</span>
               </div>
               <button type="button" style={btn} onClick={resetAll}>Сброс</button>
-              <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>
-                Фокус: {focusMode ? "ON" : "OFF"}
-              </button>
+              <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>{focusMode ? "Фокус: ON" : "Фокус: OFF"}</button>
               <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
             </div>
-            
             <div style={{ marginTop: 14, display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-end", width: "100%" }}>
               <div style={{ width: "100%", fontSize: 12, fontWeight: 600, color: mutedColor, marginBottom: 6, textAlign: "center" }}>Контент</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isMobile ? "center" : "flex-end" }}>
