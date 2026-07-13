@@ -582,7 +582,7 @@ export default function App() {
           </div>
         )}
         <button type="button" onClick={() => setNotesOpen((v) => !v)}
-          style={{ width: 58, height: 58, borderRadius: "50%", border: "none", background: "#FFDD2D", color: "#111", boxShadow: "0 12px 32px rgba(255,221,45,.35)", fontSize: 22, cursor: "pointer" }}>✍️</button>
+          style={{ width: 58, height: 58, borderRadius: "50%", border: "none", background: "#FFDD2D", color: "#111", boxShadow: "0 12px 32px rgba(255,221,45,.35)", fontSize: 22, cursor: "pointer" }}>✏️</button>
       </div>
     </div>
   );
