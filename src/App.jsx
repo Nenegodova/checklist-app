@@ -282,18 +282,33 @@ export default function App() {
     const result = JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
 
+const processCategory = (baseItems, presetItems = []) => {
+  // 1. Явное _sortOrder всегда имеет высший приоритет
+  const withExplicitSort = (items, offset = 0) =>
+    items.map((item, i) => ({
+      ...item,
+      _sortOrder: item._sortOrder !== undefined 
+        ? item._sortOrder 
+        : i + offset 
+    }));
+
+  const base = withExplicitSort(baseItems, 0);
+  const preset = withExplicitSort(presetItems, 10000); 
+  return [...base, ...preset].sort((a, b) => {
+    const sa = a._sortOrder ?? Infinity;
+    const sb = b._sortOrder ?? Infinity;
+    return sa - sb;
+  });
+};
+
     if (presetData) {
       Object.keys(presetData).forEach((cat) => {
         if (!result[cat]) result[cat] = [];
-        const baseItems = result[cat].map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }));
-        const presetItems = presetData[cat].map((item) => ({ ...item, _sortOrder: item._sortOrder ?? 9999 }));
-        result[cat] = [...baseItems, ...presetItems].sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
+        result[cat] = processCategory(result[cat], presetData[cat]);
       });
     } else {
       Object.keys(result).forEach((cat) => {
-        result[cat] = result[cat]
-          .map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }))
-          .sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
+        result[cat] = processCategory(result[cat]);
       });
     }
 
