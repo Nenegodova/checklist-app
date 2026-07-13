@@ -498,7 +498,7 @@ export default function App() {
       `}</style>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24, marginBottom: 24 }}>
-           <div style={{ flex: "1 1 320px" }}>
+           <div style={{ flex: "1 1 320px", textAlign: "center" }}>
               <h1 style={{ margin: 0, padding: 0, fontSize: 28, fontWeight: 700, color: title, lineHeight: 1.2 }}>Чек-лист проверки</h1>
               <div style={{ marginTop: 8, fontSize: 13, color: mutedColor, lineHeight: 1.5 }}>{doneTasks}/{totalTasks} ({percent}%)</div>
             </div>
