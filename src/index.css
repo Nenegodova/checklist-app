@@ -1,61 +1,87 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-:root {
-  --bg: #111315;
-  --surface: #1a1d21;
-  --surface-hover: #23272d;
-  --border: #2d3138;
-
-  --text: #ffffff;
-  --text-secondary: #9aa3af;
-
---accent: #FFDD2D;
---accent-hover: #FFE766;
-  --accent-hover: #ffe14d;
-
-  --success: #2ecc71;
-  --danger: #ff5d5d;
-
-  --radius: 18px;
-
-  --shadow:
-    0 12px 32px rgba(0,0,0,.35);
-
-  font-family: Inter, system-ui, sans-serif;
+/* --- Корневой контейнер --- */
+.app-container {
+  padding: 30px;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #F6F7F9;
+  color: #111;
 }
 
-*{
-  box-sizing:border-box;
+.app-container.dark {
+  background: #111315;
+  color: #e8e8ea;
 }
 
-html,body,#root{
-  margin:0;
-  min-height:100%;
+/* --- Кнопки (btn) --- */
+.btn {
+  height: 34px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: none;
+  outline: none;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
 }
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:Inter,sans-serif;
-  -webkit-font-smoothing:antialiased;
+.app-container.dark .btn {
+  border-color: #2a2a2e;
+  background: #1A1D21;
+  color: #e8e8ea;
 }
 
-#root{
-  min-height:100vh;
-  max-width:1400px;
-  margin:0 auto;
-  padding:32px;
+/* --- Карточки задач (ui.card) --- */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid #E5E7EB;
+  background: #ffffff;
+  text-align: left;
+  border-radius: 18px;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-button{
-  font:inherit;
-  border:none;
-  cursor:pointer;
-  transition:.18s;
+.app-container.dark .task-card {
+  border-color: #2F343C;
+  background: #1A1D21;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
-input,
-textarea,
-select{
-  font:inherit;
+/* --- Текст задачи (taskText) --- */
+.task-text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 18px;
+  color: #111827;
+  text-decoration: none;
+}
+
+.app-container.dark .task-text {
+  color: #e8e8ea;
+}
+
+/* --- Заголовок категории (categoryTitle) --- */
+.category-header {
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-container.dark .category-header {
+  color: #F3F4F6;
 }
