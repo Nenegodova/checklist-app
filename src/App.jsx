@@ -595,7 +595,7 @@ export default function App() {
     display: "inline-flex", 
     alignItems: "center", 
     justifyContent: "center"
-  }}>✏️</button>
+  }}>✍️</button>
       </div>
     </div>
   );
