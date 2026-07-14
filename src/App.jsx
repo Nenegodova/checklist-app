@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback, useLayoutEffect } from "react";
+
 const DATA_VERSION = "1.1";
 const NOTES_TEMPLATE =
 `Вопросы к&nbsp;редакции:
@@ -9,6 +10,7 @@ const NOTES_TEMPLATE =
 —
 Правки&nbsp;для&nbsp;фотореда/дизайнера:
 —`;
+
 const CONTENT_FILTERS = {
   tables: { label: "Таблицы", default: true },
   screenshots: { label: "Скрины", default: true },
@@ -16,6 +18,7 @@ const CONTENT_FILTERS = {
   poll: { label: "Опрос", default: true },
   infographic: { label: "Инфографика", default: true },
 };
+
 const buildContentFilters = () => {
   const result = {};
   Object.entries(CONTENT_FILTERS).forEach(([key, value]) => {
@@ -23,6 +26,7 @@ const buildContentFilters = () => {
   });
   return result;
 };
+
 const PRESETS = {
   default: {},
   invest: {
@@ -143,10 +147,12 @@ const PRESETS = {
     ],
   },
 };
+
 const PRESET_EXCLUDES = {
   cd: { "Текст": ["lead", "heading-levels", "editor-badge"], "Админка": ["cover-author", "cover-type", "utm", "credit"] },
   shorts: { "Текст": ["tooltip-link", "currency-tooltip", "lists-style", "utm"] },
 };
+
 const DATA = {
   "Админка": [
     { text: "Проверить, что&nbsp;коллеги закрыли вкладку&nbsp;с&nbsp;визивигом" },
@@ -172,17 +178,17 @@ const DATA = {
     { text: "После&nbsp;эмодзи с&nbsp;тоит пробел" },
     { text: "Поправить типографирование: м², а&nbsp;не&nbsp;м2, 1/2, а&nbsp;не&nbsp;½" },
     { text: "Предлог, точка, восклицательный, вопросительный знак, двоеточие&nbsp;в&nbsp;ссылках, запятые&nbsp;вне&nbsp;ссылок" },
-    { text: "Точка, запятая, восклицательный, вопросительный знаки, двоеточие, точка с&nbsp; запятой в жире/марке" },
+    { text: "Точка, запятая, восклицательный, вопросительный знаки, двоеточие, точка с&nbsp; запятой в жире/марке" },
     { text: "У с&nbsp;ервисных плашек&nbsp;в&nbsp;последнем предложении отсутствует точка" },
     { text: "Нет пустых атрибутов" },
     { id: "utm", text: "UTM метки отсутствуют" },
     { id: "currency-tooltip", text: "У первого валютного фичера тултип: с&nbsp;уммы&nbsp;в&nbsp;рублях пересчитываются&nbsp;по&nbsp;актуальному курсу раз&nbsp;в&nbsp;день" },
-    { id: "tooltip-link", text: "Тултип не стоит рядом&nbsp;с&nbsp;ссылкой" },
+    { id: "tooltip-link", text: "Тултип не стоит рядом&nbsp;с&nbsp;ссылкой" },
     { id: "lists-style", text: "Списки с&nbsp;&nbsp;цифрами и&nbsp;кастомные — с&nbsp;&nbsp;большой буквы, в&nbsp;конце точки. с&nbsp;писок с&nbsp;&nbsp;буллитами — с&nbsp;&nbsp;маленькой буквы, в&nbsp;конце точка, запятые" },
     { text: "У&nbsp;плашек&nbsp;с&nbsp;авторами с&nbsp;тоит *hl isbubble=\"true\"*" },
     { text: "Опрос&nbsp;на&nbsp;месте, в&nbsp;нем все с&nbsp;клеено", feature: "poll" },
     { id: "editor-badge", text: "Верная плашка редакции" },
-    { text: "Расставить поля если&nbsp;нужно, они не должны с&nbsp;тоять рядом&nbsp;с&nbsp;баннерами, анкетами, картинками и&nbsp;таблицами" },
+    { text: "Расставить поля если&nbsp;нужно, они не должны с&nbsp;тоять рядом&nbsp;с&nbsp;баннерами, анкетами, картинками и&nbsp;таблицами" },
     { text: "Проверить виджеты, фичеры, баннеры, этажи, кат" },
   ],
   "Таблицы": [
@@ -198,7 +204,7 @@ const DATA = {
     { text: "Скрины ретиновые и&nbsp;чистые, текст читаем, с&nbsp;облюдены поля, проставлен *prop=\"bordered\"* если&nbsp;фон с&nbsp;ливается&nbsp;с&nbsp;фоном с&nbsp;траницы", feature: "screenshots" },
     { text: "Проверить необходимость *prop=\"bordered\"*&nbsp;у&nbsp;видео", feature: "images" },
     { text: "Для&nbsp;инфографики проставлен *prop=\"bordered rounded\"*", feature: "infographic" },
-    { text: "В&nbsp;подписе&nbsp;к&nbsp;инфографике есть Источник: ", feature: "infographic" },
+    { text: "В&nbsp;подписи&nbsp;к&nbsp;инфографике есть Источник: ", feature: "infographic" },
     { text: "Проверить&nbsp;в&nbsp;кайтене наличие комментария&nbsp;от&nbsp;фотореда&nbsp;о&nbsp;размере картинок или&nbsp;фоторам", feature: "images" },
     { text: "Проверить&nbsp;есть&nbsp;ли&nbsp;засветы или&nbsp;вотермарки&nbsp;на&nbsp;картинках&nbsp;от&nbsp;фотореда", feature: "images" },
     { text: "При&nbsp;необходимости заблюрены все персональные данные", feature: "images" },
@@ -214,6 +220,7 @@ const DATA = {
     { links: [{ label: "Методички общие", url: "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994" }] },
   ],
 };
+
 // --- Helpers ---
 const readStorageJSON = (key) => {
   try {
@@ -225,6 +232,7 @@ const readStorageJSON = (key) => {
     return null;
   }
 };
+
 const buildCollapsed = (data, prev = {}) => {
   const next = {};
   Object.keys(data).forEach((cat) => {
@@ -232,6 +240,7 @@ const buildCollapsed = (data, prev = {}) => {
   });
   return next;
 };
+
 const buildTasks = (data) => {
   const initial = {};
   Object.keys(data).forEach((cat) => {
@@ -245,10 +254,12 @@ const buildTasks = (data) => {
   });
   return initial;
 };
+
 function useMediaQuery(query) {
   const getMatches = () => (typeof window !== "undefined" ? window.matchMedia(query).matches : false);
   const [matches, setMatches] = useState(getMatches);
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const media = window.matchMedia(query);
     const handler = (e) => setMatches(e.matches);
     media.addEventListener("change", handler);
@@ -256,30 +267,31 @@ function useMediaQuery(query) {
   }, [query]);
   return matches;
 }
-// Исправлено: с&nbsp;табильные key через с&nbsp;четчик вместо индекса split-массива
+
+// ИСПРАВЛЕНО: функция вынесена наружу, ключи генерируются через индекс map (стабильно)
 const renderTextWithLinks = (text, dark) => {
   if (!text) return null;
   const parts = text.split(/(\*[^*]+\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g);
-  let keyIdx = 0;
-  return parts.map((part) => {
+  return parts.map((part, i) => {
     if (!part) return null;
     if (part.startsWith("*") && part.endsWith("*")) {
-      return <strong key={keyIdx++} style={{ fontWeight: 700 }}>{part.slice(1, -1)}</strong>;
+      return <strong key={i} style={{ fontWeight: 700 }}>{part.slice(1, -1)}</strong>;
     }
     const match = part.match(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/);
     if (match) {
       const [, label, url] = match;
       return (
-        <a key={keyIdx++} href={url} target="_blank" rel="noreferrer"
+        <a key={i} href={url} target="_blank" rel="noreferrer"
            style={{ display: "inline-flex", alignItems: "center", padding: "2px 8px", marginLeft: 6,
              borderRadius: 8, background: dark ? "#33334b" : "#e8e8ea", color: dark ? "#7ab7ff" : "#2563eb",
              textDecoration: "none", fontSize: 13, fontWeight: 500 }}
         >{label}</a>
       );
     }
-    return <span key={keyIdx++}>{part}</span>;
+    return <span key={i}>{part}</span>;
   });
 };
+
 // --- Component ---
 export default function App() {
   const [dark, setDark] = useState(() => {
@@ -291,7 +303,7 @@ export default function App() {
       return false;
     }
   });
-  // Живое отслеживание с&nbsp;истемной темы (если пользователь не&nbsp;переключал вручную)
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -303,23 +315,25 @@ export default function App() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
   const [preset, setPreset] = useState(() => localStorage.getItem("preset") || "default");
   const [contentFilters, setContentFilters] = useState(() => readStorageJSON("contentFilters") || buildContentFilters());
   const [focusMode, setFocusMode] = useState(false);
   const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
-  // с&nbsp;инхронизация темы с&nbsp; DOM и localStorage (безопасная, без лишних записей)
+
   useLayoutEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
     const currentValue = localStorage.getItem("dark");
     if (currentValue !== String(dark)) {
-      localStorage.setItem("dark", dark);
+      localStorage.setItem("dark", String(dark));
     }
   }, [dark]);
+
   const currentData = useMemo(() => {
     const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
-    
+
     if (presetData) {
       Object.keys(presetData).forEach((cat) => {
         if (!clone[cat]) clone[cat] = [];
@@ -346,6 +360,7 @@ export default function App() {
     }
     return clone;
   }, [preset]);
+
   const [tasks, setTasks] = useState(() => {
     const savedVersion = localStorage.getItem("version");
     const saved = readStorageJSON("checklist");
@@ -357,13 +372,16 @@ export default function App() {
     }
     return saved || buildTasks(currentData);
   });
+
   const [collapsed, setCollapsed] = useState(() => readStorageJSON("collapsed") || buildCollapsed(currentData));
+
   useEffect(() => {
     localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
     localStorage.setItem("checklist", JSON.stringify(tasks));
     localStorage.setItem("collapsed", JSON.stringify(collapsed));
     localStorage.setItem("notes", notes);
   }, [contentFilters, tasks, collapsed, notes]);
+
   useEffect(() => {
     setTasks((prev) => {
       const next = {};
@@ -381,22 +399,24 @@ export default function App() {
     });
     setCollapsed((prev) => buildCollapsed(currentData, prev));
   }, [currentData]);
+
   const toggle = useCallback((cat, index) => {
     setTasks((prev) => {
       const updated = prev[cat].map((t, i) => (i === index ? { ...t, done: !t.done } : t));
       return { ...prev, [cat]: updated };
     });
   }, []);
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     setCollapsed((prev) => {
       let next = { ...prev };
       const cats = Object.keys(tasks);
-      const lastDoneCat = [...cats].reverse().find(cat => tasks[cat]?.every(t => t.done));
+      const lastDoneCat = [...cats].reverse().find((cat) => tasks[cat]?.every((t) => t.done));
       if (lastDoneCat) {
         next[lastDoneCat] = true;
         const idx = cats.indexOf(lastDoneCat);
         for (let i = idx + 1; i < cats.length; i++) {
-          if (tasks[cats[i]]?.some(t => !t.done)) {
+          if (tasks[cats[i]]?.some((t) => !t.done)) {
             next[cats[i]] = false;
             break;
           }
@@ -405,6 +425,7 @@ export default function App() {
       return next;
     });
   }, [tasks]);
+
   const resetAll = useCallback(() => {
     setTasks((prev) => {
       const cleared = {};
@@ -414,6 +435,7 @@ export default function App() {
       return cleared;
     });
   }, []);
+
   const hardReset = useCallback(() => {
     ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark"].forEach((key) => localStorage.removeItem(key));
     localStorage.setItem("version", DATA_VERSION);
@@ -425,14 +447,16 @@ export default function App() {
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
   }, []);
+
   const toggleCollapse = useCallback((cat) => {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
+
   const allTasks = Object.values(tasks ?? {}).flat();
   const doneTasks = allTasks.filter((t) => t.done).length;
   const totalTasks = allTasks.length;
   const percent = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
-  
+
   const isMobile = useMediaQuery("(max-width: 900px)");
   const textColor = dark ? "#e8e8ea" : "#111";
   const mutedColor = dark ? "#a1a1aa" : "#555";
@@ -441,32 +465,30 @@ export default function App() {
   const bg = dark ? "#111315" : "#F6F7F9";
   const title = dark ? "#FFFFFF" : "#111827";
   const category = dark ? "#F3F4F6" : "#111827";
-  
+
   const controlBase = {
     height: 34, padding: "6px 12px", borderRadius: 10, fontSize: 13, lineHeight: "20px",
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     cursor: "pointer", transition: "all 0.15s ease", boxShadow: "none", outline: "none",
   };
-  
+
   const makeControl = (isDark) => ({
     ...controlBase, border: `1px solid ${isDark ? "#2a2a2e" : "#d1d5db"}`,
     background: isDark ? "#1A1D21" : "#ffffff", color: isDark ? "#e8e8ea" : "#111827",
   });
-  
+
   const btn = makeControl(dark);
-  
+
   const ui = {
     categoryTitle: { cursor: "pointer", marginBottom: 12, fontSize: 15, fontWeight: 600, color: category, display: "flex", alignItems: "center", gap: 16 },
     card: { display: "flex", alignItems: "flex-start", gap: 10, padding: "16px 18px", border: `1px solid ${border}`, background: card, textAlign: "left", borderRadius: 18, transition: "all 0.15s ease", boxShadow: dark ? "0 1px 2px rgba(0,0,0,0.3)" : "0 1px 2px rgba(0,0,0,0.05)" },
     taskText: { flex: 1, fontSize: 13, lineHeight: "18px", color: textColor, textDecoration: "none" },
   };
+
   return (
     <div className={dark ? "dark" : ""} style={{ padding: 30, minHeight: "100vh", fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial", background: bg, color: textColor }}>
       <style>{`
-        body, html {
-          margin: 0 !important;
-          padding: 0 !important;
-        }
+        body, html { margin: 0 !important; padding: 0 !important; }
       `}</style>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24, marginBottom: 24 }}>
@@ -522,12 +544,28 @@ export default function App() {
                         style={{ width: 16, height: 16, marginTop: 2, accentColor: dark ? "#3f3f46" : "#6b7280", cursor: "pointer", flexShrink: 0 }} />
                       <div style={{ flex: 1, opacity: task.done ? 0.5 : 1 }}>
                         {task.text && <div style={{ ...ui.taskText, textDecoration: task.done ? "line-through" : "none" }}>{renderTextWithLinks(task.text, dark)}</div>}
-                        {task.links?.length > 0 && (
+                                            {task.links?.length > 0 && (
                           <div style={{ display: "flex", gap: 8, marginTop: task.text ? 8 : 0, flexWrap: "wrap" }}>
                             {task.links.map((link) => (
-                              <a key={link.url} href={link.url} target="_blank" rel="noreferrer"
-                                style={{ padding: "4px 10px", borderRadius: 999, fontSize: 12, fontWeight: 600, textDecoration: "none", background: dark ? "#27272a" : "#eef2f7", color: dark ? "#93c5fd" : "#2563eb", border: `1px solid ${dark ? "#3f3f46" : "#d1d5db"}` }}>{link.label}</a>
-                            )}
+                              <a
+                                key={link.url}
+                                href={link.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  padding: "4px 10px",
+                                  borderRadius: 999,
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  textDecoration: "none",
+                                  background: dark ? "#27272a" : "#eef2f7",
+                                  color: dark ? "#93c5fd" : "#2563eb",
+                                  border: dark ? "1px solid #3f3f46" : "1px solid #d1d5db"
+                                }}
+                              >
+                                {link.label}
+                              </a>
+                            ))}
                           </div>
                         )}
                       </div>
@@ -553,21 +591,13 @@ export default function App() {
               style={{ width: "100%", height: 180, padding: 12, borderRadius: 12, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 14, lineHeight: "20px", resize: "none", outline: "none", boxSizing: "border-box" }} />
           </div>
         )}
-<button type="button" onClick={() => setNotesOpen((v) => !v)}
-  style={{ 
-    width: 58, 
-    height: 58, 
-    borderRadius: "50%", 
-    border: "2px solid #FFDD2D", 
-    background: bg, // Теперь фон с&nbsp;овпадает с&nbsp; основным фоном с&nbsp;траницы
-    color: dark ? "#FFDD2D" : "#111827", // Иконка адаптируется под тему для лучшей читаемости
-    boxShadow: dark ? "0 8px 24px rgba(0,0,0,0.4)" : "0 8px 24px rgba(0,0,0,0.12)", // Тень подстраивается под тему
-    fontSize: 22, 
-    cursor: "pointer",
-    display: "inline-flex", 
-    alignItems: "center", 
-    justifyContent: "center"
-  }}>✏️</button>
+        <button type="button" onClick={() => setNotesOpen((v) => !v)}
+          style={{ 
+            width: 58, height: 58, borderRadius: "50%", border: "2px solid #FFDD2D", 
+            background: bg, color: dark ? "#FFDD2D" : "#111827", 
+            boxShadow: dark ? "0 8px 24px rgba(0,0,0,0.4)" : "0 8px 24px rgba(0,0,0,0.12)", 
+            fontSize: 22, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" 
+          }}>✏️</button>
       </div>
     </div>
   );
