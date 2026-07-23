@@ -486,36 +486,28 @@ export default function App() {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
 
-  // 🔑 ИСПРАВЛЕНО: загрузка теперь гарантирует обновление UI даже при ошибке localStorage
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
     if (file.size > 2.5 * 1024 * 1024) {
       alert("Файл слишком большой. Рекомендуется использовать изображения до 2 МБ.");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result;
       if (!dataUrl || typeof dataUrl !== "string") return;
-      
-      setBgImage(dataUrl); // Обновляем состояние сразу для рендера
-      
+      setBgImage(dataUrl);
       try {
         localStorage.setItem("bgImage", dataUrl);
       } catch (err) {
         console.warn("localStorage full, bg will persist only for this session");
-        // Фон останется видимым в текущей сессии, но исчезнет при перезагрузке
       }
     };
     reader.onerror = () => {
       console.error("FileReader error");
     };
     reader.readAsDataURL(file);
-    
-    // Очищаем input, чтобы можно было выбрать тот же файл повторно
     e.target.value = "";
   }, []);
 
@@ -572,7 +564,7 @@ export default function App() {
         fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial",
         color: textColor,
         position: "relative",
-        zIndex: 1, // Гарантирует, что контент будет выше фона
+        zIndex: 1,
         transition: "background 0.3s ease",
         backgroundColor: bg,
       }}
@@ -732,7 +724,11 @@ export default function App() {
             padding: 14,
             borderRadius: 18,
             border: `1px solid ${border}`,
-            background: card,
+            background: bgImage 
+              ? (dark ? "rgba(15, 15, 20, 0.65)" : "rgba(255, 255, 255, 0.7)")
+              : card,
+            backdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
+            WebkitBackdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
             boxShadow: dark ? "0 12px 40px rgba(0,0,0,0.45)" : "0 12px 30px rgba(0,0,0,0.12)",
             boxSizing: "border-box"
           }}>
@@ -747,18 +743,26 @@ export default function App() {
               style={{ width: "100%", height: 160, padding: 10, borderRadius: 10, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 13, lineHeight: "18px", resize: "none", outline: "none", boxSizing: "border-box" }} />
           </div>
         )}
+        {/* 🔑 Улучшенный стеклянный FAB */}
         <button type="button" className="notes-fab" onClick={() => setNotesOpen((v) => !v)}
           style={{
             width: r.fabSize, height: r.fabSize, borderRadius: "50%",
-            background: dark ? "rgba(25, 25, 28, 0.85)" : "rgba(255, 255, 255, 0.7)",
-            backdropFilter: "blur(16px) saturate(180%)",
-            WebkitBackdropFilter: "blur(16px) saturate(180%)",
-            border: dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.5)",
-            boxShadow: dark ? "0 10px 40px rgba(0,0,0,0.6)" : "0 8px 32px rgba(0,0,0,0.12)",
+            background: bgImage 
+              ? (dark ? "rgba(12, 12, 18, 0.5)" : "rgba(255, 255, 255, 0.6)")
+              : (dark ? "rgba(25, 25, 28, 0.75)" : "rgba(255, 255, 255, 0.75)"),
+            backdropFilter: "blur(20px) saturate(200%)",
+            WebkitBackdropFilter: "blur(20px) saturate(200%)",
+            border: bgImage 
+              ? (dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.45)")
+              : (dark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.08)"),
+            boxShadow: bgImage 
+              ? (dark ? "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)" : "0 10px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7)")
+              : (dark ? "0 10px 40px rgba(0,0,0,0.4)" : "0 10px 40px rgba(0,0,0,0.08)"),
             color: dark ? "#FFDD2D" : "#111827",
             fontSize: 20, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
             transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-            textShadow: dark ? "0 1px 3px rgba(0,0,0,0.8)" : "none"
+            textShadow: dark ? "0 1px 3px rgba(0,0,0,0.6)" : "0 1px 2px rgba(255,255,255,0.8)",
+            userSelect: "none"
           }}>✏️</button>
       </div>
     </div>
