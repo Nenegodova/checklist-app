@@ -536,18 +536,18 @@ export default function App() {
       }}
     >
       {bgImage && (
-        <div 
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: dark 
-              ? `rgba(0, 0, 0, ${bgOverlay})` 
-              : `rgba(255, 255, 255, ${1 - bgOverlay})`,
-            pointerEvents: "none",
-            zIndex: -1,
-            transition: "background 0.3s ease",
-          }} 
-        />
+             <div 
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: dark 
+            ? `rgba(0, 0, 0, ${bgOverlay})` 
+            : `rgba(255, 255, 255, ${bgOverlay})`,
+          pointerEvents: "none",
+          zIndex: -1,
+          transition: "background 0.2s ease",
+        }} 
+      />
       )}
 
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
@@ -600,19 +600,19 @@ export default function App() {
               >
                 🗑 Убрать
               </button>
-              <input 
+                            <input 
                 type="range" 
                 min="0" 
                 max="1" 
-                step="0.05" 
+                step="0.1" 
                 value={bgOverlay} 
                 onChange={(e) => {
                   const val = parseFloat(e.target.value);
                   setBgOverlay(val);
                   localStorage.setItem("bgOverlay", String(val));
                 }}
-                style={{ width: 80, cursor: "pointer", accentColor: dark ? "#7ab7ff" : "#2563eb" }}
-                title="Прозрачность затемнения"
+                style={{ width: 100, cursor: "pointer", accentColor: dark ? "#7ab7ff" : "#2563eb" }}
+                title={`Прозрачность: ${Math.round(bgOverlay * 100)}%`}
               />
             </div>
 
