@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback, useLayoutEffect } from "react";
 const DATA_VERSION = "1.1";
 const NOTES_TEMPLATE =
-`Вопросы к редакции:
+  `Вопросы к редакции:
 —
 Поставить блокер:
 —
@@ -13,6 +13,7 @@ const CONTENT_FILTERS = {
   images: { label: "Картинки", default: true },
   poll: { label: "Опрос", default: true },
   infographic: { label: "Инфографика", default: true },
+  prodcard: { label: "Карточки товаров", default: true },
 };
 const buildContentFilters = () => {
   const result = {};
@@ -31,11 +32,11 @@ const PRESETS = {
   },
   shopping: {
     "Админка": [
-      { _sortOrder: 4, text: "В подвале стоит: Цены действительны на момент публикации" },
+      { _sortOrder: 4, text: "В подвале стоит: Цены действительны на момент публикации" },
       { _sortOrder: 3, text: "Тег noads" },
     ],
     "Текст": [
-      {  _sortOrder: 17, text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, отбиты <br/>" },
+      { _sortOrder: 17, text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, отбиты <br/>" },
     ],
   },
   tests: {
@@ -44,9 +45,9 @@ const PRESETS = {
       { _sortOrder: 6, text: "Внутри конфига есть все необходимые склейки" },
     ],
     "Админка": [
-      {  _sortOrder: 3, text: "Проверить автора обложки или источники" },
-      {  _sortOrder: 2, text: "Тег *noadscalctest*" },
-      {  _sortOrder: 3, text: "В больших тестах под обложкой указан иллюстратор" },
+      { _sortOrder: 3, text: "Проверить автора обложки или источники" },
+      { _sortOrder: 2, text: "Тег *noadscalctest*" },
+      { _sortOrder: 3, text: "В больших тестах под обложкой указан иллюстратор" },
     ],
     "Прочее": [
       { text: "В кайтене прикреплены ссылки на админку и конфиг" },
@@ -56,7 +57,7 @@ const PRESETS = {
   compare: { "Админка": [{ _sortOrder: 3, text: "Тег noads" }] },
   spending: {
     "Текст": [
-      {  _sortOrder: 1, text: "В начале статьи стоит плашка panel с абзацами *p grade=\"secondary\"*" },
+      { _sortOrder: 1, text: "В начале статьи стоит плашка panel с абзацами *p grade=\"secondary\"*" },
       { _sortOrder: 1, text: "У авторов стоят анонимные аватарки anonym_male у мужчин и anonym_female у женщин, автор стоит после оглавления" },
       { _sortOrder: 7, text: "Траты обозначены *class=\"negative\"*" },
       { _sortOrder: 7, text: "Доходы обозначены *class=\"positive\"*" },
@@ -64,7 +65,7 @@ const PRESETS = {
     ],
     "Админка": [
       { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-      { _sortOrder: 5,  text: "Подпись к обложке: Фотография — Ксения Михайлова" },
+      { _sortOrder: 5, text: "Подпись к обложке: Фотография — Ксения Михайлова" },
     ],
   },
   cd: {
@@ -73,13 +74,16 @@ const PRESETS = {
       { _sortOrder: 0, text: "В подборке ЧД есть подзаг" },
       { _sortOrder: 5, text: "Обложка с эмодзи с типом мейна «мини над заголовком»" },
       { _sortOrder: 4, text: "Редакция Что делать + тематическая" },
+      { _sortOrder: 4, text: "Если вопрос уже существующий, то редакции Что делать + UGC" },
+      { _sortOrder: 4, text: "Если вопрос уже существующий и нет метки «Обновляем сами», то сначала снимаем его с публикации" },
       { _sortOrder: 2, text: "Нажаты кнопки из сообщества и выбор редакции" },
-      {  _sortOrder: 6, text: "Обязательно указываем краткое описание. В это поле дублируем текст из ог⁠-⁠описания" },
-      {  _sortOrder: 6, text: "В реальных вопросах проверяем наличие технического *тега noadswhattodo* (скрывает некоторые рекламные баннеры). Если его нет, то добавляем. В выдуманных проставляем тег вместе с другими. Если в статье присутствуют фичеры (калькуляторы, тесты), то добавляем еще один технический тег: *feature⁠-⁠out.* Для опросов этот тег не нужен" },
+      { _sortOrder: 6, text: "Обязательно указываем краткое описание. В это поле дублируем текст из ог⁠-⁠описания" },
+      { _sortOrder: 2, text: "Если статья 18+, бирка 18+ должна быть обязательно у ина и аута" },
+      { _sortOrder: 6, text: "В реальных вопросах проверяем наличие технического *тега noadswhattodo.* В выдуманных проставляем тег вместе с другими. Если в статье присутствуют фичеры (калькуляторы, тесты), то добавляем еще один технический тег: *feature⁠-⁠out.* Для опросов этот тег не нужен" },
       { _sortOrder: 0, text: "В подборке ЧД основной заг начинается с о слов «Что делать, если:..»" },
       { _sortOrder: 0, text: "В подборке ЧД url статьи всегда начинается с префикса «ask⁠-»" },
-      {  _sortOrder: 5, text: "В классических ЧД цвет фона для обложек #2c2c2c" },
-      {  _sortOrder: 5, text: "В подборке ЧД на обложке ОГ по три эмодзи" },
+      { _sortOrder: 5, text: "В классических ЧД цвет фона для обложек #2c2c2c" },
+
     ],
     "Текст": [
       { _sortOrder: 0, text: "В классических ЧД нет лида" },
@@ -87,8 +91,8 @@ const PRESETS = {
       { text: "Есть автор вопроса и вопрос в плашке с *isbuble=\"true\"*" },
       { _sortOrder: 2, text: "Есть автор ответа" },
       { _sortOrder: 3, text: "В классических ЧД написание автора вопроса «спросил в Сообществе»/«спросила в Сообществе»" },
-      { _sortOrder: 4, text: "В классических ЧД заголовки *h2 level=\"2\"*" },
-      { _sortOrder: 5, text: "В подборке ЧД заголовки *h2*" },
+      { _sortOrder: 3, text: "У автора вопроса стоит *additional*" },
+      { _sortOrder: 5, text: "Проверить бирки над заголовками в Подборках ЧД" },
       { _sortOrder: 6, text: "В подборке ЧД у каждого вопроса стоит бирка с эмодзи" },
       { text: "Если в конце статьи стоит список статей: вводное предложение выделяем болдом, для вводного предложения и списка используем шифт с * p grade=\"large\"*" },
       { _sortOrder: 7, text: "В микро ЧД ответ на вопрос в плашке" },
@@ -98,6 +102,7 @@ const PRESETS = {
     "Выпуск": [
       { _sortOrder: 1, text: "Если материал сверстан в старом вопросе автора и нужно выпустить с новым url, то обязательно после публикации нужно настроить редирект" },
       { sortOrder: 2, text: "В случае, когда после выпуска меняется обложка, пишем в тематическом чате соответствующей редакции и чате «Т–Ж + соцсети», что поменялась обложка, прикладываем ссылку на статью и новую обложку" },
+      { sortOrder: 2, text: "В подборках, после выпуска статьи с вопросами скрыты вопросы от поисковиков" },
     ],
     "Прочее": [
       { links: [{ label: "Методичка ЧД", url: "https://tinkoffjournal.kaiten.ru/documents/g/c4db513a-6478-46ae-967b-984c87b15af0" }] },
@@ -108,7 +113,7 @@ const PRESETS = {
       { _sortOrder: 2, text: "Проставлен *тег noadsshort*" },
       { _sortOrder: 2, text: "Среди потоков добавлены «Шорты», но не основным потоком" },
       { _sortOrder: 2, text: "Нажата кнопка из сообщества и выбор редакции если вторая редакция UGC" },
-      { _sortOrder: 3,text: "Обложка внутри статьи отсутствует" },
+      { _sortOrder: 3, text: "Обложка внутри статьи отсутствует" },
       { _sortOrder: 3, text: "Источник фото в подвале" },
     ],
     "Текст": [
@@ -155,7 +160,7 @@ const DATA = {
     { id: "cover-type", text: "Проверить тип обложки, кредит к обложке в нужном месте (под обложкой/в подвале), наличие бирки на ОГ, текст на ОГ оттипирован (проставлены склейки)" },
     { id: "credit", text: "Проверить автора обложки или источники" },
     { links: [{ label: "Иноагенты и прочие враги в подвале", url: "https://tinkoffjournal.kaiten.ru/documents/d/05e4af49-d4af-433d-a183-528ac0d4da1a" }] },
-    {_sortOrder: 9999, text: "Мягкий перенос в заге", links: [{ label: "Символы", url: "https://symbl.cc/ru/00AD/" }, { label: "Правила", url: "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe" }] },
+    { _sortOrder: 9999, text: "Мягкий перенос в заге", links: [{ label: "Символы", url: "https://symbl.cc/ru/00AD/" }, { label: "Правила", url: "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe" }] },
   ],
   "Текст": [
     { text: "Подпись автора с маленькой буквы" },
@@ -163,21 +168,26 @@ const DATA = {
     { text: "Якоря в оглавлении стоят верно. Двоеточие в оглавлении убрать" },
     { id: "heading-levels", text: "Везде проставлены верные уровни заголовков (*h2*, *h2 level=\"2\"*, *h3* для плашек)" },
     { text: "Проверить бирки над заголовками" },
-    { text: "Внутри *<nobr></nobr>* склеяны слова с частицами бы, же, ли, стоят диапазоны чисел, составные наречия, °C, пишущиеся через дефис слова (до 4 символов от дефиса), числа, которые идут после того, что считаем (минут 15, iPhone 16), аббревиатуры-дополнения (страны ЕС, ставка ЦБ, Витамин C)" },
+    { text: "Внутри *<nobr></nobr>* склеены слова с частицами бы, же, ли, стоят диапазоны чисел, составные наречия, °C, пишущиеся через дефис слова (до 4 символов от дефиса), числа, которые идут после слов, к которым они относятся (минут 15, iPhone 16), аббревиатуры-дополнения (страны ЕС, ставка ЦБ, Витамин C, короткие слова (уж, ЖК, ИП))" },
     { text: "После эмодзи стоит пробел" },
     { text: "Поправить типографирование: м², а не м2, 1/2, а не ½" },
-    { text: "Предлог, точка, восклицательный, вопросительный знак, двоеточие в ссылках, запятые вне ссылок" },
+    { text: "Предлог, точка, восклицательный и вопросительный знаки, двоеточие в ссылках, запятые вне ссылок" },
     { text: "Точка, запятая, восклицательный, вопросительный знаки, двоеточие, точка с запятой в жире/марке" },
+    { text: "У карточек товаров есть картинка и название товара", feature: "prodcard" },
+    { text: "У карточек-сеток отсутствует описние и бирка", feature: "prodcard" },
+    { text: "Внутри тега *<price>* обязательно прописана цена товара. Знаки препинания внутрь тега *<price>* включаются по правилу ссылок (. ! ? :)", feature: "prodcard" },
+    { text: "Если тег *<price>* стоит посреди текста, то скрываем название магазина через атрибут *shop-hide=\"true\"*", feature: "prodcard" },
     { text: "У сервисных плашек в последнем предложении отсутствует точка" },
+    { text: "В ссылке шаблона гугл⁠-⁠дока для копирования */edit* заменен на */copy*." },
     { text: "Нет пустых атрибутов" },
     { id: "utm", text: "UTM метки отсутствуют" },
     { id: "currency-tooltip", text: "У первого валютного фичера тултип: Суммы в рублях пересчитываются по актуальному курсу раз в день" },
     { id: "tooltip-link", text: "Тултип не стоит рядом с ссылкой" },
-    { id: "lists-style", text: "Списки с цифрами и кастомные — с большой буквы, в конце точки. Список с буллитами — с маленькой буквы, в конце точка, запятые ( точка с запятой, точказапятые?)" },
-    { text: "У плашек с авторами с тоит *hl isbubble=\"true\"*" },
-    { text: "Опрос на месте, в нем все склеено", feature: "poll" },
+    { id: "lists-style", text: "Списки с цифрами и кастомные — с большой буквы, в конце точки. Список с буллитами — с маленькой буквы, в конце точка, запятые (точка с запятой, точказапятые?)" },
+    { text: "У плашек с авторами стоит *<bubble>*" },
+    { text: "Опрос на месте, в нем все склеено, эмодзи отображается корректно", feature: "poll" },
     { id: "editor-badge", text: "Верная плашка редакции" },
-    { text: "Расставить поля если нужно, они не должны с тоять рядом с баннерами, анкетами, картинками и таблицами" },
+    { text: "Расставить поля если нужно, они не должны стоять рядом с баннерами, анкетами, картинками и таблицами" },
     { text: "Проверить виджеты, фичеры, баннеры, этажи, кат" },
   ],
   "Таблицы": [
@@ -193,7 +203,7 @@ const DATA = {
     { text: "Скрины ретиновые и чистые, текст читаем, соблюдены поля, проставлен *prop=\"bordered\"* если фон сливается с фоном страницы", feature: "screenshots" },
     { text: "Проверить необходимость *prop=\"bordered\"* у видео", feature: "images" },
     { text: "Для инфографики проставлен *prop=\"bordered rounded\"*", feature: "infographic" },
-    { text: "В подписи к инфографике есть Источник: ", feature: "infographic" },
+    { text: "Если у инфографики есть подпись, то указан кредит Источник: ", feature: "infographic" },
     { text: "Проверить в кайтене наличие комментария от фотореда о размере картинок или фоторам", feature: "images" },
     { text: "Проверить есть ли засветы или вотермарки на картинках от фотореда", feature: "images" },
     { text: "При необходимости заблюрены все персональные данные", feature: "images" },
@@ -202,10 +212,10 @@ const DATA = {
     { text: "Проверить метку разметка, если есть доп. авторы" },
     { text: "Проверить комментарии в кайтене" },
     { text: "В кайтен прикрепить ссылку на материал после выпуска и опенграф-картинку" },
+    { text: "При отложенной публикации в катен прикреплена ссылка на материал, проставлено время выпуска" },
     { text: "После выпуска проверить материал на главной" },
   ],
   "Прочее": [
-    { text: "В ссылке шаблона гугл⁠-⁠дока для копирования */edit* заменен на */copy*." },
     { links: [{ label: "Методички общие", url: "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994" }] },
   ],
 };
@@ -266,9 +276,11 @@ const renderTextWithLinks = (text, dark) => {
       const [, label, url] = match;
       return (
         <a key={i} href={url} target="_blank" rel="noreferrer"
-           style={{ display: "inline-flex", alignItems: "center", padding: "2px 8px", marginLeft: 6,
-             borderRadius: 8, background: dark ? "#33334b" : "#e8e8ea", color: dark ? "#7ab7ff" : "#2563eb",
-             textDecoration: "none", fontSize: 13, fontWeight: 500 }}
+          style={{
+            display: "inline-flex", alignItems: "center", padding: "2px 8px", marginLeft: 6,
+            borderRadius: 8, background: dark ? "#33334b" : "#e8e8ea", color: dark ? "#7ab7ff" : "#2563eb",
+            textDecoration: "none", fontSize: 13, fontWeight: 500
+          }}
         >{label}</a>
       );
     }
@@ -454,10 +466,10 @@ export default function App() {
       `}</style>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24, marginBottom: 24 }}>
-           <div style={{ flex: "1 1 320px", textAlign: "center" }}>
-              <h1 style={{ margin: 0, padding: 0, fontSize: 28, fontWeight: 700, color: title, lineHeight: 1.2 }}>Чек-лист проверки</h1>
-              <div style={{ marginTop: 8, fontSize: 13, color: mutedColor, lineHeight: 1.5 }}>{doneTasks}/{totalTasks} ({percent}%)</div>
-            </div>
+          <div style={{ flex: "1 1 320px", textAlign: "center" }}>
+            <h1 style={{ margin: 0, padding: 0, fontSize: 28, fontWeight: 700, color: title, lineHeight: 1.2 }}>Чек-лист проверки</h1>
+            <div style={{ marginTop: 8, fontSize: 13, color: mutedColor, lineHeight: 1.5 }}>{doneTasks}/{totalTasks} ({percent}%)</div>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12, marginLeft: "auto", flex: "0 1 520px" }}>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
@@ -506,7 +518,7 @@ export default function App() {
                         style={{ width: 16, height: 16, marginTop: 2, accentColor: dark ? "#3f3f46" : "#6b7280", cursor: "pointer", flexShrink: 0 }} />
                       <div style={{ flex: 1, opacity: task.done ? 0.5 : 1 }}>
                         {task.text && <div style={{ ...ui.taskText, textDecoration: task.done ? "line-through" : "none" }}>{renderTextWithLinks(task.text, dark)}</div>}
-                                            {task.links?.length > 0 && (
+                        {task.links?.length > 0 && (
                           <div style={{ display: "flex", gap: 8, marginTop: task.text ? 8 : 0, flexWrap: "wrap" }}>
                             {task.links.map((link) => (
                               <a
@@ -554,11 +566,11 @@ export default function App() {
           </div>
         )}
         <button type="button" onClick={() => setNotesOpen((v) => !v)}
-          style={{ 
-            width: 58, height: 58, borderRadius: "50%", border: "2px solid #FFDD2D", 
-            background: bg, color: dark ? "#FFDD2D" : "#111827", 
-            boxShadow: dark ? "0 8px 24px rgba(0,0,0,0.4)" : "0 8px 24px rgba(0,0,0,0.12)", 
-            fontSize: 22, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" 
+          style={{
+            width: 58, height: 58, borderRadius: "50%", border: "2px solid #FFDD2D",
+            background: bg, color: dark ? "#FFDD2D" : "#111827",
+            boxShadow: dark ? "0 8px 24px rgba(0,0,0,0.4)" : "0 8px 24px rgba(0,0,0,0.12)",
+            fontSize: 22, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center"
           }}>✏️</button>
       </div>
     </div>
