@@ -326,7 +326,6 @@ export default function App() {
   const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
   
-  // Состояние только для картинки фона
   const [bgImage, setBgImage] = useState(() => {
     try { return localStorage.getItem("bgImage") || ""; } catch { return ""; }
   });
@@ -510,6 +509,26 @@ export default function App() {
     taskText: { flex: 1, fontSize: 13, lineHeight: "18px", color: textColor, textDecoration: "none" },
   };
 
+  // Стеклянные панели
+  const glassTitle = bgImage ? {
+    background: dark ? "rgba(10, 10, 15, 0.55)" : "rgba(255, 255, 255, 0.7)",
+    backdropFilter: "blur(16px) saturate(160%)",
+    WebkitBackdropFilter: "blur(16px) saturate(160%)",
+    borderRadius: 18,
+    padding: "14px 18px",
+    boxShadow: dark ? "0 8px 32px rgba(0,0,0,0.4)" : "0 8px 32px rgba(0,0,0,0.06)",
+  } : {};
+
+  const glassButtons = bgImage ? {
+    background: dark ? "rgba(18, 18, 24, 0.65)" : "rgba(255, 255, 255, 0.75)",
+    backdropFilter: "blur(20px) saturate(180%)",
+    WebkitBackdropFilter: "blur(20px) saturate(180%)",
+    border: `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}`,
+    borderRadius: 18,
+    padding: "12px 16px",
+    boxShadow: dark ? "0 8px 32px rgba(0,0,0,0.45)" : "0 8px 32px rgba(0,0,0,0.08)",
+  } : {};
+
   return (
     <div
       style={{
@@ -532,12 +551,17 @@ export default function App() {
           body, html { margin: 0 !important; padding: 0 !important; }
         `}</style>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24, marginBottom: 24 }}>
-          <div style={{ flex: "1 1 320px", textAlign: "center" }}>
-            <h1 style={{ margin: 0, padding: 0, fontSize: 28, fontWeight: 700, color: title, lineHeight: 1.2 }}>Чек-лист проверки</h1>
+          <div style={{ flex: "1 1 320px", textAlign: "center", ...glassTitle }}>
+            <h1 style={{ 
+              margin: 0, padding: 0, fontSize: 28, fontWeight: 700, 
+              color: title, lineHeight: 1.2,
+              textShadow: bgImage ? (dark ? "0 2px 8px rgba(0,0,0,0.6)" : "0 2px 8px rgba(255,255,255,0.6)") : "none"
+            }}>Чек-лист проверки</h1>
             <div style={{ marginTop: 8, fontSize: 13, color: mutedColor, lineHeight: 1.5 }}>{doneTasks}/{totalTasks} ({percent}%)</div>
           </div>
+          
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12, marginLeft: "auto", flex: "0 1 520px" }}>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%", ...glassButtons }}>
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
                 {dark ? "☀️" : "🌙"}
               </button>
@@ -583,10 +607,7 @@ export default function App() {
               style={{ 
                 ...ui.categoryTitle, 
                 display: "flex", alignItems: "center", gap: 10,
-                // Стекло под заголовком
-                background: bgImage 
-                  ? (dark ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)") 
-                  : "transparent",
+                background: bgImage ? (dark ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)") : "transparent",
                 padding: "6px 12px", 
                 borderRadius: 12,
                 backdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
