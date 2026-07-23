@@ -557,6 +557,7 @@ export default function App() {
         color: textColor,
         position: "relative",
         transition: "background 0.3s ease",
+        backgroundColor: bg, // 🔑 ИСПРАВЛЕНО: теперь основной фон применяется ко всему контейнеру
       }}
       className={dark ? "dark" : ""}
     >
@@ -634,17 +635,18 @@ export default function App() {
               style={{ 
                 ...ui.categoryTitle, 
                 display: "flex", alignItems: "center", gap: 10,
-                background: bgImage ? (dark ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)") : "transparent",
+                background: bgImage ? (dark ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)") : (dark ? "rgba(255,255,255,0.06)" : "transparent"),
                 padding: r.catPad, 
                 borderRadius: 12,
                 backdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
                 WebkitBackdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
-                border: bgImage ? (dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)") : "none"
+                border: bgImage ? (dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)") : (dark ? "1px solid rgba(255,255,255,0.08)" : "none"),
+                transition: "all 0.2s ease"
               }}
             >
               <span style={{ fontSize: 16 }}>{collapsed[cat] ? "▶" : "▼"}</span>
               <span>{cat}</span>
-              <span style={{ fontSize: 11, opacity: 0.9, padding: "2px 8px", borderRadius: 999, background: dark ? "#2a2a2e" : "#e5e7eb", minWidth: 42, textAlign: "center" }}>
+              <span style={{ fontSize: 11, opacity: 0.9, padding: "2px 8px", borderRadius: 999, background: dark ? "rgba(255,255,255,0.1)" : "#e5e7eb", minWidth: 42, textAlign: "center", fontWeight: 500 }}>
                 {tasks[cat].filter((t) => t.done).length}/{tasks[cat].length} {tasks[cat].every((t) => t.done) ? " ✓" : ""}
               </span>
             </div>
@@ -710,26 +712,4 @@ export default function App() {
               <button type="button" onClick={() => setNotes((prev) => prev.trim() ? prev : NOTES_TEMPLATE)}
                 style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: dark ? "#27272a" : "#eef2f7", color: textColor, fontSize: 11, cursor: "pointer" }}>Вставить шаблон</button>
               <button type="button" onClick={() => setNotes("")}
-                style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: dark ? "#3a1f1f" : "#fee2e2", color: dark ? "#fca5a5" : "#991b1b", fontSize: 11, cursor: "pointer" }}>Очистить</button>
-            </div>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
-              style={{ width: "100%", height: 160, padding: 10, borderRadius: 10, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 13, lineHeight: "18px", resize: "none", outline: "none", boxSizing: "border-box" }} />
-          </div>
-        )}
-        <button type="button" className="notes-fab" onClick={() => setNotesOpen((v) => !v)}
-          style={{
-            width: r.fabSize, height: r.fabSize, borderRadius: "50%",
-            background: dark ? "rgba(25, 25, 28, 0.85)" : "rgba(255, 255, 255, 0.7)",
-            backdropFilter: "blur(16px) saturate(180%)",
-            WebkitBackdropFilter: "blur(16px) saturate(180%)",
-            border: dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.5)",
-            boxShadow: dark ? "0 10px 40px rgba(0,0,0,0.6)" : "0 8px 32px rgba(0,0,0,0.12)",
-            color: dark ? "#FFDD2D" : "#111827",
-            fontSize: 20, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
-            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-            textShadow: dark ? "0 1px 3px rgba(0,0,0,0.8)" : "none"
-          }}>✏️</button>
-      </div>
-    </div>
-  );
-}
+                style
