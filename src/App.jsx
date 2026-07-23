@@ -345,7 +345,7 @@ export default function App() {
     btnPad: isSmall ? "4px 8px" : "6px 12px",
     btnSize: isSmall ? 11 : 13,
     selectMinW: isSmall ? 100 : 140,
-    notesW: isSmall ? "calc(100vw - 24px)" : 320,
+    notesW: isSmall ? "min(320px, 90vw)" : 320,
     fabSize: isSmall ? 48 : 58,
     fabPad: isSmall ? 0 : "0 12px",
     headerPad: isSmall ? "14px 12px" : isMobile ? "16px 14px" : "22px 24px",
@@ -573,6 +573,9 @@ export default function App() {
       <div style={{ maxWidth: r.maxW, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <style>{`
           body, html { margin: 0 !important; padding: 0 !important; }
+          .notes-fab { user-select: none; -webkit-tap-highlight-color: transparent; }
+          .notes-fab:hover { transform: scale(1.08); }
+          .notes-fab:active { transform: scale(0.95); }
         `}</style>
         
         <div style={headerGlass}>
@@ -691,7 +694,17 @@ export default function App() {
 
       <div style={{ position: "fixed", right: 16, bottom: 16, zIndex: 999 }}>
         {notesOpen && (
-          <div style={{ width: r.notesW, marginBottom: 12, padding: 14, borderRadius: 18, border: `1px solid ${border}`, background: card, boxShadow: dark ? "0 12px 40px rgba(0,0,0,0.45)" : "0 12px 30px rgba(0,0,0,0.12)" }}>
+          <div style={{
+            width: r.notesW,
+            maxWidth: 320,
+            marginBottom: 12,
+            padding: 14,
+            borderRadius: 18,
+            border: `1px solid ${border}`,
+            background: card,
+            boxShadow: dark ? "0 12px 40px rgba(0,0,0,0.45)" : "0 12px 30px rgba(0,0,0,0.12)",
+            boxSizing: "border-box"
+          }}>
             <div style={{ fontWeight: 700, marginBottom: 8, color: title, fontSize: 14 }}>Заметки</div>
             <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
               <button type="button" onClick={() => setNotes((prev) => prev.trim() ? prev : NOTES_TEMPLATE)}
@@ -703,12 +716,17 @@ export default function App() {
               style={{ width: "100%", height: 160, padding: 10, borderRadius: 10, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 13, lineHeight: "18px", resize: "none", outline: "none", boxSizing: "border-box" }} />
           </div>
         )}
-        <button type="button" onClick={() => setNotesOpen((v) => !v)}
+        <button type="button" className="notes-fab" onClick={() => setNotesOpen((v) => !v)}
           style={{
-            width: r.fabSize, height: r.fabSize, borderRadius: "50%", border: "2px solid #FFDD2D",
-            background: bg, color: dark ? "#FFDD2D" : "#111827",
-            boxShadow: dark ? "0 8px 24px rgba(0,0,0,0.4)" : "0 8px 24px rgba(0,0,0,0.12)",
-            fontSize: 20, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad
+            width: r.fabSize, height: r.fabSize, borderRadius: "50%",
+            background: dark ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.65)",
+            backdropFilter: "blur(14px) saturate(180%)",
+            WebkitBackdropFilter: "blur(14px) saturate(180%)",
+            border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.5)",
+            boxShadow: dark ? "0 8px 32px rgba(0,0,0,0.3)" : "0 8px 32px rgba(0,0,0,0.1)",
+            color: dark ? "#FFDD2D" : "#111827",
+            fontSize: 20, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
+            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
           }}>✏️</button>
       </div>
     </div>
