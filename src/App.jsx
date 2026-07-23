@@ -326,12 +326,9 @@ export default function App() {
   const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
   
-  // Состояния фона
+  // Состояние только для картинки фона
   const [bgImage, setBgImage] = useState(() => {
     try { return localStorage.getItem("bgImage") || ""; } catch { return ""; }
-  });
-  const [bgOverlay, setBgOverlay] = useState(() => {
-    try { return parseFloat(localStorage.getItem("bgOverlay") || "0.6"); } catch { return 0.6; }
   });
 
   useLayoutEffect(() => {
@@ -392,8 +389,7 @@ export default function App() {
     localStorage.setItem("collapsed", JSON.stringify(collapsed));
     localStorage.setItem("notes", notes);
     localStorage.setItem("bgImage", bgImage || "");
-    localStorage.setItem("bgOverlay", String(bgOverlay));
-  }, [contentFilters, tasks, collapsed, notes, bgImage, bgOverlay]);
+  }, [contentFilters, tasks, collapsed, notes, bgImage]);
 
   useEffect(() => {
     setTasks((prev) => {
@@ -450,7 +446,7 @@ export default function App() {
   }, []);
 
   const hardReset = useCallback(() => {
-    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage", "bgOverlay"].forEach((key) => localStorage.removeItem(key));
+    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage"].forEach((key) => localStorage.removeItem(key));
     localStorage.setItem("version", DATA_VERSION);
     setPreset("default");
     setContentFilters(buildContentFilters());
@@ -458,7 +454,6 @@ export default function App() {
     setFocusMode(false);
     setDark(false);
     setBgImage("");
-    setBgOverlay(0.6);
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
   }, []);
@@ -532,20 +527,6 @@ export default function App() {
       }}
       className={dark ? "dark" : ""}
     >
-      {/* Оверлей поверх фона */}
-      <div 
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: dark 
-            ? `rgba(0, 0, 0, ${bgOverlay})` 
-            : `rgba(255, 255, 255, ${bgOverlay})`,
-          pointerEvents: "none",
-          zIndex: -1,
-          transition: "background 0.2s ease",
-        }} 
-      />
-
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <style>{`
           body, html { margin: 0 !important; padding: 0 !important; }
@@ -560,6 +541,15 @@ export default function App() {
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
                 {dark ? "☀️" : "🌙"}
               </button>
+              <button type="button" style={btn} onClick={() => document.getElementById("bg-file-input").click()}>
+                Фон
+              </button>
+              <input id="bg-file-input" type="file" accept="image/*" style={{ display: "none" }} onChange={handleBgFile} />
+              {bgImage && (
+                <button type="button" style={{ ...btn, minWidth: 24, justifyContent: "center" }} onClick={() => { setBgImage(""); localStorage.removeItem("bgImage"); }}>
+                  ✖
+                </button>
+              )}
               <div style={{ position: "relative" }}>
                 <select value={preset} onChange={(e) => { localStorage.removeItem("checklist"); localStorage.removeItem("collapsed"); setPreset(e.target.value); }}
                   style={{ height: 34, minWidth: 140, padding: "0 36px 0 12px", borderRadius: 10, border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, background: dark ? "#18181b" : "#ffffff", color: dark ? "#e8e8ea" : "#111827", fontSize: 13, cursor: "pointer", outline: "none", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}>
@@ -570,29 +560,6 @@ export default function App() {
               <button type="button" style={btn} onClick={resetAll}>Сброс</button>
               <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>{focusMode ? "Фокус: ON" : "Фокус: OFF"}</button>
               <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
-            </div>
-            
-            <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 8, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
-              <button type="button" style={{ ...btn, fontSize: 12, padding: "5px 10px", height: 30 }} onClick={() => document.getElementById("bg-file-input").click()}>
-                📁 Фон
-              </button>
-              <input id="bg-file-input" type="file" accept="image/*" style={{ display: "none" }} onChange={handleBgFile} />
-              
-              {bgImage && (
-                <button type="button" style={{ ...btn, fontSize: 12, padding: "5px 10px", height: 30, minWidth: 24, justifyContent: "center" }} onClick={() => { setBgImage(""); localStorage.removeItem("bgImage"); }}>
-                  ✖
-                </button>
-              )}
-              
-              <input 
-                type="range" min="0" max="1" step="0.1" value={bgOverlay} 
-                onChange={(e) => { const val = parseFloat(e.target.value); setBgOverlay(val); localStorage.setItem("bgOverlay", String(val)); }}
-                style={{ width: 85, cursor: "pointer", accentColor: dark ? "#7ab7ff" : "#2563eb", flexShrink: 0 }}
-                title={`Прозрачность: ${Math.round(bgOverlay * 100)}%`}
-              />
-              <span style={{ fontSize: 11, color: mutedColor, minWidth: 32, textAlign: "right", userSelect: "none" }}>
-                {Math.round(bgOverlay * 100)}%
-              </span>
             </div>
 
             <div style={{ marginTop: 14, display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-end", width: "100%" }}>
@@ -616,10 +583,15 @@ export default function App() {
               style={{ 
                 ...ui.categoryTitle, 
                 display: "flex", alignItems: "center", gap: 10,
-                background: bgImage ? (dark ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.75)") : "transparent",
-                padding: "4px 10px", borderRadius: 8,
-                backdropFilter: bgImage ? "blur(6px)" : "none",
-                WebkitBackdropFilter: bgImage ? "blur(6px)" : "none"
+                // Стекло под заголовком
+                background: bgImage 
+                  ? (dark ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)") 
+                  : "transparent",
+                padding: "6px 12px", 
+                borderRadius: 12,
+                backdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
+                WebkitBackdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
+                border: bgImage ? (dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)") : "none"
               }}
             >
               <span style={{ fontSize: 16 }}>{collapsed[cat] ? "▶" : "▼"}</span>
