@@ -509,21 +509,23 @@ export default function App() {
     taskText: { flex: 1, fontSize: 13, lineHeight: "18px", color: textColor, textDecoration: "none" },
   };
 
-  // Единая стеклянная обёртка для хедера
-  const headerGlass = bgImage ? {
-    background: dark ? "rgba(12, 12, 18, 0.65)" : "rgba(255, 255, 255, 0.75)",
-    backdropFilter: "blur(18px) saturate(170%)",
-    WebkitBackdropFilter: "blur(18px) saturate(170%)",
+  // Хедер: всегда отстоит на 36px, стекло включается только при фоне
+  const headerGlass = {
+    background: bgImage ? (dark ? "rgba(12, 12, 18, 0.65)" : "rgba(255, 255, 255, 0.75)") : bg,
+    backdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
+    WebkitBackdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
     borderRadius: 20,
     padding: isMobile ? "18px 16px" : "22px 24px",
-    border: `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}`,
-    boxShadow: dark ? "0 8px 32px rgba(0,0,0,0.4)" : "0 8px 32px rgba(0,0,0,0.06)",
+    border: bgImage ? `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}` : `1px solid ${border}`,
+    boxShadow: bgImage ? (dark ? "0 8px 32px rgba(0,0,0,0.4)" : "0 8px 32px rgba(0,0,0,0.06)") : `0 1px 3px ${dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.05)"}`,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
     gap: "20px",
-    flexWrap: "wrap"
-  } : { marginBottom: 24 };
+    flexWrap: "wrap",
+    marginBottom: 36,
+    transition: "all 0.3s ease",
+  };
 
   return (
     <div
@@ -532,17 +534,23 @@ export default function App() {
         minHeight: "100vh",
         fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial",
         color: textColor,
-        background: bgImage ? "transparent" : bg,
-        backgroundImage: bgImage ? `url(${bgImage})` : "none",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
         position: "relative",
         transition: "background 0.3s ease",
       }}
       className={dark ? "dark" : ""}
     >
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      {/* Фиксированный слой фона, независимый от React-рейндера */}
+      {bgImage && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: -2,
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }} />
+      )}
+      
+      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <style>{`
           body, html { margin: 0 !important; padding: 0 !important; }
         `}</style>
