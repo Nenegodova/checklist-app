@@ -598,7 +598,7 @@ export default function App() {
         
         <div style={headerGlass}>
           <div style={{ 
-            flex: "1 1 240px", 
+            flex: "1 1 260px", 
             minWidth: isSmall ? "100%" : 180,
             marginBottom: isSmall ? 12 : 0,
             textAlign: isSmall ? "center" : "left"
@@ -616,8 +616,13 @@ export default function App() {
             </div>
           </div>
 
-          {/* 🔑 ИСПРАВЛЕННАЯ ПРАВАЯ КОЛОНКА: убрано жёсткое 480px, добавлен адаптивный gap */}
-          <div style={{ flex: "1 1 260px", textAlign: isSmall ? "center" : "right", minWidth: 0 }}>
+          {/* 🔑 РАСТЯНУТОЕ ПРОСТРАНСТВО ДЛЯ КНОПОК */}
+          <div style={{ 
+            flex: "1 1 520px", 
+            textAlign: isSmall ? "center" : "right", 
+            minWidth: 0, 
+            maxWidth: 650 
+          }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-end", marginBottom: 12 }}>
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
                 {dark ? "☀️" : "🌙"}
