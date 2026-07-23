@@ -327,7 +327,12 @@ export default function App() {
   const [notesOpen, setNotesOpen] = useState(false);
   
   const [bgImage, setBgImage] = useState(() => {
-    try { return localStorage.getItem("bgImage") || ""; } catch { return ""; }
+    try {
+      const saved = localStorage.getItem("bgImage");
+      return saved || "";
+    } catch {
+      return "";
+    }
   });
 
   const isMobile = useMediaQuery("(max-width: 900px)");
@@ -481,21 +486,23 @@ export default function App() {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
 
+  // 🔑 ИСПРАВЛЕНО: загрузка теперь не стирает состояние при ошибке localStorage
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 4 * 1024 * 1024) {
-      alert("Файл слишком большой (макс. 4 МБ для localStorage).");
+    if (file.size > 3 * 1024 * 1024) {
+      alert("Файл слишком большой (макс. ~3 МБ для localStorage).");
       return;
     }
     const reader = new FileReader();
     reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      setBgImage(dataUrl); // Применяем сразу в UI
       try {
-        setBgImage(ev.target.result);
-        localStorage.setItem("bgImage", ev.target.result);
-      } catch {
-        alert("Не удалось сохранить: превышен лимит localStorage.");
-        setBgImage("");
+        localStorage.setItem("bgImage", dataUrl);
+      } catch (err) {
+        console.warn("LocalStorage full:", err);
+        alert("Фон применён, но не сохранён (переполнен хранилище). Он пропадёт после перезагрузки.");
       }
     };
     reader.readAsDataURL(file);
