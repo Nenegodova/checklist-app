@@ -486,26 +486,37 @@ export default function App() {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
 
-  // 🔑 ИСПРАВЛЕНО: загрузка теперь не стирает состояние при ошибке localStorage
+  // 🔑 ИСПРАВЛЕНО: загрузка теперь гарантирует обновление UI даже при ошибке localStorage
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) {
-      alert("Файл слишком большой (макс. ~3 МБ для localStorage).");
+    
+    if (file.size > 2.5 * 1024 * 1024) {
+      alert("Файл слишком большой. Рекомендуется использовать изображения до 2 МБ.");
       return;
     }
+
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const dataUrl = ev.target.result;
-      setBgImage(dataUrl); // Применяем сразу в UI
+      const dataUrl = ev.target?.result;
+      if (!dataUrl || typeof dataUrl !== "string") return;
+      
+      setBgImage(dataUrl); // Обновляем состояние сразу для рендера
+      
       try {
         localStorage.setItem("bgImage", dataUrl);
       } catch (err) {
-        console.warn("LocalStorage full:", err);
-        alert("Фон применён, но не сохранён (переполнен хранилище). Он пропадёт после перезагрузки.");
+        console.warn("localStorage full, bg will persist only for this session");
+        // Фон останется видимым в текущей сессии, но исчезнет при перезагрузке
       }
     };
+    reader.onerror = () => {
+      console.error("FileReader error");
+    };
     reader.readAsDataURL(file);
+    
+    // Очищаем input, чтобы можно было выбрать тот же файл повторно
+    e.target.value = "";
   }, []);
 
   const allTasks = Object.values(tasks ?? {}).flat();
@@ -561,22 +572,31 @@ export default function App() {
         fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial",
         color: textColor,
         position: "relative",
+        zIndex: 1, // Гарантирует, что контент будет выше фона
         transition: "background 0.3s ease",
         backgroundColor: bg,
       }}
       className={dark ? "dark" : ""}
     >
       {bgImage && (
-        <div style={{
-          position: "fixed", inset: 0, zIndex: -2,
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }} />
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+            pointerEvents: "none",
+            backgroundImage: `url(${bgImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
       )}
       
-      <div style={{ maxWidth: r.maxW, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: r.maxW, margin: "0 auto", position: "relative" }}>
         <style>{`
           body, html { margin: 0 !important; padding: 0 !important; }
           .notes-fab { user-select: none; -webkit-tap-highlight-color: transparent; }
