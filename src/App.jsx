@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useLayoutEffect } from "react";
 
-const DATA_VERSION = "1.1";
+const DATA_VERSION = "1.2";
 const NOTES_TEMPLATE = `Вопросы к редакции:
 —
 Поставить блокер:
