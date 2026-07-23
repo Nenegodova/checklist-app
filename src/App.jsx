@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback, useLayoutEffect } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 
 const DATA_VERSION = "1.1";
 const NOTES_TEMPLATE = `Вопросы к редакции:
@@ -330,11 +330,9 @@ export default function App() {
     try { return localStorage.getItem("bgImage") || ""; } catch { return ""; }
   });
 
-  // Responsive breakpoints
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isSmall = useMediaQuery("(max-width: 600px)");
 
-  // Responsive scale object
   const r = {
     pad: isSmall ? 12 : isMobile ? 20 : 30,
     maxW: isSmall ? "calc(100% - 24px)" : "100%",
@@ -352,7 +350,7 @@ export default function App() {
     catPad: isSmall ? "4px 8px" : "6px 10px",
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
     const currentValue = localStorage.getItem("dark");
     if (currentValue !== String(dark)) {
@@ -437,7 +435,7 @@ export default function App() {
     });
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setCollapsed((prev) => {
       let next = { ...prev };
       const cats = Object.keys(tasks);
@@ -557,7 +555,7 @@ export default function App() {
         color: textColor,
         position: "relative",
         transition: "background 0.3s ease",
-        backgroundColor: bg, // 🔑 ИСПРАВЛЕНО: теперь основной фон применяется ко всему контейнеру
+        backgroundColor: bg,
       }}
       className={dark ? "dark" : ""}
     >
@@ -603,7 +601,11 @@ export default function App() {
                 </button>
               )}
               <div style={{ position: "relative" }}>
-                <select value={preset} onChange={(e) => { localStorage.removeItem("checklist"); localStorage.removeItem("collapsed"); setPreset(e.target.value); }}
+                <select value={preset} onChange={(e) => {
+                  localStorage.removeItem("checklist");
+                  localStorage.removeItem("collapsed");
+                  setPreset(e.target.value);
+                }}
                   style={{ height: 34, minWidth: r.selectMinW, padding: "0 36px 0 12px", borderRadius: 10, border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, background: dark ? "#18181b" : "#ffffff", color: dark ? "#e8e8ea" : "#111827", fontSize: r.btnSize, cursor: "pointer", outline: "none", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}>
                   <option value="default">Обычный</option><option value="invest">Инвест</option><option value="shopping">Шопинг</option><option value="tests">Тест</option><option value="compare">Сравнятор</option><option value="spending">Дневник трат</option><option value="cd">ЧД</option><option value="shorts">Шорты</option><option value="ugc">UGC</option>
                 </select>
@@ -619,7 +621,7 @@ export default function App() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isMobile ? "center" : "flex-end" }}>
                 {Object.entries(CONTENT_FILTERS).map(([key, item]) => (
                   <button key={key} type="button" onClick={() => setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))}
-                    style={{ ...btn, height: 28, padding: r.catPad, fontSize: 12, background: contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff", color: contentFilters[key] ? "#111" : textColor, border: contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`, fontWeight: contentFilters[key] ? 600 : 400 }}>
+                    style={{ ...btn, height: 28, padding: r.catPad, fontSize: 12, background: (contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff"), color: (contentFilters[key] ? "#111" : textColor), border: (contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`), fontWeight: (contentFilters[key] ? 600 : 400) }}>
                     {contentFilters[key] ? "✓ " : ""}{item.label}
                   </button>
                 ))}
@@ -712,4 +714,26 @@ export default function App() {
               <button type="button" onClick={() => setNotes((prev) => prev.trim() ? prev : NOTES_TEMPLATE)}
                 style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: dark ? "#27272a" : "#eef2f7", color: textColor, fontSize: 11, cursor: "pointer" }}>Вставить шаблон</button>
               <button type="button" onClick={() => setNotes("")}
-                style
+                style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: dark ? "#3a1f1f" : "#fee2e2", color: dark ? "#fca5a5" : "#991b1b", fontSize: 11, cursor: "pointer" }}>Очистить</button>
+            </div>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
+              style={{ width: "100%", height: 160, padding: 10, borderRadius: 10, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 13, lineHeight: "18px", resize: "none", outline: "none", boxSizing: "border-box" }} />
+          </div>
+        )}
+        <button type="button" className="notes-fab" onClick={() => setNotesOpen((v) => !v)}
+          style={{
+            width: r.fabSize, height: r.fabSize, borderRadius: "50%",
+            background: dark ? "rgba(25, 25, 28, 0.85)" : "rgba(255, 255, 255, 0.7)",
+            backdropFilter: "blur(16px) saturate(180%)",
+            WebkitBackdropFilter: "blur(16px) saturate(180%)",
+            border: dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.5)",
+            boxShadow: dark ? "0 10px 40px rgba(0,0,0,0.6)" : "0 8px 32px rgba(0,0,0,0.12)",
+            color: dark ? "#FFDD2D" : "#111827",
+            fontSize: 20, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
+            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+            textShadow: dark ? "0 1px 3px rgba(0,0,0,0.8)" : "none"
+          }}>✏️</button>
+      </div>
+    </div>
+  );
+}
