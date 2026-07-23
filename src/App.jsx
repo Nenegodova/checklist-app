@@ -719,14 +719,15 @@ export default function App() {
         <button type="button" className="notes-fab" onClick={() => setNotesOpen((v) => !v)}
           style={{
             width: r.fabSize, height: r.fabSize, borderRadius: "50%",
-            background: dark ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.65)",
-            backdropFilter: "blur(14px) saturate(180%)",
-            WebkitBackdropFilter: "blur(14px) saturate(180%)",
-            border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.5)",
-            boxShadow: dark ? "0 8px 32px rgba(0,0,0,0.3)" : "0 8px 32px rgba(0,0,0,0.1)",
+            background: dark ? "rgba(25, 25, 28, 0.85)" : "rgba(255, 255, 255, 0.7)",
+            backdropFilter: "blur(16px) saturate(180%)",
+            WebkitBackdropFilter: "blur(16px) saturate(180%)",
+            border: dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.5)",
+            boxShadow: dark ? "0 10px 40px rgba(0,0,0,0.6)" : "0 8px 32px rgba(0,0,0,0.12)",
             color: dark ? "#FFDD2D" : "#111827",
             fontSize: 20, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
-            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+            textShadow: dark ? "0 1px 3px rgba(0,0,0,0.8)" : "none"
           }}>✏️</button>
       </div>
     </div>
