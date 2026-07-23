@@ -471,7 +471,7 @@ export default function App() {
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 4 * 1024 * 1024) {
+        if (file.size > 4 * 1024 * 1024) {
       alert("Файл слишком большой (макс. 4 МБ для localStorage).");
       return;
     }
@@ -576,44 +576,28 @@ export default function App() {
               <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
-              <span style={{ fontSize: 12, color: mutedColor, minWidth: 70 }}>Фон:</span>
-              <button 
-                type="button" 
-                style={{ ...btn, fontSize: 12, padding: "4px 10px" }}
-                onClick={() => document.getElementById("bg-file-input").click()}
-              >
-                📁 Загрузить
+                        <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 8, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
+              <button type="button" style={{ ...btn, fontSize: 12, padding: "5px 10px", height: 30 }} onClick={() => document.getElementById("bg-file-input").click()}>
+                📁 Фон
               </button>
+              <input id="bg-file-input" type="file" accept="image/*" style={{ display: "none" }} onChange={handleBgFile} />
+              
+              {bgImage && (
+                <button type="button" style={{ ...btn, fontSize: 12, padding: "5px 10px", height: 30, minWidth: 24, justifyContent: "center" }} onClick={() => { setBgImage(""); localStorage.removeItem("bgImage"); }}>
+                  ✖
+                </button>
+              )}
+              
               <input 
-                id="bg-file-input" 
-                type="file" 
-                accept="image/*" 
-                style={{ display: "none" }} 
-                onChange={handleBgFile} 
-              />
-              <button 
-                type="button" 
-                style={{ ...btn, fontSize: 12, padding: "4px 10px" }}
-                onClick={() => { setBgImage(""); localStorage.removeItem("bgImage"); }}
-                disabled={!bgImage}
-              >
-                🗑 Убрать
-              </button>
-                            <input 
-                type="range" 
-                min="0" 
-                max="1" 
-                step="0.1" 
-                value={bgOverlay} 
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  setBgOverlay(val);
-                  localStorage.setItem("bgOverlay", String(val));
-                }}
-                style={{ width: 100, cursor: "pointer", accentColor: dark ? "#7ab7ff" : "#2563eb" }}
+                type="range" min="0" max="1" step="0.1" value={bgOverlay} 
+                onChange={(e) => { const val = parseFloat(e.target.value); setBgOverlay(val); localStorage.setItem("bgOverlay", String(val)); }}
+                style={{ width: 85, cursor: "pointer", accentColor: dark ? "#7ab7ff" : "#2563eb", flexShrink: 0 }}
                 title={`Прозрачность: ${Math.round(bgOverlay * 100)}%`}
               />
+              <span style={{ fontSize: 11, color: mutedColor, minWidth: 32, textAlign: "right", userSelect: "none" }}>
+                {Math.round(bgOverlay * 100)}%
+              </span>
+            </div>
             </div>
 
             <div style={{ marginTop: 14, display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-end", width: "100%" }}>
@@ -631,7 +615,18 @@ export default function App() {
         </div>
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 20 }}>
-            <div onClick={() => toggleCollapse(cat)} style={{ ...ui.categoryTitle, display: "flex", alignItems: "center", gap: 10 }}>
+                        <div 
+              onClick={() => toggleCollapse(cat)} 
+              style={{ 
+                ...ui.categoryTitle, 
+                display: "flex", alignItems: "center", gap: 10,
+                // Читаемость на любом фоне:
+                background: bgImage ? (dark ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.75)") : "transparent",
+                padding: "4px 10px", borderRadius: 8,
+                backdropFilter: bgImage ? "blur(6px)" : "none",
+                WebkitBackdropFilter: bgImage ? "blur(6px)" : "none"
+              }}
+            >
               <span style={{ fontSize: 16 }}>{collapsed[cat] ? "▶" : "▼"}</span>
               <span>{cat}</span>
               <span style={{ fontSize: 12, opacity: 0.9, padding: "2px 8px", borderRadius: 999, background: dark ? "#2a2a2e" : "#e5e7eb", minWidth: 42, textAlign: "center" }}>
