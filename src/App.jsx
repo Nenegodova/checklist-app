@@ -142,4 +142,11 @@ const PRESETS = {
     "Текст": [
       {
         _sortOrder: 2,
-        links: [{ label: "В текст добавлена актуальная плашка с ообщества", url: "https://docs.google.com/document/d/1U_YBVur4Rtjv5jEMY1Xas9Rr4TxdvenLlIBFbVxIBjg/edit?tab=t
+        links: [{ label: "В текст добавлена актуальная плашка с ообщества", url: "https://docs.google.com/document/d/1U_YBVur4Rtjv5jEMY1Xas9Rr4TxdvenLlIBFbVxIBjg/edit?tab=t.0" }],
+      },
+    ],
+  },
+};
+
+const PRESET_EXCLUDES = {
+  cd: { "Текст": ["
