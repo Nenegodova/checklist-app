@@ -49,7 +49,7 @@ const PRESETS = {
     ],
     "Админка": [
       { _sortOrder: 3, text: "Проверить автора обложки или источники" },
-      { _sortOrder: 2, text: "Тег _noadscalctest_" },
+      { _sortOrder: 2, text: "Тег_ noadscalctest_" },
       { _sortOrder: 3, text: "В больших тестах под обложкой указан иллюстратор" },
     ],
     "Прочее": [
@@ -60,11 +60,11 @@ const PRESETS = {
   compare: { "Админка": [{ _sortOrder: 3, text: "Тег noads" }] },
   spending: {
     "Текст": [
-      { _sortOrder: 1, text: "В начале статьи стоит плашка panel с абзацами _p grade=\"secondary\"_" },
+      { _sortOrder: 1, text: "В начале статьи стоит плашка panel с абзацами_ p grade=\"secondary\"_" },
       { _sortOrder: 1, text: "У авторов стоят анонимные аватарки anonym_male у мужчин и anonym_female у женщин, автор стоит после оглавления" },
-      { _sortOrder: 7, text: "Траты обозначены _class=\"negative\"_" },
-      { _sortOrder: 7, text: "Доходы обозначены _class=\"positive\"_" },
-      { _sortOrder: 2, text: "Все заголовки в дневниках трат кроме заголовков дней _h2 level=\"2\"_" },
+      { _sortOrder: 7, text: "Траты обозначены_ class=\"negative\"_" },
+      { _sortOrder: 7, text: "Доходы обозначены_ class=\"positive\"_" },
+      { _sortOrder: 2, text: "Все заголовки в дневниках трат кроме заголовков дней_ h2 level=\"2\"_" },
     ],
     "Админка": [
       { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
@@ -82,7 +82,7 @@ const PRESETS = {
       { _sortOrder: 2, text: "Нажаты кнопки из сообщества и выбор редакции" },
       { _sortOrder: 6, text: "Обязательно указываем краткое описание. В это поле дублируем текст из ог⁠-⁠описания" },
       { _sortOrder: 2, text: "Если статья 18+, бирка 18+ должна быть обязательно у ина и аута" },
-      { _sortOrder: 6, text: "В реальных вопросах проверяем наличие технического _тега noadswhattodo._ В выдуманных проставляем тег вместе с другими. Если в статье присутствуют фичеры (калькуляторы, тесты), то добавляем еще один технический тег: _feature⁠-⁠out._ Для опросов этот тег не нужен" },
+      { _sortOrder: 6, text: "В реальных вопросах проверяем наличие технического_ тега noadswhattodo._ В выдуманных проставляем тег вместе с другими. Если в статье присутствуют фичеры (калькуляторы, тесты), то добавляем еще один технический тег: _feature⁠-⁠out._ Для опросов этот тег не нужен" },
       { _sortOrder: 0, text: "В подборке ЧД основной заг начинается с о слов «Что делать, если:..»" },
       { _sortOrder: 0, text: "В подборке ЧД url статьи всегда начинается с префикса «ask⁠-»" },
       { _sortOrder: 5, text: "В классических ЧД цвет фона для обложек #2c2c2c" },
@@ -93,7 +93,7 @@ const PRESETS = {
       { text: "Есть автор вопроса и вопрос в плашке с _isbuble=\"true\"_" },
       { _sortOrder: 2, text: "Есть автор ответа" },
       { _sortOrder: 3, text: "В классических ЧД написание автора вопроса «спросил в Сообществе»/«спросила в Сообществе»" },
-      { _sortOrder: 3, text: "У автора вопроса стоит _additional_" },
+      { _sortOrder: 3, text: "У автора вопроса стоит_ additional_" },
       { _sortOrder: 5, text: "Проверить бирки над заголовками в Подборках ЧД" },
       { _sortOrder: 6, text: "В подборке ЧД у каждого вопроса стоит бирка с эмодзи" },
       { text: "Если в конце статьи стоит список статей: вводное предложение выделяем болдом, для вводного предложения и списка используем шифт с _p grade=\"large\"_" },
@@ -112,14 +112,14 @@ const PRESETS = {
   },
   shorts: {
     "Админка": [
-      { _sortOrder: 2, text: "Проставлен _тег noadsshort_" },
+      { _sortOrder: 2, text: "Проставлен_ тег noadsshort_" },
       { _sortOrder: 2, text: "Среди потоков добавлены «Шорты», но не основным потоком" },
       { _sortOrder: 2, text: "Нажата кнопка из сообщества и выбор редакции если вторая редакция UGC" },
       { _sortOrder: 3, text: "Обложка внутри статьи отсутствует" },
       { _sortOrder: 3, text: "Источник фото в подвале" },
     ],
     "Текст": [
-      { _sortOrder: 4, text: "Подводка размещается в теге _p grade=\"secondary\"_, если она слишком длинная, то часть скрывается под кат" },
+      { _sortOrder: 4, text: "Подводка размещается в теге_ p grade=\"secondary\"_, если она слишком длинная, то часть скрывается под кат" },
       { _sortOrder: 1, text: "Оглавление стоит перед карточками-тайлами" },
       { text: "У текста внутри шортов _grade=\"medium\"_" },
       { _sortOrder: 3, text: "В заголовке нет эмодзи, если в карточке есть картинка" },
@@ -308,7 +308,6 @@ export default function App() {
       return false;
     }
   });
-
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -326,8 +325,8 @@ export default function App() {
   const [focusMode, setFocusMode] = useState(false);
   const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
-
-  // Новые состояния для фона
+  
+  // Состояния фона
   const [bgImage, setBgImage] = useState(() => {
     try { return localStorage.getItem("bgImage") || ""; } catch { return ""; }
   });
@@ -471,7 +470,7 @@ export default function App() {
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-        if (file.size > 4 * 1024 * 1024) {
+    if (file.size > 4 * 1024 * 1024) {
       alert("Файл слишком большой (макс. 4 МБ для localStorage).");
       return;
     }
@@ -500,18 +499,15 @@ export default function App() {
   const bg = dark ? "#111315" : "#F6F7F9";
   const title = dark ? "#FFFFFF" : "#111827";
   const category = dark ? "#F3F4F6" : "#111827";
-
   const controlBase = {
     height: 34, padding: "6px 12px", borderRadius: 10, fontSize: 13, lineHeight: "20px",
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     cursor: "pointer", transition: "all 0.15s ease", boxShadow: "none", outline: "none",
   };
-
   const makeControl = (isDark) => ({
     ...controlBase, border: `1px solid ${isDark ? "#2a2a2e" : "#d1d5db"}`,
     background: isDark ? "#1A1D21" : "#ffffff", color: isDark ? "#e8e8ea" : "#111827",
   });
-
   const btn = makeControl(dark);
   const ui = {
     categoryTitle: { cursor: "pointer", marginBottom: 12, fontSize: 15, fontWeight: 600, color: category, display: "flex", alignItems: "center", gap: 16 },
@@ -520,11 +516,11 @@ export default function App() {
   };
 
   return (
-    <div 
+    <div
       style={{
-        padding: 30, 
-        minHeight: "100vh", 
-        fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial", 
+        padding: 30,
+        minHeight: "100vh",
+        fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial",
         color: textColor,
         background: bgImage ? "transparent" : bg,
         backgroundImage: bgImage ? `url(${bgImage})` : "none",
@@ -534,9 +530,10 @@ export default function App() {
         position: "relative",
         transition: "background 0.3s ease",
       }}
+      className={dark ? "dark" : ""}
     >
-      {bgImage && (
-             <div 
+      {/* Оверлей поверх фона */}
+      <div 
         style={{
           position: "absolute",
           inset: 0,
@@ -548,7 +545,6 @@ export default function App() {
           transition: "background 0.2s ease",
         }} 
       />
-      )}
 
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <style>{`
@@ -575,8 +571,8 @@ export default function App() {
               <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>{focusMode ? "Фокус: ON" : "Фокус: OFF"}</button>
               <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
             </div>
-
-                        <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 8, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
+            
+            <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 8, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
               <button type="button" style={{ ...btn, fontSize: 12, padding: "5px 10px", height: 30 }} onClick={() => document.getElementById("bg-file-input").click()}>
                 📁 Фон
               </button>
@@ -598,7 +594,6 @@ export default function App() {
                 {Math.round(bgOverlay * 100)}%
               </span>
             </div>
-            </div>
 
             <div style={{ marginTop: 14, display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-end", width: "100%" }}>
               <div style={{ width: "100%", fontSize: 12, fontWeight: 600, color: mutedColor, marginBottom: 6, textAlign: "center" }}>Контент</div>
@@ -613,14 +608,14 @@ export default function App() {
             </div>
           </div>
         </div>
+
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 20 }}>
-                        <div 
+            <div 
               onClick={() => toggleCollapse(cat)} 
               style={{ 
                 ...ui.categoryTitle, 
                 display: "flex", alignItems: "center", gap: 10,
-                // Читаемость на любом фоне:
                 background: bgImage ? (dark ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.75)") : "transparent",
                 padding: "4px 10px", borderRadius: 8,
                 backdropFilter: bgImage ? "blur(6px)" : "none",
@@ -676,6 +671,7 @@ export default function App() {
           </div>
         ))}
       </div>
+
       <div style={{ position: "fixed", right: 24, bottom: 24, zIndex: 999 }}>
         {notesOpen && (
           <div style={{ width: 320, marginBottom: 12, padding: 16, borderRadius: 18, border: `1px solid ${border}`, background: card, boxShadow: dark ? "0 12px 40px rgba(0,0,0,0.45)" : "0 12px 30px rgba(0,0,0,0.12)" }}>
