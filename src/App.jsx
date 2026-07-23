@@ -597,7 +597,6 @@ export default function App() {
         `}</style>
         
         <div style={headerGlass}>
-          {/* 🔑 ОБНОВЛЁННЫЙ БЛОК: адаптивное выравнивание для узких экранов */}
           <div style={{ 
             flex: "1 1 240px", 
             minWidth: isSmall ? "100%" : 180,
@@ -617,8 +616,9 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ flex: "0 1 480px", textAlign: isSmall ? "center" : "right" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: isSmall ? "center" : "flex-end", marginBottom: 12 }}>
+          {/* 🔑 ИСПРАВЛЕННАЯ ПРАВАЯ КОЛОНКА: убрано жёсткое 480px, добавлен адаптивный gap */}
+          <div style={{ flex: "1 1 260px", textAlign: isSmall ? "center" : "right", minWidth: 0 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-end", marginBottom: 12 }}>
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
                 {dark ? "☀️" : "🌙"}
               </button>
