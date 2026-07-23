@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useLayoutEffect } from "react";
 
-const DATA_VERSION = "1.2";
+const DATA_VERSION = "1.1";
 const NOTES_TEMPLATE = `Вопросы к редакции:
 —
 Поставить блокер:
@@ -123,7 +123,7 @@ const PRESETS = {
       { _sortOrder: 1, text: "Оглавление стоит перед карточками-тайлами" },
       { text: "У текста внутри шортов _grade=\"medium\"_" },
       { _sortOrder: 3, text: "В заголовке нет эмодзи, если в карточке есть картинка" },
-      { text: "Для картинки-обтравки добавлен атрибут  _image_style=\"picture\"_" },
+      { text: "Для картинки-обтравки добавлен атрибут _image_style=\"picture\"_" },
       { text: "В последней карточке, если это не рассылка, добавлена иконка потока или Telegram, в заголовке этой карточки нет эмодзи. В шортах иконки со скруглёнными углами" },
       { text: "Проверить у ссылки на курс наличие хвоста, если его нет, запросить у редактора" },
       { text: "Проверить у ссылки на анкету наличие хвоста ?internal_source=tj_short_слаг-этого-шорта_any-page_ankета, вместо стандартного. Исключение — анкеты спорта" },
@@ -211,6 +211,7 @@ const DATA = {
     { text: "Проверить в кайтене наличие комментария от фотореда о размере картинок или фоторам", feature: "images" },
     { text: "Проверить есть ли засветы или вотермарки на картинках от фотореда", feature: "images" },
     { text: "При необходимости заблюрены все персональные данные", feature: "images" },
+    { text: "Для картинки-обтравки добавлен атрибут _image_style=\"picture\"_", feature: "images" },
   ],
   "Выпуск": [
     { text: "Проверить метку разметка, если есть доп. авторы" },
@@ -273,7 +274,6 @@ function useMediaQuery(query) {
 
 const renderTextWithLinks = (text, dark) => {
   if (!text) return null;
-  // Исправлено регулярное выражение для корректной работы в JS
   const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g);
   return parts.map((part, i) => {
     if (!part) return null;
@@ -468,7 +468,6 @@ export default function App() {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
 
-  // Загрузка фонового изображения
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -536,7 +535,6 @@ export default function App() {
         transition: "background 0.3s ease",
       }}
     >
-      {/* Слой читаемости поверх картинки */}
       {bgImage && (
         <div 
           style={{
@@ -578,7 +576,6 @@ export default function App() {
               <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
             </div>
 
-            {/* Управление фоном */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, flexWrap: "wrap", justifyContent: isMobile ? "center" : "flex-end", width: "100%" }}>
               <span style={{ fontSize: 12, color: mutedColor, minWidth: 70 }}>Фон:</span>
               <button 
@@ -635,3 +632,77 @@ export default function App() {
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 20 }}>
             <div onClick={() => toggleCollapse(cat)} style={{ ...ui.categoryTitle, display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 16 }}>{collapsed[cat] ? "▶" : "▼"}</span>
+              <span>{cat}</span>
+              <span style={{ fontSize: 12, opacity: 0.9, padding: "2px 8px", borderRadius: 999, background: dark ? "#2a2a2e" : "#e5e7eb", minWidth: 42, textAlign: "center" }}>
+                {tasks[cat].filter((t) => t.done).length}/{tasks[cat].length} {tasks[cat].every((t) => t.done) ? " ✓" : ""}
+              </span>
+            </div>
+            {!collapsed[cat] && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {tasks[cat].map((task, i) => {
+                  if ((cat === "Таблицы" && !contentFilters.tables) || (task.feature && !contentFilters[task.feature])) return null;
+                  return (
+                    <label key={`${cat}-${i}`} className="task-card" style={{ ...ui.card, display: focusMode && task.done ? "none" : "flex" }}>
+                      <input type="checkbox" checked={task.done} onChange={() => toggle(cat, i)} aria-label={task.text}
+                        style={{ width: 16, height: 16, marginTop: 2, accentColor: dark ? "#3f3f46" : "#6b7280", cursor: "pointer", flexShrink: 0 }} />
+                      <div style={{ flex: 1, opacity: task.done ? 0.5 : 1 }}>
+                        {task.text && <div style={{ ...ui.taskText, textDecoration: task.done ? "line-through" : "none" }}>{renderTextWithLinks(task.text, dark)}</div>}
+                        {task.links?.length > 0 && (
+                          <div style={{ display: "flex", gap: 8, marginTop: task.text ? 8 : 0, flexWrap: "wrap" }}>
+                            {task.links.map((link) => (
+                              <a
+                                key={link.url}
+                                href={link.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  padding: "4px 10px",
+                                  borderRadius: 999,
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  textDecoration: "none",
+                                  background: dark ? "#27272a" : "#eef2f7",
+                                  color: dark ? "#93c5fd" : "#2563eb",
+                                  border: dark ? "1px solid #3f3f46" : "1px solid #d1d5db"
+                                }}
+                              >
+                                {link.label}
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div style={{ position: "fixed", right: 24, bottom: 24, zIndex: 999 }}>
+        {notesOpen && (
+          <div style={{ width: 320, marginBottom: 12, padding: 16, borderRadius: 18, border: `1px solid ${border}`, background: card, boxShadow: dark ? "0 12px 40px rgba(0,0,0,0.45)" : "0 12px 30px rgba(0,0,0,0.12)" }}>
+            <div style={{ fontWeight: 700, marginBottom: 10, color: title, fontSize: 15 }}>Заметки</div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+              <button type="button" onClick={() => setNotes((prev) => prev.trim() ? prev : NOTES_TEMPLATE)}
+                style={{ padding: "6px 10px", borderRadius: 10, border: "none", background: dark ? "#27272a" : "#eef2f7", color: textColor, fontSize: 12, cursor: "pointer" }}>Вставить шаблон</button>
+              <button type="button" onClick={() => setNotes("")}
+                style={{ padding: "6px 10px", borderRadius: 10, border: "none", background: dark ? "#3a1f1f" : "#fee2e2", color: dark ? "#fca5a5" : "#991b1b", fontSize: 12, cursor: "pointer" }}>Очистить</button>
+            </div>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
+              style={{ width: "100%", height: 180, padding: 12, borderRadius: 12, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 14, lineHeight: "20px", resize: "none", outline: "none", boxSizing: "border-box" }} />
+          </div>
+        )}
+        <button type="button" onClick={() => setNotesOpen((v) => !v)}
+          style={{
+            width: 58, height: 58, borderRadius: "50%", border: "2px solid #FFDD2D",
+            background: bg, color: dark ? "#FFDD2D" : "#111827",
+            boxShadow: dark ? "0 8px 24px rgba(0,0,0,0.4)" : "0 8px 24px rgba(0,0,0,0.12)",
+            fontSize: 22, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center"
+          }}>✏️</button>
+      </div>
+    </div>
+  );
+}
