@@ -155,7 +155,7 @@ const PRESETS = {
 
 const PRESET_EXCLUDES = {
   cd: { "Текст": ["lead", "heading-levels", "editor-badge"], "Админка": ["cover-author", "cover-type", "utm", "credit"] },
-  shorts: { "Текст": ["tooltip-link", "currency-tooltip", "lists-style", "utm"] },
+  shorts: { "Текст": ["tooltip-link", "currency-tooltip", "lists-style", "utm", "shorts-alt-h2-p", "shorts-list-format"] },
 };
 
 const DATA = {
@@ -183,8 +183,11 @@ const DATA = {
     { text: "Поправить типографирование: м², а не м2, 1/2, а не ½" },
     { text: "Проверить ссылки: предлоги, точки, восклицательные, вопросительные знаки и двоеточия входят в ссылку, а запятые — нет" },
     { text: "Точка, запятая, восклицательный, вопросительный знаки, двоеточие, точка с запятой в жире/марке" },
-    { text: "В шортах заполнен alt=\"\", заголовок h2 level=\"3\", текст внутри  p grade=\"medium\"", feature: "shorts" },
-    { text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, отбиты <br/>", feature: "shorts" },
+    { text: "В шортах заполнен alt=\"\", заголовок h2 level=\"3\", текст внутри  p grade=\"medium\"", feature: "shorts", id: "shorts-alt-h2-p" },
+    {
+      text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, строчки отбиты <br/>", feature: "shorts",
+      id: "shorts-list-format"
+    },
     { text: "У карточек товаров есть картинка и название товара", feature: "prodcard" },
     { text: "У карточек-сеток отсутствует описние и бирка", feature: "prodcard" },
     { text: "Внутри тега <price> обязательно прописана цена товара. Знаки препинания внутрь тега <price> включаются по правилу ссылок (. ! ? :)", feature: "prodcard" },
