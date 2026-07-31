@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-
 const DATA_VERSION = "1.1";
 const NOTES_TEMPLATE = `Вопросы к редакции:
 —
@@ -7,7 +6,6 @@ const NOTES_TEMPLATE = `Вопросы к редакции:
 —
 Правки для фотореда/дизайнера:
 —`;
-
 const CONTENT_FILTERS = {
   tables: { label: "Таблицы", default: true },
   screenshots: { label: "Скрины", default: true },
@@ -17,7 +15,6 @@ const CONTENT_FILTERS = {
   prodcard: { label: "Карточки товаров", default: true },
   shorts: { label: "Шорты", default: true },
 };
-
 const buildContentFilters = () => {
   const result = {};
   Object.entries(CONTENT_FILTERS).forEach(([key, value]) => {
@@ -25,7 +22,6 @@ const buildContentFilters = () => {
   });
   return result;
 };
-
 const PRESETS = {
   default: {},
   invest: {
@@ -37,7 +33,6 @@ const PRESETS = {
   shopping: {
     "Админка": [
       { _sortOrder: 4, text: "В подвале стоит: Цены действительны на момент публикации" },
-
     ],
     "Текст": [
       { _sortOrder: 17, text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, отбиты <br/>" },
@@ -58,7 +53,6 @@ const PRESETS = {
       { links: [{ label: "Методичка тесты", url: "https://docs.google.com/document/d/1vBoENUtJI2UHtbBrLqVgPxuoEBE0yNvYhhATKmwiXzU/edit?tab=t.0#bookmark=id.sgzp2wu0gy8c" }] },
     ],
   },
-
   spending: {
     "Текст": [
       { _sortOrder: 1, text: "В начале статьи стоит плашка panel с абзацами p grade=\"secondary\"_" },
@@ -137,7 +131,6 @@ const PRESETS = {
     "Прочее": [
       { links: [{ label: "Методичка шорты", url: "https://tinkoffjournal.kaiten.ru/documents/g/c4db513a-6478-46ae-967b-984c87b15af0" }] },
     ],
-
     "Картинки": [
       { _sortOrder: 2, text: "Для картинки-обтравки добавлен атрибут image_style=\"picture\"", feature: "images" },
     ],
@@ -152,12 +145,10 @@ const PRESETS = {
     ],
   },
 };
-
 const PRESET_EXCLUDES = {
   cd: { "Текст": ["lead", "heading-levels", "editor-badge"], "Админка": ["cover-author", "cover-type", "utm", "credit"] },
   shorts: { "Текст": ["tooltip-link", "currency-tooltip", "lists-style", "utm", "shorts-alt-h2-p", "shorts-list-format"] },
 };
-
 const DATA = {
   "Админка": [
     { text: "Проверить, что коллеги закрыли вкладку с визивигом" },
@@ -228,7 +219,6 @@ const DATA = {
     { links: [{ label: "Методички общие", url: "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994" }] },
   ],
 };
-
 // --- Helpers ---
 const readStorageJSON = (key) => {
   try {
@@ -240,7 +230,6 @@ const readStorageJSON = (key) => {
     return null;
   }
 };
-
 const buildCollapsed = (data, prev = {}) => {
   const next = {};
   Object.keys(data).forEach((cat) => {
@@ -248,7 +237,6 @@ const buildCollapsed = (data, prev = {}) => {
   });
   return next;
 };
-
 const buildTasks = (data) => {
   const initial = {};
   Object.keys(data).forEach((cat) => {
@@ -262,7 +250,6 @@ const buildTasks = (data) => {
   });
   return initial;
 };
-
 function useMediaQuery(query) {
   const getMatches = () => (typeof window !== "undefined" ? window.matchMedia(query).matches : false);
   const [matches, setMatches] = useState(getMatches);
@@ -275,7 +262,6 @@ function useMediaQuery(query) {
   }, [query]);
   return matches;
 }
-
 const renderTextWithLinks = (text, dark) => {
   if (!text) return null;
   const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g);
@@ -300,7 +286,6 @@ const renderTextWithLinks = (text, dark) => {
     return <span key={i}>{part}</span>;
   });
 };
-
 // --- Component ---
 export default function App() {
   const [dark, setDark] = useState(() => {
@@ -323,13 +308,11 @@ export default function App() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-
   const [preset, setPreset] = useState(() => localStorage.getItem("preset") || "default");
   const [contentFilters, setContentFilters] = useState(() => readStorageJSON("contentFilters") || buildContentFilters());
   const [focusMode, setFocusMode] = useState(false);
   const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
-
   const [bgImage, setBgImage] = useState(() => {
     try {
       const saved = localStorage.getItem("bgImage");
@@ -338,10 +321,8 @@ export default function App() {
       return "";
     }
   });
-
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isSmall = useMediaQuery("(max-width: 600px)");
-
   const r = {
     pad: isSmall ? 12 : isMobile ? 20 : 30,
     maxW: isSmall ? "calc(100% - 24px)" : "100%",
@@ -358,7 +339,6 @@ export default function App() {
     headerPad: isSmall ? "14px 12px" : isMobile ? "16px 14px" : "22px 24px",
     catPad: isSmall ? "4px 8px" : "6px 10px",
   };
-
   useEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
     const currentValue = localStorage.getItem("dark");
@@ -366,7 +346,6 @@ export default function App() {
       localStorage.setItem("dark", String(dark));
     }
   }, [dark]);
-
   const currentData = useMemo(() => {
     const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
@@ -396,7 +375,6 @@ export default function App() {
     }
     return clone;
   }, [preset]);
-
   const [tasks, setTasks] = useState(() => {
     const savedVersion = localStorage.getItem("version");
     const saved = readStorageJSON("checklist");
@@ -408,9 +386,7 @@ export default function App() {
     }
     return saved || buildTasks(currentData);
   });
-
   const [collapsed, setCollapsed] = useState(() => readStorageJSON("collapsed") || buildCollapsed(currentData));
-
   useEffect(() => {
     localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
     localStorage.setItem("checklist", JSON.stringify(tasks));
@@ -418,7 +394,6 @@ export default function App() {
     localStorage.setItem("notes", notes);
     localStorage.setItem("bgImage", bgImage || "");
   }, [contentFilters, tasks, collapsed, notes, bgImage]);
-
   useEffect(() => {
     setTasks((prev) => {
       const next = {};
@@ -436,14 +411,12 @@ export default function App() {
     });
     setCollapsed((prev) => buildCollapsed(currentData, prev));
   }, [currentData]);
-
   const toggle = useCallback((cat, index) => {
     setTasks((prev) => {
       const updated = prev[cat].map((t, i) => (i === index ? { ...t, done: !t.done } : t));
       return { ...prev, [cat]: updated };
     });
   }, []);
-
   useEffect(() => {
     setCollapsed((prev) => {
       let next = { ...prev };
@@ -462,7 +435,6 @@ export default function App() {
       return next;
     });
   }, [tasks]);
-
   const resetAll = useCallback(() => {
     setTasks((prev) => {
       const cleared = {};
@@ -472,7 +444,6 @@ export default function App() {
       return cleared;
     });
   }, []);
-
   const hardReset = useCallback(() => {
     ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage"].forEach((key) => localStorage.removeItem(key));
     localStorage.setItem("version", DATA_VERSION);
@@ -485,11 +456,9 @@ export default function App() {
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
   }, []);
-
   const toggleCollapse = useCallback((cat) => {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
-
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -514,12 +483,10 @@ export default function App() {
     reader.readAsDataURL(file);
     e.target.value = "";
   }, []);
-
   const allTasks = Object.values(tasks ?? {}).flat();
   const doneTasks = allTasks.filter((t) => t.done).length;
   const totalTasks = allTasks.length;
   const percent = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
-
   const textColor = dark ? "#e8e8ea" : "#111";
   const mutedColor = dark ? "#a1a1aa" : "#555";
   const card = dark ? "#1A1D21" : "#ffffff";
@@ -542,7 +509,6 @@ export default function App() {
     card: { display: "flex", alignItems: "flex-start", gap: 10, padding: r.cardPad, border: `1px solid ${border}`, background: card, textAlign: "left", borderRadius: 18, transition: "all 0.15s ease", boxShadow: dark ? "0 1px 2px rgba(0,0,0,0.3)" : "0 1px 2px rgba(0,0,0,0.05)" },
     taskText: { flex: 1, fontSize: r.taskSize, lineHeight: "18px", color: textColor, textDecoration: "none" },
   };
-
   const headerGlass = {
     background: bgImage ? (dark ? "rgba(12, 12, 18, 0.65)" : "rgba(255, 255, 255, 0.75)") : bg,
     backdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
@@ -559,7 +525,6 @@ export default function App() {
     marginBottom: 36,
     transition: "all 0.3s ease",
   };
-
   return (
     <div
       style={{
@@ -591,7 +556,6 @@ export default function App() {
           }}
         />
       )}
-
       <div style={{ maxWidth: r.maxW, margin: "0 auto", position: "relative" }}>
         <style>{`
           body, html { margin: 0 !important; padding: 0 !important; }
@@ -599,7 +563,6 @@ export default function App() {
           .notes-fab:hover { transform: scale(1.08); }
           .notes-fab:active { transform: scale(0.95); }
         `}</style>
-
         <div style={headerGlass}>
           <div style={{
             flex: "1 1 260px",
@@ -619,13 +582,12 @@ export default function App() {
               {doneTasks}/{totalTasks} ({percent}%)
             </div>
           </div>
-
-          {/* 🔑 РАСТЯНУТОЕ ПРОСТРАНСТВО ДЛЯ КНОПОК */}
+          {/* 🔑 КНОПКИ ВНЕШНЕГО ВИДА — справа */}
           <div style={{
-            flex: "1 1 520px",
+            flex: "0 0 auto",
             textAlign: isSmall ? "center" : "right",
             minWidth: 0,
-            maxWidth: 650
+            maxWidth: 250
           }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-end", marginBottom: 12 }}>
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
@@ -640,36 +602,39 @@ export default function App() {
                   ✖
                 </button>
               )}
-              <div style={{ position: "relative" }}>
-                <select value={preset} onChange={(e) => {
-                  localStorage.removeItem("checklist");
-                  localStorage.removeItem("collapsed");
-                  setPreset(e.target.value);
-                }}
-                  style={{ height: 34, minWidth: r.selectMinW, padding: "0 36px 0 12px", borderRadius: 10, border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, background: dark ? "#18181b" : "#ffffff", color: dark ? "#e8e8ea" : "#111827", fontSize: r.btnSize, cursor: "pointer", outline: "none", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}>
-                  <option value="default">Обычный</option><option value="invest">Инвест</option><option value="shopping">Шопинг</option><option value="tests">Тест</option><option value="compare">Сравнятор</option><option value="spending">Дневник трат</option><option value="cd">ЧД</option><option value="shorts">Шорты</option><option value="ugc">UGC</option>
-                </select>
-                <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: 10, color: dark ? "#a1a1aa" : "#666" }}>▼</span>
-              </div>
-              <button type="button" style={btn} onClick={resetAll}>Сброс</button>
-              <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>{focusMode ? "Фокус: ON" : "Фокус: OFF"}</button>
-              <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
-            </div>
-
-            <div style={{ marginTop: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: mutedColor, marginBottom: 6, textAlign: isSmall ? "center" : "right" }}>Контент</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-end" }}>
-                {Object.entries(CONTENT_FILTERS).map(([key, item]) => (
-                  <button key={key} type="button" onClick={() => setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))}
-                    style={{ ...btn, height: 28, padding: r.catPad, fontSize: 12, background: (contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff"), color: (contentFilters[key] ? "#111" : textColor), border: (contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`), fontWeight: (contentFilters[key] ? 600 : 400) }}>
-                    {contentFilters[key] ? "✓ " : ""}{item.label}
-                  </button>
-                ))}
-              </div>
             </div>
           </div>
         </div>
-
+        {/* 🔑 КНОПКИ УПРАВЛЕНИЯ И КОНТЕНТ — слева */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-start" }}>
+            <div style={{ position: "relative" }}>
+              <select value={preset} onChange={(e) => {
+                localStorage.removeItem("checklist");
+                localStorage.removeItem("collapsed");
+                setPreset(e.target.value);
+              }}
+                style={{ height: 34, minWidth: r.selectMinW, padding: "0 36px 0 12px", borderRadius: 10, border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, background: dark ? "#18181b" : "#ffffff", color: dark ? "#e8e8ea" : "#111827", fontSize: r.btnSize, cursor: "pointer", outline: "none", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}>
+                <option value="default">Обычный</option><option value="invest">Инвест</option><option value="shopping">Шопинг</option><option value="tests">Тест</option><option value="compare">Сравнятор</option><option value="spending">Дневник трат</option><option value="cd">ЧД</option><option value="shorts">Шорты</option><option value="ugc">UGC</option>
+              </select>
+              <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: 10, color: dark ? "#a1a1aa" : "#666" }}>▼</span>
+            </div>
+            <button type="button" style={btn} onClick={resetAll}>Сброс</button>
+            <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>{focusMode ? "Фокус: ON" : "Фокус: OFF"}</button>
+            <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: mutedColor, marginBottom: 6, textAlign: isSmall ? "center" : "left" }}>Контент</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-start" }}>
+              {Object.entries(CONTENT_FILTERS).map(([key, item]) => (
+                <button key={key} type="button" onClick={() => setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))}
+                  style={{ ...btn, height: 28, padding: r.catPad, fontSize: 12, background: (contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff"), color: (contentFilters[key] ? "#111" : textColor), border: (contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`), fontWeight: (contentFilters[key] ? 600 : 400) }}>
+                  {contentFilters[key] ? "✓ " : ""}{item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 16 }}>
             <div
@@ -735,7 +700,6 @@ export default function App() {
           </div>
         ))}
       </div>
-
       <div style={{ position: "fixed", right: 16, bottom: 16, zIndex: 999 }}>
         {notesOpen && (
           <div style={{
