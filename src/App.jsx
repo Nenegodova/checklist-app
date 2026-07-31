@@ -691,7 +691,7 @@ export default function App() {
                 style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
                 onClick={() => document.getElementById("bg-file-input").click()}
               >
-                🖼 Фон
+                Фон
               </button>
               <input
                 id="bg-file-input"
