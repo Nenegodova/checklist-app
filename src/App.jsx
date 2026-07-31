@@ -680,7 +680,7 @@ export default function App() {
                 onMouseEnter={(e) => e.currentTarget.style.background = dark ? "rgba(122, 183, 255, 0.25)" : "rgba(37, 99, 235, 0.15)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = dark ? "rgba(122, 183, 255, 0.15)" : "rgba(37, 99, 235, 0.08)"}
               >
-                Методичка
+                Методички
               </a>
             </div>
           </div>
@@ -709,7 +709,7 @@ export default function App() {
                 style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
                 onClick={() => document.getElementById("bg-file-input").click()}
               >
-                🖼 Фон
+                Фон
               </button>
               <input
                 id="bg-file-input"
@@ -834,7 +834,7 @@ export default function App() {
               style={{ ...group2Btn, color: "#e06c3b" }}
               onClick={resetFiltersAndCheckboxes}
             >
-              ↺ Сбросить
+              Сбросить
             </button>
 
             {/* Фокус-режим */}
