@@ -159,7 +159,7 @@ const DATA = {
     { id: "cover-type", text: "Текст на ОГ оттипографирован" },
     { id: "credit", text: "Проверить автора обложки или источники" },
     { links: [{ label: "В инфоблок вынесена пометка про иноагентов/экстремистов", url: "https://tinkoffjournal.kaiten.ru/documents/d/05e4af49-d4af-433d-a183-528ac0d4da1a" }] },
-    { _sortOrder: 9999, text: "В заголовке проставлен мягкий перенос, если он ", links: [{ label: "Символы", url: "https://symbl.cc/ru/00AD/" }, { label: "Правила", url: "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe" }, { label: "Методичка", url: "https://docs.google.com/document/d/1UBwfR7TE3rSBF4VnxmXUl7K0hjow-y5Jct4hG1QTIsI/edit?tab=t.0#heading=h.z33ybfin6ltb" }] },
+    { _sortOrder: 9999, text: "В заголовке проставлен мягкий перенос, если если он необходим", links: [{ label: "Символы", url: "https://symbl.cc/ru/00AD/" }, { label: "Правила", url: "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe" }, { label: "Методичка", url: "https://docs.google.com/document/d/1UBwfR7TE3rSBF4VnxmXUl7K0hjow-y5Jct4hG1QTIsI/edit?tab=t.0#heading=h.z33ybfin6ltb" }] },
   ],
   "Текст": [
     { text: "Подпись автора с маленькой буквы" },
@@ -195,8 +195,8 @@ const DATA = {
   "Таблицы": [
     { text: "У таблицы есть заголовок" },
     { text: "Красиво отрегулированы ширины: если текста много или колонок три и более, то их ширину можно растянуть. При этом ширина одной колонки не должна превышать 350 пикселей. Если текста мало, то колонки узкие" },
-    { text: "Данные в ячейках выровнены по правилам" },
-    { text: "Списки в таблицах оформлены по правилам" },
+    { text: "Данные в ячейках выровнены по правилам", links: [{ label: "Методичка", url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.oddbhw32m71r/"  }]  },
+    { text: "Списки в таблицах оформлены по правилам" , links: [{ label: "Методичка", url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.d9k5whxwvw7i"  }] },
     { text: "Если в таблице единицы измерения сравниваются, то строки нужно отсортировать по убыванию" },
   ],
   "Картинки": [
