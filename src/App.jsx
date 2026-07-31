@@ -582,14 +582,20 @@ export default function App() {
               {doneTasks}/{totalTasks} ({percent}%)
             </div>
           </div>
-          {/* 🔑 КНОПКИ ВНЕШНЕГО ВИДА — справа */}
+          {/* Кнопки внешнего вида — справа */}
           <div style={{
-            flex: "0 0 auto",
+            flex: isSmall ? "1 1 100%" : "0 0 auto",
             textAlign: isSmall ? "center" : "right",
             minWidth: 0,
-            maxWidth: 250
+            marginBottom: isSmall ? 8 : 0
           }}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-end", marginBottom: 12 }}>
+            <div style={{ 
+              display: "flex", 
+              flexWrap: "wrap", 
+              gap: 6, 
+              justifyContent: isSmall ? "center" : "flex-end",
+              marginBottom: 12 
+            }}>
               <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
                 {dark ? "☀️" : "🌙"}
               </button>
@@ -605,36 +611,117 @@ export default function App() {
             </div>
           </div>
         </div>
-        {/* 🔑 КНОПКИ УПРАВЛЕНИЯ И КОНТЕНТ — слева */}
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-start" }}>
+        
+        {/* Кнопки управления и контент — под хедером, слева */}
+        <div style={{ 
+          marginBottom: 24,
+          background: bgImage ? (dark ? "rgba(12, 12, 18, 0.5)" : "rgba(255, 255, 255, 0.7)") : "transparent",
+          borderRadius: 16,
+          padding: isSmall ? "12px" : "16px",
+          backdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
+          WebkitBackdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
+          border: bgImage ? `1px solid ${dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}` : "none"
+        }}>
+          <div style={{ 
+            display: "flex", 
+            flexWrap: "wrap", 
+            gap: 6, 
+            justifyContent: isSmall ? "center" : "flex-start",
+            marginBottom: 12 
+          }}>
+            {/* Пресет */}
             <div style={{ position: "relative" }}>
-              <select value={preset} onChange={(e) => {
-                localStorage.removeItem("checklist");
-                localStorage.removeItem("collapsed");
-                setPreset(e.target.value);
-              }}
-                style={{ height: 34, minWidth: r.selectMinW, padding: "0 36px 0 12px", borderRadius: 10, border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, background: dark ? "#18181b" : "#ffffff", color: dark ? "#e8e8ea" : "#111827", fontSize: r.btnSize, cursor: "pointer", outline: "none", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}>
-                <option value="default">Обычный</option><option value="invest">Инвест</option><option value="shopping">Шопинг</option><option value="tests">Тест</option><option value="compare">Сравнятор</option><option value="spending">Дневник трат</option><option value="cd">ЧД</option><option value="shorts">Шорты</option><option value="ugc">UGC</option>
+              <select 
+                value={preset} 
+                onChange={(e) => {
+                  localStorage.removeItem("checklist");
+                  localStorage.removeItem("collapsed");
+                  setPreset(e.target.value);
+                }}
+                style={{ 
+                  height: 34, 
+                  minWidth: isSmall ? 120 : r.selectMinW, 
+                  padding: "0 36px 0 12px", 
+                  borderRadius: 10, 
+                  border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, 
+                  background: dark ? "#18181b" : "#ffffff", 
+                  color: dark ? "#e8e8ea" : "#111827", 
+                  fontSize: r.btnSize, 
+                  cursor: "pointer", 
+                  outline: "none", 
+                  appearance: "none", 
+                  WebkitAppearance: "none", 
+                  MozAppearance: "none" 
+                }}
+              >
+                <option value="default">Обычный</option>
+                <option value="invest">Инвест</option>
+                <option value="shopping">Шопинг</option>
+                <option value="tests">Тест</option>
+                <option value="compare">Сравнятор</option>
+                <option value="spending">Дневник трат</option>
+                <option value="cd">ЧД</option>
+                <option value="shorts">Шорты</option>
+                <option value="ugc">UGC</option>
               </select>
-              <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: 10, color: dark ? "#a1a1aa" : "#666" }}>▼</span>
+              <span style={{ 
+                position: "absolute", 
+                right: 12, 
+                top: "50%", 
+                transform: "translateY(-50%)", 
+                pointerEvents: "none", 
+                fontSize: 10, 
+                color: dark ? "#a1a1aa" : "#666" 
+              }}>▼</span>
             </div>
+            
             <button type="button" style={btn} onClick={resetAll}>Сброс</button>
-            <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>{focusMode ? "Фокус: ON" : "Фокус: OFF"}</button>
+            <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>
+              {focusMode ? "Фокус: ON" : "Фокус: OFF"}
+            </button>
             <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
           </div>
-          <div style={{ marginTop: 12 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: mutedColor, marginBottom: 6, textAlign: isSmall ? "center" : "left" }}>Контент</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: isSmall ? "center" : "flex-start" }}>
+          
+          {/* Фильтры контента */}
+          <div>
+            <div style={{ 
+              fontSize: 12, 
+              fontWeight: 600, 
+              color: mutedColor, 
+              marginBottom: 6, 
+              textAlign: isSmall ? "center" : "left" 
+            }}>
+              Контент
+            </div>
+            <div style={{ 
+              display: "flex", 
+              flexWrap: "wrap", 
+              gap: 6, 
+              justifyContent: isSmall ? "center" : "flex-start" 
+            }}>
               {Object.entries(CONTENT_FILTERS).map(([key, item]) => (
-                <button key={key} type="button" onClick={() => setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))}
-                  style={{ ...btn, height: 28, padding: r.catPad, fontSize: 12, background: (contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff"), color: (contentFilters[key] ? "#111" : textColor), border: (contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`), fontWeight: (contentFilters[key] ? 600 : 400) }}>
+                <button 
+                  key={key} 
+                  type="button" 
+                  onClick={() => setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))}
+                  style={{ 
+                    ...btn, 
+                    height: 28, 
+                    padding: r.catPad, 
+                    fontSize: 12, 
+                    background: (contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff"), 
+                    color: (contentFilters[key] ? "#111" : textColor), 
+                    border: (contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`), 
+                    fontWeight: (contentFilters[key] ? 600 : 400) 
+                  }}
+                >
                   {contentFilters[key] ? "✓ " : ""}{item.label}
                 </button>
               ))}
             </div>
           </div>
         </div>
+        
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 16 }}>
             <div
