@@ -193,6 +193,7 @@ const DATA = {
   ],
   "Таблицы": [
     { text: "У таблицы есть заголовок" },
+   { text: "Проверить table sticky-header=\"true\" у таблиц с thead" },
     { text: "Красиво отрегулированы ширины: если текста много или колонок три и более, то их ширину можно растянуть. При этом ширина одной колонки не должна превышать 350 пикселей. Если текста мало, то колонки узкие" },
     { text: "Данные в ячейках выровнены по правилам", links: [{ label: "Методичка", url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.oddbhw32m71r/"  }]  },
     { text: "Списки в таблицах оформлены по правилам" , links: [{ label: "Методичка", url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.d9k5whxwvw7i"  }] },
