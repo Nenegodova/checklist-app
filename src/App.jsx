@@ -6,6 +6,8 @@ const NOTES_TEMPLATE = `Вопросы к редакции:
 —
 Правки для фотореда/дизайнера:
 —`;
+const METHODICHKA_URL =
+  "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994";
 const CONTENT_FILTERS = {
   tables: { label: "Таблицы", default: true },
   screenshots: { label: "Скрины", default: true },
@@ -157,7 +159,6 @@ const DATA = {
     { text: "Нажать галочку скрыть из приложения банка, если материал 18+ (секс, алкоголь и т.д.)" },
     { _sortOrder: 4, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие" },
     { links: [{ label: "Пометка про иноагентов/экстремистов в инфоблоке оформлена корректно", url: "https://tinkoffjournal.kaiten.ru/documents/d/05e4af49-d4af-433d-a183-528ac0d4da1a" }] },
-
   ],
   "Текст": [
     { text: "Подпись автора с маленькой буквы" },
@@ -171,10 +172,9 @@ const DATA = {
     { text: "Поправить типографирование: м², а не м2, 1/2, а не ½" },
     { text: "Проверить ссылки: предлоги, точки, восклицательные, вопросительные знаки и двоеточия входят в ссылку, а запятые — нет" },
     { text: "Точка, запятая, восклицательный, вопросительный знаки, двоеточие, точка с запятой входят в <strong> и <mark>" },
-
     { text: "В ссылке шаблона гугл⁠-⁠дока для копирования /edit заменен на /copy." },
     { id: "utm", text: "Поиском по коду найдены и удалены оставшихся у ссылок метки /?ysclid и https://google.com/" },
-    { id: "currency-tooltip", text: "У первого валютного фичера стоит тултип: “Суммы в рублях пересчитываются по актуальному курсу раз в день”" },
+    { id: "currency-tooltip", text: "У первого валютного фичера стоит тултип: \"Суммы в рублях пересчитываются по актуальному курсу раз в день\"" },
     { id: "tooltip-link", text: "Тултип не стоит рядом с ссылкой" },
     { id: "lists-style", text: "Проверить оформление списков: цифровые и кастомные — с большой буквы, в конце пунктов точки. Списки с буллитами — с маленькой буквы, в конце пунктов точка с запятой, у последнего пункта — точка" },
     { text: "Опрос на месте, в нем предлоги приклеены к следующему слову, эмодзи отображаются корректно", feature: "poll" },
@@ -202,9 +202,9 @@ const DATA = {
   "Картинки": [
     { text: "Скрины ретиновые и без артефактов, текст читаем, соблюдены поля, проставлен prop=\"bordered\", если фон сливается с фоном страницы", feature: "screenshots" },
     { text: "Для инфографики проставлен prop=\"bordered rounded\"", feature: "infographic" },
-    { text: "Если у инфографики есть подпись, то указан кредит “Источник:” ", feature: "infographic" },
+    { text: "Если у инфографики есть подпись, то указан кредит \"Источник:\" ", feature: "infographic" },
     { text: "Проверить в кайтене наличие комментария от фотореда о размере картинок или фоторам", feature: "images" },
-    { text: "Проверить, нет ли засветов или вотемаркок на картинках от фотореда", feature: "images" },
+    { text: "Проверить, нет ли засветов или вотемармок на картинках от фотореда", feature: "images" },
     { text: "Если на скриншоте есть персональные данные, уточнить у редактора, нужно ли их заблюрить", feature: "images" },
     { text: "Проверить необходимость prop=\"bordered\" у видео", feature: "images" },
   ],
@@ -216,9 +216,10 @@ const DATA = {
     { text: "После выпуска проверить материал на главной: все ли в порядке с обложкой, по правилам ли стоят переносы в заголовке" },
   ],
   "Прочее": [
-    { links: [{ label: "Методички общие", url: "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994" }] },
+    { links: [{ label: "Методички общие", url: METHODICHKA_URL }] },
   ],
 };
+
 // --- Helpers ---
 const readStorageJSON = (key) => {
   try {
@@ -286,6 +287,7 @@ const renderTextWithLinks = (text, dark) => {
     return <span key={i}>{part}</span>;
   });
 };
+
 // --- Component ---
 export default function App() {
   const [dark, setDark] = useState(() => {
@@ -308,6 +310,7 @@ export default function App() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
   const [preset, setPreset] = useState(() => localStorage.getItem("preset") || "default");
   const [contentFilters, setContentFilters] = useState(() => readStorageJSON("contentFilters") || buildContentFilters());
   const [focusMode, setFocusMode] = useState(false);
@@ -346,6 +349,7 @@ export default function App() {
       localStorage.setItem("dark", String(dark));
     }
   }, [dark]);
+
   const currentData = useMemo(() => {
     const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
@@ -375,6 +379,7 @@ export default function App() {
     }
     return clone;
   }, [preset]);
+
   const [tasks, setTasks] = useState(() => {
     const savedVersion = localStorage.getItem("version");
     const saved = readStorageJSON("checklist");
@@ -387,6 +392,7 @@ export default function App() {
     return saved || buildTasks(currentData);
   });
   const [collapsed, setCollapsed] = useState(() => readStorageJSON("collapsed") || buildCollapsed(currentData));
+
   useEffect(() => {
     localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
     localStorage.setItem("checklist", JSON.stringify(tasks));
@@ -394,6 +400,7 @@ export default function App() {
     localStorage.setItem("notes", notes);
     localStorage.setItem("bgImage", bgImage || "");
   }, [contentFilters, tasks, collapsed, notes, bgImage]);
+
   useEffect(() => {
     setTasks((prev) => {
       const next = {};
@@ -411,12 +418,14 @@ export default function App() {
     });
     setCollapsed((prev) => buildCollapsed(currentData, prev));
   }, [currentData]);
+
   const toggle = useCallback((cat, index) => {
     setTasks((prev) => {
       const updated = prev[cat].map((t, i) => (i === index ? { ...t, done: !t.done } : t));
       return { ...prev, [cat]: updated };
     });
   }, []);
+
   useEffect(() => {
     setCollapsed((prev) => {
       let next = { ...prev };
@@ -435,17 +444,19 @@ export default function App() {
       return next;
     });
   }, [tasks]);
-  const resetAll = useCallback(() => {
-    setTasks((prev) => {
-      const cleared = {};
-      Object.keys(prev).forEach((cat) => {
-        cleared[cat] = prev[cat].map((t) => ({ ...t, done: false }));
-      });
-      return cleared;
-    });
-  }, []);
+
+  // --- Reset: фильтры + чекбоксы (группа 2, частое использование) ---
+  const resetFiltersAndCheckboxes = useCallback(() => {
+    localStorage.removeItem("checklist");
+    setContentFilters(buildContentFilters());
+    setTasks(buildTasks(currentData));
+  }, [currentData]);
+
+  // --- Hard reset (группа 1, единоразовое) ---
   const hardReset = useCallback(() => {
-    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage"].forEach((key) => localStorage.removeItem(key));
+    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage"].forEach((key) =>
+      localStorage.removeItem(key)
+    );
     localStorage.setItem("version", DATA_VERSION);
     setPreset("default");
     setContentFilters(buildContentFilters());
@@ -456,9 +467,11 @@ export default function App() {
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
   }, []);
+
   const toggleCollapse = useCallback((cat) => {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
+
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -483,6 +496,7 @@ export default function App() {
     reader.readAsDataURL(file);
     e.target.value = "";
   }, []);
+
   const allTasks = Object.values(tasks ?? {}).flat();
   const doneTasks = allTasks.filter((t) => t.done).length;
   const totalTasks = allTasks.length;
@@ -492,31 +506,81 @@ export default function App() {
   const card = dark ? "#1A1D21" : "#ffffff";
   const border = dark ? "#2F343C" : "#E5E7EB";
   const bg = dark ? "#111315" : "#F6F7F9";
-  const title = dark ? "#FFFFFF" : "#111827";
-  const category = dark ? "#F3F4F6" : "#111827";
+  const titleColor = dark ? "#FFFFFF" : "#111827";
+  const categoryColor = dark ? "#F3F4F6" : "#111827";
+
   const controlBase = {
-    height: 30, padding: r.btnPad, borderRadius: 8, fontSize: r.btnSize, lineHeight: "18px",
-    display: "inline-flex", alignItems: "center", justifyContent: "center",
-    cursor: "pointer", transition: "all 0.15s ease", boxShadow: "none", outline: "none",
+    height: 30,
+    padding: r.btnPad,
+    borderRadius: 8,
+    fontSize: r.btnSize,
+    lineHeight: "18px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    transition: "all 0.15s ease",
+    boxShadow: "none",
+    outline: "none",
   };
   const makeControl = (isDark) => ({
-    ...controlBase, border: `1px solid ${isDark ? "#2a2a2e" : "#d1d5db"}`,
-    background: isDark ? "#1A1D21" : "#ffffff", color: isDark ? "#e8e8ea" : "#111827",
+    ...controlBase,
+    border: `1px solid ${isDark ? "#2a2a2e" : "#d1d5db"}`,
+    background: isDark ? "#1A1D21" : "#ffffff",
+    color: isDark ? "#e8e8ea" : "#111827",
   });
   const btn = makeControl(dark);
+
   const ui = {
-    categoryTitle: { cursor: "pointer", marginBottom: 10, fontSize: 14, fontWeight: 600, color: category, display: "flex", alignItems: "center", gap: 12 },
-    card: { display: "flex", alignItems: "flex-start", gap: 8, padding: r.cardPad, border: `1px solid ${border}`, background: card, textAlign: "left", borderRadius: 14, transition: "all 0.15s ease", boxShadow: dark ? "0 1px 2px rgba(0,0,0,0.3)" : "0 1px 2px rgba(0,0,0,0.05)" },
-    taskText: { flex: 1, fontSize: r.taskSize, lineHeight: "16px", color: textColor, textDecoration: "none" },
+    categoryTitle: {
+      cursor: "pointer",
+      marginBottom: 10,
+      fontSize: 14,
+      fontWeight: 600,
+      color: categoryColor,
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+    },
+    card: {
+      display: "flex",
+      alignItems: "flex-start",
+      gap: 8,
+      padding: r.cardPad,
+      border: `1px solid ${border}`,
+      background: card,
+      textAlign: "left",
+      borderRadius: 14,
+      transition: "all 0.15s ease",
+      boxShadow: dark ? "0 1px 2px rgba(0,0,0,0.3)" : "0 1px 2px rgba(0,0,0,0.05)",
+    },
+    taskText: {
+      flex: 1,
+      fontSize: r.taskSize,
+      lineHeight: "16px",
+      color: textColor,
+      textDecoration: "none",
+    },
   };
+
   const headerGlass = {
-    background: bgImage ? (dark ? "rgba(12, 12, 18, 0.65)" : "rgba(255, 255, 255, 0.75)") : bg,
+    background: bgImage
+      ? dark
+        ? "rgba(12, 12, 18, 0.65)"
+        : "rgba(255, 255, 255, 0.75)"
+      : bg,
     backdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
     WebkitBackdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
     borderRadius: 16,
     padding: r.headerPad,
-    border: bgImage ? `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}` : `1px solid ${border}`,
-    boxShadow: bgImage ? (dark ? "0 8px 32px rgba(0,0,0,0.4)" : "0 8px 32px rgba(0,0,0,0.06)") : `0 1px 3px ${dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.05)"}`,
+    border: bgImage
+      ? `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}`
+      : `1px solid ${border}`,
+    boxShadow: bgImage
+      ? dark
+        ? "0 8px 32px rgba(0,0,0,0.4)"
+        : "0 8px 32px rgba(0,0,0,0.06)"
+      : `0 1px 3px ${dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.05)"}`,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -525,6 +589,21 @@ export default function App() {
     marginBottom: 24,
     transition: "all 0.3s ease",
   };
+
+  // --- Общие стили кнопок групп ---
+  const group1Btn = {
+    ...btn,
+    height: 30,
+    padding: "2px 8px",
+    fontSize: r.btnSize,
+  };
+  const group2Btn = {
+    ...btn,
+    height: 30,
+    padding: "2px 8px",
+    fontSize: r.btnSize,
+  };
+
   return (
     <div
       style={{
@@ -563,93 +642,147 @@ export default function App() {
           .notes-fab:hover { transform: scale(1.08); }
           .notes-fab:active { transform: scale(0.95); }
         `}</style>
-        
-        {/* Компактный хедер */}
+
+        {/* ===== ШАПКА ЧЕК-ЛИСТА ===== */}
         <div style={headerGlass}>
-          <div style={{
-            flex: "1 1 auto",
-            minWidth: isSmall ? "auto" : 150,
-            textAlign: isSmall ? "center" : "left"
-          }}>
-            <h1 style={{
-              margin: 0,
-              fontSize: r.titleSize,
-              fontWeight: 700,
-              lineHeight: 1.1,
-              color: title,
-              textShadow: bgImage ? (dark ? "0 2px 8px rgba(0,0,0,0.6)" : "0 2px 8px rgba(255,255,255,0.6)") : "none"
-            }}>Чек-лист проверки</h1>
+          <div style={{ flex: "1 1 auto", minWidth: isSmall ? "auto" : 150, textAlign: isSmall ? "center" : "left" }}>
+            <h1
+              style={{
+                margin: 0,
+                fontSize: r.titleSize,
+                fontWeight: 700,
+                lineHeight: 1.1,
+                color: titleColor,
+                textShadow: bgImage
+                  ? dark
+                    ? "0 2px 8px rgba(0,0,0,0.6)"
+                    : "0 2px 8px rgba(255,255,255,0.6)"
+                  : "none",
+              }}
+            >
+              Чек-лист проверки
+            </h1>
             <div style={{ marginTop: 2, fontSize: r.progressSize, color: mutedColor, lineHeight: 1.4 }}>
               {doneTasks}/{totalTasks} ({percent}%)
             </div>
           </div>
-          {/* Кнопки внешнего вида — компактно справа */}
-          <div style={{
-            flex: "0 0 auto",
-            textAlign: isSmall ? "center" : "right",
-          }}>
-            <div style={{ 
-              display: "flex", 
-              flexWrap: "wrap", 
-              gap: 4, 
-              justifyContent: isSmall ? "center" : "flex-end",
-            }}>
-              <button type="button" style={{...btn, height: 28, padding: "2px 6px", fontSize: 10}} onClick={() => setDark((v) => !v)}>
+
+          {/* ===== ГРУППА 1 — единоразовое использование, справа ===== */}
+          <div style={{ flex: "0 0 auto", textAlign: isSmall ? "center" : "right" }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 4,
+                justifyContent: isSmall ? "center" : "flex-end",
+              }}
+            >
+              {/* Тема */}
+              <button
+                type="button"
+                style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
+                onClick={() => setDark((v) => !v)}
+              >
                 {dark ? "☀️" : "🌙"}
               </button>
-              <button type="button" style={{...btn, height: 28, padding: "2px 6px", fontSize: 10}} onClick={() => document.getElementById("bg-file-input").click()}>
-                Фон
+              {/* Загрузка фона */}
+              <button
+                type="button"
+                style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
+                onClick={() => document.getElementById("bg-file-input").click()}
+              >
+                🖼 Фон
               </button>
-              <input id="bg-file-input" type="file" accept="image/*" style={{ display: "none" }} onChange={handleBgFile} />
+              <input
+                id="bg-file-input"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleBgFile}
+              />
+              {/* Сброс фона */}
               {bgImage && (
-                <button type="button" style={{...btn, height: 28, minWidth: 20, padding: "0 4px", fontSize: 10, justifyContent: "center"}} onClick={() => { setBgImage(""); localStorage.removeItem("bgImage"); }}>
+                <button
+                  type="button"
+                  style={{
+                    ...group1Btn,
+                    height: 28,
+                    minWidth: 20,
+                    padding: "0 4px",
+                    fontSize: 10,
+                    justifyContent: "center",
+                  }}
+                  onClick={() => {
+                    setBgImage("");
+                    localStorage.removeItem("bgImage");
+                  }}
+                >
                   ✖
                 </button>
               )}
+              {/* Hard Reset */}
+              <button
+                type="button"
+                style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10, color: "red" }}
+                onClick={hardReset}
+              >
+                RESET
+              </button>
             </div>
           </div>
         </div>
-        
-        {/* Кнопки управления и контент */}
-        <div style={{ 
-          marginBottom: 20,
-          background: bgImage ? (dark ? "rgba(12, 12, 18, 0.5)" : "rgba(255, 255, 255, 0.7)") : "transparent",
-          borderRadius: 14,
-          padding: isSmall ? "10px" : "14px",
-          backdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
-          WebkitBackdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
-          border: bgImage ? `1px solid ${dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}` : "none"
-        }}>
-          <div style={{ 
-            display: "flex", 
-            flexWrap: "wrap", 
-            gap: 4, 
-            justifyContent: isSmall ? "center" : "flex-start",
-            marginBottom: 10 
-          }}>
+
+        {/* ===== ГРУППА 2 — частое использование, под шапкой ===== */}
+        <div
+          style={{
+            marginBottom: 20,
+            background: bgImage
+              ? dark
+                ? "rgba(12, 12, 18, 0.5)"
+                : "rgba(255, 255, 255, 0.7)"
+              : "transparent",
+            borderRadius: 14,
+            padding: isSmall ? "10px" : "14px",
+            backdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
+            WebkitBackdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
+            border: bgImage
+              ? `1px solid ${dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}`
+              : "none",
+          }}
+        >
+          {/* 2a. Пресет + сброс фильтров и чекбоксов + фокус */}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 4,
+              justifyContent: isSmall ? "center" : "flex-start",
+              marginBottom: 10,
+            }}
+          >
             {/* Пресет */}
             <div style={{ position: "relative" }}>
-              <select 
-                value={preset} 
+              <select
+                value={preset}
                 onChange={(e) => {
                   localStorage.removeItem("checklist");
                   localStorage.removeItem("collapsed");
                   setPreset(e.target.value);
                 }}
-                style={{ 
-                  height: 30, 
-                  minWidth: isSmall ? 90 : 130, 
-                  padding: "0 30px 0 8px", 
-                  borderRadius: 8, 
-                  border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, 
-                  background: dark ? "#18181b" : "#ffffff", 
-                  color: dark ? "#e8e8ea" : "#111827", 
-                  fontSize: r.btnSize, 
-                  cursor: "pointer", 
-                  outline: "none", 
-                  appearance: "none", 
-                  WebkitAppearance: "none", 
-                  MozAppearance: "none" 
+                style={{
+                  height: 30,
+                  minWidth: isSmall ? 90 : 130,
+                  padding: "0 30px 0 8px",
+                  borderRadius: 8,
+                  border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`,
+                  background: dark ? "#18181b" : "#ffffff",
+                  color: dark ? "#e8e8ea" : "#111827",
+                  fontSize: r.btnSize,
+                  cursor: "pointer",
+                  outline: "none",
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
                 }}
               >
                 <option value="default">Обычный</option>
@@ -662,98 +795,190 @@ export default function App() {
                 <option value="shorts">Шорты</option>
                 <option value="ugc">UGC</option>
               </select>
-              <span style={{ 
-                position: "absolute", 
-                right: 8, 
-                top: "50%", 
-                transform: "translateY(-50%)", 
-                pointerEvents: "none", 
-                fontSize: 8, 
-                color: dark ? "#a1a1aa" : "#666" 
-              }}>▼</span>
+              <span
+                style={{
+                  position: "absolute",
+                  right: 8,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                  fontSize: 8,
+                  color: dark ? "#a1a1aa" : "#666",
+                }}
+              >
+                ▼
+              </span>
             </div>
-            
-            <button type="button" style={{...btn, height: 30, padding: "2px 8px", fontSize: r.btnSize}} onClick={resetAll}>Сброс</button>
-            <button type="button" style={{...btn, height: 30, padding: "2px 8px", fontSize: r.btnSize}} onClick={() => setFocusMode((v) => !v)}>
+
+            {/* Сброс фильтров и чекбоксов */}
+            <button
+              type="button"
+              style={{ ...group2Btn, color: "#e06c3b" }}
+              onClick={resetFiltersAndCheckboxes}
+            >
+              ↺ Сбросить
+            </button>
+
+            {/* Фокус-режим */}
+            <button
+              type="button"
+              style={group2Btn}
+              onClick={() => setFocusMode((v) => !v)}
+            >
               {focusMode ? "Фокус ON" : "Фокус OFF"}
             </button>
-            <button type="button" style={{...btn, height: 30, padding: "2px 8px", fontSize: r.btnSize, color: "red"}} onClick={hardReset}>RESET</button>
           </div>
-          
-          {/* Фильтры контента */}
+
+          {/* 2b. Фильтр по элементам */}
           <div>
-            <div style={{ 
-              fontSize: 11, 
-              fontWeight: 600, 
-              color: mutedColor, 
-              marginBottom: 4, 
-              textAlign: isSmall ? "center" : "left" 
-            }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: mutedColor,
+                marginBottom: 4,
+                textAlign: isSmall ? "center" : "left",
+              }}
+            >
               Контент
             </div>
-            <div style={{ 
-              display: "flex", 
-              flexWrap: "wrap", 
-              gap: 4, 
-              justifyContent: isSmall ? "center" : "flex-start" 
-            }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 4,
+                justifyContent: isSmall ? "center" : "flex-start",
+              }}
+            >
               {Object.entries(CONTENT_FILTERS).map(([key, item]) => (
-                <button 
-                  key={key} 
-                  type="button" 
-                  onClick={() => setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))}
-                  style={{ 
-                    ...btn, 
-                    height: 26, 
-                    padding: r.catPad, 
-                    fontSize: 10, 
-                    background: (contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff"), 
-                    color: (contentFilters[key] ? "#111" : textColor), 
-                    border: (contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`), 
-                    fontWeight: (contentFilters[key] ? 600 : 400) 
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() =>
+                    setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))
+                  }
+                  style={{
+                    ...btn,
+                    height: 26,
+                    padding: r.catPad,
+                    fontSize: 10,
+                    background: contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff",
+                    color: contentFilters[key] ? "#111" : textColor,
+                    border: contentFilters[key]
+                      ? "1px solid #FFDD2D"
+                      : `1px solid ${border}`,
+                    fontWeight: contentFilters[key] ? 600 : 400,
                   }}
                 >
-                  {contentFilters[key] ? "✓ " : ""}{item.label}
+                  {contentFilters[key] ? "✓ " : ""}
+                  {item.label}
                 </button>
               ))}
             </div>
           </div>
         </div>
-        
+
+        {/* ===== СПИСОК ЗАДАЧ ===== */}
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 14 }}>
             <div
               onClick={() => toggleCollapse(cat)}
               style={{
                 ...ui.categoryTitle,
-                display: "flex", alignItems: "center", gap: 8,
-                background: bgImage ? (dark ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)") : (dark ? "rgba(255,255,255,0.06)" : "transparent"),
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                background: bgImage
+                  ? dark
+                    ? "rgba(0,0,0,0.5)"
+                    : "rgba(255,255,255,0.75)"
+                  : dark
+                    ? "rgba(255,255,255,0.06)"
+                    : "transparent",
                 padding: r.catPad,
                 borderRadius: 10,
                 backdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
                 WebkitBackdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
-                border: bgImage ? (dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)") : (dark ? "1px solid rgba(255,255,255,0.08)" : "none"),
-                transition: "all 0.2s ease"
+                border: bgImage
+                  ? dark
+                    ? "1px solid rgba(255,255,255,0.1)"
+                    : "1px solid rgba(0,0,0,0.08)"
+                  : dark
+                    ? "1px solid rgba(255,255,255,0.08)"
+                    : "none",
+                transition: "all 0.2s ease",
               }}
             >
               <span style={{ fontSize: 14 }}>{collapsed[cat] ? "▶" : "▼"}</span>
               <span style={{ fontSize: 14 }}>{cat}</span>
-              <span style={{ fontSize: 10, opacity: 0.9, padding: "1px 6px", borderRadius: 999, background: dark ? "rgba(255,255,255,0.1)" : "#e5e7eb", minWidth: 36, textAlign: "center", fontWeight: 500 }}>
-                {tasks[cat].filter((t) => t.done).length}/{tasks[cat].length} {tasks[cat].every((t) => t.done) ? " ✓" : ""}
+              <span
+                style={{
+                  fontSize: 10,
+                  opacity: 0.9,
+                  padding: "1px 6px",
+                  borderRadius: 999,
+                  background: dark ? "rgba(255,255,255,0.1)" : "#e5e7eb",
+                  minWidth: 36,
+                  textAlign: "center",
+                  fontWeight: 500,
+                }}
+              >
+                {tasks[cat].filter((t) => t.done).length}/
+                {tasks[cat].length}{" "}
+                {tasks[cat].every((t) => t.done) ? " ✓" : ""}
               </span>
             </div>
             {!collapsed[cat] && (
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {tasks[cat].map((task, i) => {
-                  if ((cat === "Таблицы" && !contentFilters.tables) || (task.feature && !contentFilters[task.feature])) return null;
+                  if (
+                    (cat === "Таблицы" && !contentFilters.tables) ||
+                    (task.feature && !contentFilters[task.feature])
+                  )
+                    return null;
                   return (
-                    <label key={`${cat}-${i}`} className="task-card" style={{ ...ui.card, display: focusMode && task.done ? "none" : "flex" }}>
-                      <input type="checkbox" checked={task.done} onChange={() => toggle(cat, i)} aria-label={task.text}
-                        style={{ width: 16, height: 16, marginTop: 1, accentColor: dark ? "#3f3f46" : "#6b7280", cursor: "pointer", flexShrink: 0 }} />
+                    <label
+                      key={`${cat}-${i}`}
+                      className="task-card"
+                      style={{
+                        ...ui.card,
+                        display: focusMode && task.done ? "none" : "flex",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={task.done}
+                        onChange={() => toggle(cat, i)}
+                        aria-label={task.text}
+                        style={{
+                          width: 16,
+                          height: 16,
+                          marginTop: 1,
+                          accentColor: dark ? "#3f3f46" : "#6b7280",
+                          cursor: "pointer",
+                          flexShrink: 0,
+                        }}
+                      />
                       <div style={{ flex: 1, opacity: task.done ? 0.5 : 1 }}>
-                        {task.text && <div style={{ ...ui.taskText, textDecoration: task.done ? "line-through" : "none" }}>{renderTextWithLinks(task.text, dark)}</div>}
+                        {task.text && (
+                          <div
+                            style={{
+                              ...ui.taskText,
+                              textDecoration: task.done ? "line-through" : "none",
+                            }}
+                          >
+                            {renderTextWithLinks(task.text, dark)}
+                          </div>
+                        )}
                         {task.links?.length > 0 && (
-                          <div style={{ display: "flex", gap: 4, marginTop: task.text ? 4 : 0, flexWrap: "wrap" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: 4,
+                              marginTop: task.text ? 4 : 0,
+                              flexWrap: "wrap",
+                            }}
+                          >
                             {task.links.map((link) => (
                               <a
                                 key={link.url}
@@ -768,7 +993,7 @@ export default function App() {
                                   textDecoration: "none",
                                   background: dark ? "#27272a" : "#eef2f7",
                                   color: dark ? "#93c5fd" : "#2563eb",
-                                  border: dark ? "1px solid #3f3f46" : "1px solid #d1d5db"
+                                  border: dark ? "1px solid #3f3f46" : "1px solid #d1d5db",
                                 }}
                               >
                                 {link.label}
@@ -785,54 +1010,136 @@ export default function App() {
           </div>
         ))}
       </div>
+
+      {/* ===== ЗАМЕТКИ (FAB) ===== */}
       <div style={{ position: "fixed", right: 12, bottom: 12, zIndex: 999 }}>
         {notesOpen && (
-          <div style={{
-            width: r.notesW,
-            maxWidth: 280,
-            marginBottom: 10,
-            padding: 12,
-            borderRadius: 16,
-            border: `1px solid ${border}`,
-            background: bgImage
-              ? (dark ? "rgba(15, 15, 20, 0.65)" : "rgba(255, 255, 255, 0.7)")
-              : card,
-            backdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
-            WebkitBackdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
-            boxShadow: dark ? "0 12px 40px rgba(0,0,0,0.45)" : "0 12px 30px rgba(0,0,0,0.12)",
-            boxSizing: "border-box"
-          }}>
-            <div style={{ fontWeight: 700, marginBottom: 6, color: title, fontSize: 13 }}>Заметки</div>
-            <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-              <button type="button" onClick={() => setNotes((prev) => prev.trim() ? prev : NOTES_TEMPLATE)}
-                style={{ padding: "3px 6px", borderRadius: 6, border: "none", background: dark ? "#27272a" : "#eef2f7", color: textColor, fontSize: 10, cursor: "pointer" }}>Вставить шаблон</button>
-              <button type="button" onClick={() => setNotes("")}
-                style={{ padding: "3px 6px", borderRadius: 6, border: "none", background: dark ? "#3a1f1f" : "#fee2e2", color: dark ? "#fca5a5" : "#991b1b", fontSize: 10, cursor: "pointer" }}>Очистить</button>
+          <div
+            style={{
+              width: r.notesW,
+              maxWidth: 280,
+              marginBottom: 10,
+              padding: 12,
+              borderRadius: 16,
+              border: `1px solid ${border}`,
+              background: bgImage
+                ? dark
+                  ? "rgba(15, 15, 20, 0.65)"
+                  : "rgba(255, 255, 255, 0.7)"
+                : card,
+              backdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
+              WebkitBackdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
+              boxShadow: dark
+                ? "0 12px 40px rgba(0,0,0,0.45)"
+                : "0 12px 30px rgba(0,0,0,0.12)",
+              boxSizing: "border-box",
+            }}
+          >
+            <div style={{ fontWeight: 700, marginBottom: 6, color: titleColor, fontSize: 13 }}>
+              Заметки
             </div>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
-              style={{ width: "100%", height: 140, padding: 8, borderRadius: 8, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 12, lineHeight: "16px", resize: "none", outline: "none", boxSizing: "border-box" }} />
+            <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
+              <button
+                type="button"
+                onClick={() =>
+                  setNotes((prev) => (prev.trim() ? prev : NOTES_TEMPLATE))
+                }
+                style={{
+                  padding: "3px 6px",
+                  borderRadius: 6,
+                  border: "none",
+                  background: dark ? "#27272a" : "#eef2f7",
+                  color: textColor,
+                  fontSize: 10,
+                  cursor: "pointer",
+                }}
+              >
+                Вставить шаблон
+              </button>
+              <button
+                type="button"
+                onClick={() => setNotes("")}
+                style={{
+                  padding: "3px 6px",
+                  borderRadius: 6,
+                  border: "none",
+                  background: dark ? "#3a1f1f" : "#fee2e2",
+                  color: dark ? "#fca5a5" : "#991b1b",
+                  fontSize: 10,
+                  cursor: "pointer",
+                }}
+              >
+                Очистить
+              </button>
+            </div>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
+              style={{
+                width: "100%",
+                height: 140,
+                padding: 8,
+                borderRadius: 8,
+                border: `1px solid ${border}`,
+                background: dark ? "#111" : "#fff",
+                color: textColor,
+                fontSize: 12,
+                lineHeight: "16px",
+                resize: "none",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
           </div>
         )}
-        <button type="button" className="notes-fab" onClick={() => setNotesOpen((v) => !v)}
+        <button
+          type="button"
+          className="notes-fab"
+          onClick={() => setNotesOpen((v) => !v)}
           style={{
-            width: r.fabSize, height: r.fabSize, borderRadius: "50%",
+            width: r.fabSize,
+            height: r.fabSize,
+            borderRadius: "50%",
             background: bgImage
-              ? (dark ? "rgba(12, 12, 18, 0.5)" : "rgba(255, 255, 255, 0.6)")
-              : (dark ? "rgba(25, 25, 28, 0.75)" : "rgba(255, 255, 255, 0.75)"),
+              ? dark
+                ? "rgba(12, 12, 18, 0.5)"
+                : "rgba(255, 255, 255, 0.6)"
+              : dark
+                ? "rgba(25, 25, 28, 0.75)"
+                : "rgba(255, 255, 255, 0.75)",
             backdropFilter: "blur(20px) saturate(200%)",
             WebkitBackdropFilter: "blur(20px) saturate(200%)",
             border: bgImage
-              ? (dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.45)")
-              : (dark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.08)"),
+              ? dark
+                ? "1px solid rgba(255,255,255,0.12)"
+                : "1px solid rgba(255,255,255,0.45)"
+              : dark
+                ? "1px solid rgba(255,255,255,0.08)"
+                : "1px solid rgba(0,0,0,0.08)",
             boxShadow: bgImage
-              ? (dark ? "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)" : "0 10px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7)")
-              : (dark ? "0 10px 40px rgba(0,0,0,0.4)" : "0 10px 40px rgba(0,0,0,0.08)"),
+              ? dark
+                ? "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)"
+                : "0 10px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7)"
+              : dark
+                ? "0 10px 40px rgba(0,0,0,0.4)"
+                : "0 10px 40px rgba(0,0,0,0.08)",
             color: dark ? "#FFDD2D" : "#111827",
-            fontSize: 18, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
+            fontSize: 18,
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: r.fabPad,
             transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-            textShadow: dark ? "0 1px 3px rgba(0,0,0,0.6)" : "0 1px 2px rgba(255,255,255,0.8)",
-            userSelect: "none"
-          }}>✏️</button>
+            textShadow: dark
+              ? "0 1px 3px rgba(0,0,0,0.6)"
+              : "0 1px 2px rgba(255,255,255,0.8)",
+            userSelect: "none",
+          }}
+        >
+          ✏️
+        </button>
       </div>
     </div>
   );
