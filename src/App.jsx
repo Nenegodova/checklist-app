@@ -326,18 +326,18 @@ export default function App() {
   const r = {
     pad: isSmall ? 12 : isMobile ? 20 : 30,
     maxW: isSmall ? "calc(100% - 24px)" : "100%",
-    titleSize: isSmall ? 20 : isMobile ? 24 : 28,
-    progressSize: isSmall ? 11 : 13,
-    cardPad: isSmall ? "10px 12px" : "14px 16px",
-    taskSize: isSmall ? 12 : 13,
-    btnPad: isSmall ? "4px 8px" : "6px 12px",
-    btnSize: isSmall ? 11 : 13,
-    selectMinW: isSmall ? 100 : 140,
+    titleSize: isSmall ? 18 : isMobile ? 22 : 28,
+    progressSize: isSmall ? 10 : 13,
+    cardPad: isSmall ? "8px 10px" : "14px 16px",
+    taskSize: isSmall ? 11 : 13,
+    btnPad: isSmall ? "3px 6px" : "6px 12px",
+    btnSize: isSmall ? 10 : 13,
+    selectMinW: isSmall ? 90 : 140,
     notesW: isSmall ? "min(320px, 90vw)" : 320,
-    fabSize: isSmall ? 48 : 58,
+    fabSize: isSmall ? 44 : 58,
     fabPad: isSmall ? 0 : "0 12px",
-    headerPad: isSmall ? "14px 12px" : isMobile ? "16px 14px" : "22px 24px",
-    catPad: isSmall ? "4px 8px" : "6px 10px",
+    headerPad: isSmall ? "10px 12px" : isMobile ? "14px 16px" : "22px 24px",
+    catPad: isSmall ? "3px 6px" : "6px 10px",
   };
   useEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
@@ -495,7 +495,7 @@ export default function App() {
   const title = dark ? "#FFFFFF" : "#111827";
   const category = dark ? "#F3F4F6" : "#111827";
   const controlBase = {
-    height: 34, padding: r.btnPad, borderRadius: 10, fontSize: r.btnSize, lineHeight: "20px",
+    height: 30, padding: r.btnPad, borderRadius: 8, fontSize: r.btnSize, lineHeight: "18px",
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     cursor: "pointer", transition: "all 0.15s ease", boxShadow: "none", outline: "none",
   };
@@ -505,24 +505,24 @@ export default function App() {
   });
   const btn = makeControl(dark);
   const ui = {
-    categoryTitle: { cursor: "pointer", marginBottom: 12, fontSize: 15, fontWeight: 600, color: category, display: "flex", alignItems: "center", gap: 16 },
-    card: { display: "flex", alignItems: "flex-start", gap: 10, padding: r.cardPad, border: `1px solid ${border}`, background: card, textAlign: "left", borderRadius: 18, transition: "all 0.15s ease", boxShadow: dark ? "0 1px 2px rgba(0,0,0,0.3)" : "0 1px 2px rgba(0,0,0,0.05)" },
-    taskText: { flex: 1, fontSize: r.taskSize, lineHeight: "18px", color: textColor, textDecoration: "none" },
+    categoryTitle: { cursor: "pointer", marginBottom: 10, fontSize: 14, fontWeight: 600, color: category, display: "flex", alignItems: "center", gap: 12 },
+    card: { display: "flex", alignItems: "flex-start", gap: 8, padding: r.cardPad, border: `1px solid ${border}`, background: card, textAlign: "left", borderRadius: 14, transition: "all 0.15s ease", boxShadow: dark ? "0 1px 2px rgba(0,0,0,0.3)" : "0 1px 2px rgba(0,0,0,0.05)" },
+    taskText: { flex: 1, fontSize: r.taskSize, lineHeight: "16px", color: textColor, textDecoration: "none" },
   };
   const headerGlass = {
     background: bgImage ? (dark ? "rgba(12, 12, 18, 0.65)" : "rgba(255, 255, 255, 0.75)") : bg,
     backdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
     WebkitBackdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
-    borderRadius: 20,
+    borderRadius: 16,
     padding: r.headerPad,
     border: bgImage ? `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}` : `1px solid ${border}`,
     boxShadow: bgImage ? (dark ? "0 8px 32px rgba(0,0,0,0.4)" : "0 8px 32px rgba(0,0,0,0.06)") : `0 1px 3px ${dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.05)"}`,
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: "16px",
+    alignItems: "center",
+    gap: "12px",
     flexWrap: "wrap",
-    marginBottom: 36,
+    marginBottom: 24,
     transition: "all 0.3s ease",
   };
   return (
@@ -563,11 +563,12 @@ export default function App() {
           .notes-fab:hover { transform: scale(1.08); }
           .notes-fab:active { transform: scale(0.95); }
         `}</style>
+        
+        {/* Компактный хедер */}
         <div style={headerGlass}>
           <div style={{
-            flex: "1 1 260px",
-            minWidth: isSmall ? "100%" : 180,
-            marginBottom: isSmall ? 12 : 0,
+            flex: "1 1 auto",
+            minWidth: isSmall ? "auto" : 150,
             textAlign: isSmall ? "center" : "left"
           }}>
             <h1 style={{
@@ -578,33 +579,30 @@ export default function App() {
               color: title,
               textShadow: bgImage ? (dark ? "0 2px 8px rgba(0,0,0,0.6)" : "0 2px 8px rgba(255,255,255,0.6)") : "none"
             }}>Чек-лист проверки</h1>
-            <div style={{ marginTop: 4, fontSize: r.progressSize, color: mutedColor, lineHeight: 1.5 }}>
+            <div style={{ marginTop: 2, fontSize: r.progressSize, color: mutedColor, lineHeight: 1.4 }}>
               {doneTasks}/{totalTasks} ({percent}%)
             </div>
           </div>
-          {/* Кнопки внешнего вида — справа */}
+          {/* Кнопки внешнего вида — компактно справа */}
           <div style={{
-            flex: isSmall ? "1 1 100%" : "0 0 auto",
+            flex: "0 0 auto",
             textAlign: isSmall ? "center" : "right",
-            minWidth: 0,
-            marginBottom: isSmall ? 8 : 0
           }}>
             <div style={{ 
               display: "flex", 
               flexWrap: "wrap", 
-              gap: 6, 
+              gap: 4, 
               justifyContent: isSmall ? "center" : "flex-end",
-              marginBottom: 12 
             }}>
-              <button type="button" style={btn} onClick={() => setDark((v) => !v)}>
+              <button type="button" style={{...btn, height: 28, padding: "2px 6px", fontSize: 10}} onClick={() => setDark((v) => !v)}>
                 {dark ? "☀️" : "🌙"}
               </button>
-              <button type="button" style={btn} onClick={() => document.getElementById("bg-file-input").click()}>
+              <button type="button" style={{...btn, height: 28, padding: "2px 6px", fontSize: 10}} onClick={() => document.getElementById("bg-file-input").click()}>
                 Фон
               </button>
               <input id="bg-file-input" type="file" accept="image/*" style={{ display: "none" }} onChange={handleBgFile} />
               {bgImage && (
-                <button type="button" style={{ ...btn, minWidth: 24, justifyContent: "center" }} onClick={() => { setBgImage(""); localStorage.removeItem("bgImage"); }}>
+                <button type="button" style={{...btn, height: 28, minWidth: 20, padding: "0 4px", fontSize: 10, justifyContent: "center"}} onClick={() => { setBgImage(""); localStorage.removeItem("bgImage"); }}>
                   ✖
                 </button>
               )}
@@ -612,12 +610,12 @@ export default function App() {
           </div>
         </div>
         
-        {/* Кнопки управления и контент — под хедером, слева */}
+        {/* Кнопки управления и контент */}
         <div style={{ 
-          marginBottom: 24,
+          marginBottom: 20,
           background: bgImage ? (dark ? "rgba(12, 12, 18, 0.5)" : "rgba(255, 255, 255, 0.7)") : "transparent",
-          borderRadius: 16,
-          padding: isSmall ? "12px" : "16px",
+          borderRadius: 14,
+          padding: isSmall ? "10px" : "14px",
           backdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
           WebkitBackdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
           border: bgImage ? `1px solid ${dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}` : "none"
@@ -625,9 +623,9 @@ export default function App() {
           <div style={{ 
             display: "flex", 
             flexWrap: "wrap", 
-            gap: 6, 
+            gap: 4, 
             justifyContent: isSmall ? "center" : "flex-start",
-            marginBottom: 12 
+            marginBottom: 10 
           }}>
             {/* Пресет */}
             <div style={{ position: "relative" }}>
@@ -639,10 +637,10 @@ export default function App() {
                   setPreset(e.target.value);
                 }}
                 style={{ 
-                  height: 34, 
-                  minWidth: isSmall ? 120 : r.selectMinW, 
-                  padding: "0 36px 0 12px", 
-                  borderRadius: 10, 
+                  height: 30, 
+                  minWidth: isSmall ? 90 : 130, 
+                  padding: "0 30px 0 8px", 
+                  borderRadius: 8, 
                   border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`, 
                   background: dark ? "#18181b" : "#ffffff", 
                   color: dark ? "#e8e8ea" : "#111827", 
@@ -666,29 +664,29 @@ export default function App() {
               </select>
               <span style={{ 
                 position: "absolute", 
-                right: 12, 
+                right: 8, 
                 top: "50%", 
                 transform: "translateY(-50%)", 
                 pointerEvents: "none", 
-                fontSize: 10, 
+                fontSize: 8, 
                 color: dark ? "#a1a1aa" : "#666" 
               }}>▼</span>
             </div>
             
-            <button type="button" style={btn} onClick={resetAll}>Сброс</button>
-            <button type="button" style={btn} onClick={() => setFocusMode((v) => !v)}>
-              {focusMode ? "Фокус: ON" : "Фокус: OFF"}
+            <button type="button" style={{...btn, height: 30, padding: "2px 8px", fontSize: r.btnSize}} onClick={resetAll}>Сброс</button>
+            <button type="button" style={{...btn, height: 30, padding: "2px 8px", fontSize: r.btnSize}} onClick={() => setFocusMode((v) => !v)}>
+              {focusMode ? "Фокус ON" : "Фокус OFF"}
             </button>
-            <button type="button" style={{ ...btn, color: "red" }} onClick={hardReset}>RESET</button>
+            <button type="button" style={{...btn, height: 30, padding: "2px 8px", fontSize: r.btnSize, color: "red"}} onClick={hardReset}>RESET</button>
           </div>
           
           {/* Фильтры контента */}
           <div>
             <div style={{ 
-              fontSize: 12, 
+              fontSize: 11, 
               fontWeight: 600, 
               color: mutedColor, 
-              marginBottom: 6, 
+              marginBottom: 4, 
               textAlign: isSmall ? "center" : "left" 
             }}>
               Контент
@@ -696,7 +694,7 @@ export default function App() {
             <div style={{ 
               display: "flex", 
               flexWrap: "wrap", 
-              gap: 6, 
+              gap: 4, 
               justifyContent: isSmall ? "center" : "flex-start" 
             }}>
               {Object.entries(CONTENT_FILTERS).map(([key, item]) => (
@@ -706,9 +704,9 @@ export default function App() {
                   onClick={() => setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))}
                   style={{ 
                     ...btn, 
-                    height: 28, 
+                    height: 26, 
                     padding: r.catPad, 
-                    fontSize: 12, 
+                    fontSize: 10, 
                     background: (contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff"), 
                     color: (contentFilters[key] ? "#111" : textColor), 
                     border: (contentFilters[key] ? "1px solid #FFDD2D" : `1px solid ${border}`), 
@@ -723,39 +721,39 @@ export default function App() {
         </div>
         
         {Object.keys(tasks).map((cat) => (
-          <div key={cat} style={{ marginBottom: 16 }}>
+          <div key={cat} style={{ marginBottom: 14 }}>
             <div
               onClick={() => toggleCollapse(cat)}
               style={{
                 ...ui.categoryTitle,
-                display: "flex", alignItems: "center", gap: 10,
+                display: "flex", alignItems: "center", gap: 8,
                 background: bgImage ? (dark ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.75)") : (dark ? "rgba(255,255,255,0.06)" : "transparent"),
                 padding: r.catPad,
-                borderRadius: 12,
+                borderRadius: 10,
                 backdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
                 WebkitBackdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
                 border: bgImage ? (dark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)") : (dark ? "1px solid rgba(255,255,255,0.08)" : "none"),
                 transition: "all 0.2s ease"
               }}
             >
-              <span style={{ fontSize: 16 }}>{collapsed[cat] ? "▶" : "▼"}</span>
-              <span>{cat}</span>
-              <span style={{ fontSize: 11, opacity: 0.9, padding: "2px 8px", borderRadius: 999, background: dark ? "rgba(255,255,255,0.1)" : "#e5e7eb", minWidth: 42, textAlign: "center", fontWeight: 500 }}>
+              <span style={{ fontSize: 14 }}>{collapsed[cat] ? "▶" : "▼"}</span>
+              <span style={{ fontSize: 14 }}>{cat}</span>
+              <span style={{ fontSize: 10, opacity: 0.9, padding: "1px 6px", borderRadius: 999, background: dark ? "rgba(255,255,255,0.1)" : "#e5e7eb", minWidth: 36, textAlign: "center", fontWeight: 500 }}>
                 {tasks[cat].filter((t) => t.done).length}/{tasks[cat].length} {tasks[cat].every((t) => t.done) ? " ✓" : ""}
               </span>
             </div>
             {!collapsed[cat] && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {tasks[cat].map((task, i) => {
                   if ((cat === "Таблицы" && !contentFilters.tables) || (task.feature && !contentFilters[task.feature])) return null;
                   return (
                     <label key={`${cat}-${i}`} className="task-card" style={{ ...ui.card, display: focusMode && task.done ? "none" : "flex" }}>
                       <input type="checkbox" checked={task.done} onChange={() => toggle(cat, i)} aria-label={task.text}
-                        style={{ width: 18, height: 18, marginTop: 2, accentColor: dark ? "#3f3f46" : "#6b7280", cursor: "pointer", flexShrink: 0 }} />
+                        style={{ width: 16, height: 16, marginTop: 1, accentColor: dark ? "#3f3f46" : "#6b7280", cursor: "pointer", flexShrink: 0 }} />
                       <div style={{ flex: 1, opacity: task.done ? 0.5 : 1 }}>
                         {task.text && <div style={{ ...ui.taskText, textDecoration: task.done ? "line-through" : "none" }}>{renderTextWithLinks(task.text, dark)}</div>}
                         {task.links?.length > 0 && (
-                          <div style={{ display: "flex", gap: 6, marginTop: task.text ? 6 : 0, flexWrap: "wrap" }}>
+                          <div style={{ display: "flex", gap: 4, marginTop: task.text ? 4 : 0, flexWrap: "wrap" }}>
                             {task.links.map((link) => (
                               <a
                                 key={link.url}
@@ -763,9 +761,9 @@ export default function App() {
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{
-                                  padding: "3px 8px",
+                                  padding: "2px 6px",
                                   borderRadius: 999,
-                                  fontSize: 11,
+                                  fontSize: 10,
                                   fontWeight: 600,
                                   textDecoration: "none",
                                   background: dark ? "#27272a" : "#eef2f7",
@@ -787,14 +785,14 @@ export default function App() {
           </div>
         ))}
       </div>
-      <div style={{ position: "fixed", right: 16, bottom: 16, zIndex: 999 }}>
+      <div style={{ position: "fixed", right: 12, bottom: 12, zIndex: 999 }}>
         {notesOpen && (
           <div style={{
             width: r.notesW,
-            maxWidth: 320,
-            marginBottom: 12,
-            padding: 14,
-            borderRadius: 18,
+            maxWidth: 280,
+            marginBottom: 10,
+            padding: 12,
+            borderRadius: 16,
             border: `1px solid ${border}`,
             background: bgImage
               ? (dark ? "rgba(15, 15, 20, 0.65)" : "rgba(255, 255, 255, 0.7)")
@@ -804,15 +802,15 @@ export default function App() {
             boxShadow: dark ? "0 12px 40px rgba(0,0,0,0.45)" : "0 12px 30px rgba(0,0,0,0.12)",
             boxSizing: "border-box"
           }}>
-            <div style={{ fontWeight: 700, marginBottom: 8, color: title, fontSize: 14 }}>Заметки</div>
-            <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+            <div style={{ fontWeight: 700, marginBottom: 6, color: title, fontSize: 13 }}>Заметки</div>
+            <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
               <button type="button" onClick={() => setNotes((prev) => prev.trim() ? prev : NOTES_TEMPLATE)}
-                style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: dark ? "#27272a" : "#eef2f7", color: textColor, fontSize: 11, cursor: "pointer" }}>Вставить шаблон</button>
+                style={{ padding: "3px 6px", borderRadius: 6, border: "none", background: dark ? "#27272a" : "#eef2f7", color: textColor, fontSize: 10, cursor: "pointer" }}>Вставить шаблон</button>
               <button type="button" onClick={() => setNotes("")}
-                style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: dark ? "#3a1f1f" : "#fee2e2", color: dark ? "#fca5a5" : "#991b1b", fontSize: 11, cursor: "pointer" }}>Очистить</button>
+                style={{ padding: "3px 6px", borderRadius: 6, border: "none", background: dark ? "#3a1f1f" : "#fee2e2", color: dark ? "#fca5a5" : "#991b1b", fontSize: 10, cursor: "pointer" }}>Очистить</button>
             </div>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
-              style={{ width: "100%", height: 160, padding: 10, borderRadius: 10, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 13, lineHeight: "18px", resize: "none", outline: "none", boxSizing: "border-box" }} />
+              style={{ width: "100%", height: 140, padding: 8, borderRadius: 8, border: `1px solid ${border}`, background: dark ? "#111" : "#fff", color: textColor, fontSize: 12, lineHeight: "16px", resize: "none", outline: "none", boxSizing: "border-box" }} />
           </div>
         )}
         <button type="button" className="notes-fab" onClick={() => setNotesOpen((v) => !v)}
@@ -830,7 +828,7 @@ export default function App() {
               ? (dark ? "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)" : "0 10px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7)")
               : (dark ? "0 10px 40px rgba(0,0,0,0.4)" : "0 10px 40px rgba(0,0,0,0.08)"),
             color: dark ? "#FFDD2D" : "#111827",
-            fontSize: 20, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
+            fontSize: 18, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: r.fabPad,
             transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
             textShadow: dark ? "0 1px 3px rgba(0,0,0,0.6)" : "0 1px 2px rgba(255,255,255,0.8)",
             userSelect: "none"
