@@ -175,7 +175,7 @@ const DATA = {
     { text: "В ссылке шаблона гугл⁠-⁠дока для копирования /edit заменен на /copy." },
     { id: "utm", text: "Поиском по коду найдены и удалены оставшихся у ссылок метки /?ysclid и https://google.com/" },
     { id: "currency-tooltip", text: "У первого валютного фичера стоит тултип: \"Суммы в рублях пересчитываются по актуальному курсу раз в день\"" },
-    { id: "tooltip-link", text: "Тултип не стоит рядом с ссылкой" },
+    { id: "tooltip-link", text: "Тултип не стоит рядом со ссылкой" },
     { id: "lists-style", text: "Проверить оформление списков: цифровые и кастомные — с большой буквы, в конце пунктов точки. Списки с буллитами — с маленькой буквы, в конце пунктов точка с запятой, у последнего пункта — точка" },
     { text: "Опрос на месте, в нем предлоги приклеены к следующему слову, эмодзи отображаются корректно", feature: "poll" },
     { id: "editor-badge", text: "В конце материала стоит верная плашка телеграм-канала редакции" },
@@ -219,7 +219,6 @@ const DATA = {
     { links: [{ label: "Методички общие", url: METHODICHKA_URL }] },
   ],
 };
-
 // --- Helpers ---
 const readStorageJSON = (key) => {
   try {
@@ -287,7 +286,6 @@ const renderTextWithLinks = (text, dark) => {
     return <span key={i}>{part}</span>;
   });
 };
-
 // --- Component ---
 export default function App() {
   const [dark, setDark] = useState(() => {
@@ -310,7 +308,6 @@ export default function App() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-
   const [preset, setPreset] = useState(() => localStorage.getItem("preset") || "default");
   const [contentFilters, setContentFilters] = useState(() => readStorageJSON("contentFilters") || buildContentFilters());
   const [focusMode, setFocusMode] = useState(false);
@@ -349,7 +346,6 @@ export default function App() {
       localStorage.setItem("dark", String(dark));
     }
   }, [dark]);
-
   const currentData = useMemo(() => {
     const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
@@ -379,7 +375,6 @@ export default function App() {
     }
     return clone;
   }, [preset]);
-
   const [tasks, setTasks] = useState(() => {
     const savedVersion = localStorage.getItem("version");
     const saved = readStorageJSON("checklist");
@@ -392,7 +387,6 @@ export default function App() {
     return saved || buildTasks(currentData);
   });
   const [collapsed, setCollapsed] = useState(() => readStorageJSON("collapsed") || buildCollapsed(currentData));
-
   useEffect(() => {
     localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
     localStorage.setItem("checklist", JSON.stringify(tasks));
@@ -400,7 +394,6 @@ export default function App() {
     localStorage.setItem("notes", notes);
     localStorage.setItem("bgImage", bgImage || "");
   }, [contentFilters, tasks, collapsed, notes, bgImage]);
-
   useEffect(() => {
     setTasks((prev) => {
       const next = {};
@@ -418,14 +411,12 @@ export default function App() {
     });
     setCollapsed((prev) => buildCollapsed(currentData, prev));
   }, [currentData]);
-
   const toggle = useCallback((cat, index) => {
     setTasks((prev) => {
       const updated = prev[cat].map((t, i) => (i === index ? { ...t, done: !t.done } : t));
       return { ...prev, [cat]: updated };
     });
   }, []);
-
   useEffect(() => {
     setCollapsed((prev) => {
       let next = { ...prev };
@@ -444,14 +435,12 @@ export default function App() {
       return next;
     });
   }, [tasks]);
-
   // --- Reset: фильтры + чекбоксы (группа 2, частое использование) ---
   const resetFiltersAndCheckboxes = useCallback(() => {
     localStorage.removeItem("checklist");
     setContentFilters(buildContentFilters());
     setTasks(buildTasks(currentData));
   }, [currentData]);
-
   // --- Hard reset (группа 1, единоразовое) ---
   const hardReset = useCallback(() => {
     ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage"].forEach((key) =>
@@ -467,11 +456,9 @@ export default function App() {
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
   }, []);
-
   const toggleCollapse = useCallback((cat) => {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
-
   const handleBgFile = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -496,7 +483,6 @@ export default function App() {
     reader.readAsDataURL(file);
     e.target.value = "";
   }, []);
-
   const allTasks = Object.values(tasks ?? {}).flat();
   const doneTasks = allTasks.filter((t) => t.done).length;
   const totalTasks = allTasks.length;
@@ -508,7 +494,6 @@ export default function App() {
   const bg = dark ? "#111315" : "#F6F7F9";
   const titleColor = dark ? "#FFFFFF" : "#111827";
   const categoryColor = dark ? "#F3F4F6" : "#111827";
-
   const controlBase = {
     height: 30,
     padding: r.btnPad,
@@ -530,7 +515,6 @@ export default function App() {
     color: isDark ? "#e8e8ea" : "#111827",
   });
   const btn = makeControl(dark);
-
   const ui = {
     categoryTitle: {
       cursor: "pointer",
@@ -562,7 +546,6 @@ export default function App() {
       textDecoration: "none",
     },
   };
-
   const headerGlass = {
     background: bgImage
       ? dark
@@ -589,7 +572,6 @@ export default function App() {
     marginBottom: 24,
     transition: "all 0.3s ease",
   };
-
   // --- Общие стили кнопок групп ---
   const group1Btn = {
     ...btn,
@@ -603,7 +585,6 @@ export default function App() {
     padding: "2px 8px",
     fontSize: r.btnSize,
   };
-
   return (
     <div
       style={{
@@ -642,7 +623,6 @@ export default function App() {
           .notes-fab:hover { transform: scale(1.08); }
           .notes-fab:active { transform: scale(0.95); }
         `}</style>
-
         {/* ===== ШАПКА ЧЕК-ЛИСТА ===== */}
         <div style={headerGlass}>
           <div style={{ flex: "1 1 auto", minWidth: isSmall ? "auto" : 150, textAlign: isSmall ? "center" : "left" }}>
@@ -684,7 +664,6 @@ export default function App() {
               </a>
             </div>
           </div>
-
           {/* ===== ГРУППА 1 — единоразовое использование, справа ===== */}
           <div style={{ flex: "0 0 auto", textAlign: isSmall ? "center" : "right" }}>
             <div
@@ -749,7 +728,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
         {/* ===== ГРУППА 2 — частое использование, под шапкой ===== */}
         <div
           style={{
@@ -768,7 +746,7 @@ export default function App() {
               : "none",
           }}
         >
-          {/* 2a. Пресет + сброс фильтров и чекбоксов + фокус */}
+          {/* 2a. Пресет + фокус + сброс фильтров и чекбоксов */}
           <div
             style={{
               display: "flex",
@@ -827,17 +805,7 @@ export default function App() {
                 ▼
               </span>
             </div>
-
-            {/* Сброс фильтров и чекбоксов */}
-            <button
-              type="button"
-              style={{ ...group2Btn, color: "#e06c3b" }}
-              onClick={resetFiltersAndCheckboxes}
-            >
-              Сброс
-            </button>
-
-            {/* Фокус-режим */}
+            {/* Фокус-режим (перемещен раньше) */}
             <button
               type="button"
               style={group2Btn}
@@ -845,8 +813,15 @@ export default function App() {
             >
               {focusMode ? "Фокус ON" : "Фокус OFF"}
             </button>
+            {/* Сброс фильтров и чекбоксов (перемещен позже) */}
+            <button
+              type="button"
+              style={{ ...group2Btn, color: "#e06c3b" }}
+              onClick={resetFiltersAndCheckboxes}
+            >
+              Сброс
+            </button>
           </div>
-
           {/* 2b. Фильтр по элементам */}
           <div>
             <div
@@ -895,7 +870,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
         {/* ===== СПИСОК ЗАДАЧ ===== */}
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 14 }}>
@@ -1028,7 +1002,6 @@ export default function App() {
           </div>
         ))}
       </div>
-
       {/* ===== ЗАМЕТКИ (FAB) ===== */}
       <div style={{ position: "fixed", right: 12, bottom: 12, zIndex: 999 }}>
         {notesOpen && (
