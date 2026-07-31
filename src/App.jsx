@@ -816,7 +816,7 @@ export default function App() {
               style={{ ...group2Btn, color: "#e06c3b" }}
               onClick={resetFiltersAndCheckboxes}
             >
-              ↺ Сбросить
+              Сбросить
             </button>
 
             {/* Фокус-режим */}
