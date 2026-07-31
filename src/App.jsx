@@ -662,8 +662,26 @@ export default function App() {
             >
               Чек-лист проверки
             </h1>
-            <div style={{ marginTop: 2, fontSize: r.progressSize, color: mutedColor, lineHeight: 1.4 }}>
-              {doneTasks}/{totalTasks} ({percent}%)
+            <div style={{ marginTop: 2, fontSize: r.progressSize, color: mutedColor, lineHeight: 1.4, display: "inline-flex", alignItems: "center", gap: 8 }}>
+              <span>{doneTasks}/{totalTasks} ({percent}%)</span>
+              <a
+                href={METHODICHKA_URL}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 4,
+                  fontSize: r.progressSize, fontWeight: 500,
+                  color: dark ? "#7ab7ff" : "#2563eb",
+                  textDecoration: "none", padding: "2px 8px", borderRadius: 8,
+                  background: dark ? "rgba(122, 183, 255, 0.15)" : "rgba(37, 99, 235, 0.08)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = dark ? "rgba(122, 183, 255, 0.25)" : "rgba(37, 99, 235, 0.15)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = dark ? "rgba(122, 183, 255, 0.15)" : "rgba(37, 99, 235, 0.08)"}
+              >
+                Методичка
+              </a>
             </div>
           </div>
 
@@ -691,7 +709,7 @@ export default function App() {
                 style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
                 onClick={() => document.getElementById("bg-file-input").click()}
               >
-                Фон
+                🖼 Фон
               </button>
               <input
                 id="bg-file-input"
@@ -816,7 +834,7 @@ export default function App() {
               style={{ ...group2Btn, color: "#e06c3b" }}
               onClick={resetFiltersAndCheckboxes}
             >
-              Сбросить
+              ↺ Сбросить
             </button>
 
             {/* Фокус-режим */}
