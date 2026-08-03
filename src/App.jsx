@@ -1,4 +1,11 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import {
+  getCategoryProgress,
+  getHiddenByFiltersCount,
+  getOverallProgress,
+  getRelevantTasks,
+  getVisibleTasks,
+} from "./lib/checklist-state";
 const DATA_VERSION = "1.1";
 const NOTES_TEMPLATE = `Вопросы к редакции:
 —
@@ -230,7 +237,7 @@ const readStorageJSON = (key) => {
 const buildCollapsed = (data, prev = {}) => {
   const next = {};
   Object.keys(data).forEach((cat) => {
-    next[cat] = prev?.[cat] ?? true;
+    next[cat] = prev?.[cat] ?? false;
   });
   return next;
 };
@@ -310,14 +317,10 @@ export default function App() {
   const [focusMode, setFocusMode] = useState(false);
   const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
-  const [bgImage, setBgImage] = useState(() => {
-    try {
-      const saved = localStorage.getItem("bgImage");
-      return saved || "";
-    } catch {
-      return "";
-    }
-  });
+  const notesFabRef = useRef(null);
+  const notesTextareaRef = useRef(null);
+  const notesPopoverRef = useRef(null);
+  const dataInitializedRef = useRef(false);
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isSmall = useMediaQuery("(max-width: 600px)");
   const r = {
@@ -343,6 +346,32 @@ export default function App() {
       localStorage.setItem("dark", String(dark));
     }
   }, [dark]);
+  useEffect(() => {
+    // Legacy custom backgrounds are deliberately discarded without touching other data.
+    localStorage.removeItem("bgImage");
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("preset", preset);
+  }, [preset]);
+  useEffect(() => {
+    if (!notesOpen) return undefined;
+    notesTextareaRef.current?.focus();
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setNotesOpen(false);
+    };
+    const closeOnOutsideClick = (event) => {
+      if (!notesPopoverRef.current?.contains(event.target) && !notesFabRef.current?.contains(event.target)) setNotesOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+    };
+  }, [notesOpen]);
+  useEffect(() => {
+    if (!notesOpen) notesFabRef.current?.focus();
+  }, [notesOpen]);
   const currentData = useMemo(() => {
     const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
     const presetData = PRESETS[preset];
@@ -393,9 +422,13 @@ export default function App() {
     localStorage.setItem("checklist", JSON.stringify(tasks));
     localStorage.setItem("collapsed", JSON.stringify(collapsed));
     localStorage.setItem("notes", notes);
-    localStorage.setItem("bgImage", bgImage || "");
-  }, [contentFilters, tasks, collapsed, notes, bgImage]);
+  }, [contentFilters, tasks, collapsed, notes]);
   useEffect(() => {
+    if (!dataInitializedRef.current) {
+      dataInitializedRef.current = true;
+      return;
+    }
+    // The preset is an external persisted selection; changing it intentionally rebuilds task state.
     setTasks((prev) => {
       const next = {};
       Object.keys(currentData).forEach((cat) => {
@@ -419,10 +452,13 @@ export default function App() {
     });
   }, []);
   useEffect(() => {
+    // Accordion state follows task completion and therefore must be reconciled after a task update.
+    const cats = Object.keys(tasks);
+    const lastDoneCat = [...cats].reverse().find((cat) => tasks[cat]?.every((catTask) => catTask.done));
+    if (!lastDoneCat) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCollapsed((prev) => {
-      let next = { ...prev };
-      const cats = Object.keys(tasks);
-      const lastDoneCat = [...cats].reverse().find((cat) => tasks[cat]?.every((t) => t.done));
+      const next = { ...prev };
       if (lastDoneCat) {
         next[lastDoneCat] = true;
         const idx = cats.indexOf(lastDoneCat);
@@ -444,7 +480,7 @@ export default function App() {
   }, [currentData]);
   // --- Hard reset (группа 1, единоразовое) ---
   const hardReset = useCallback(() => {
-    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage"].forEach((key) =>
+    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version"].forEach((key) =>
       localStorage.removeItem(key)
     );
     localStorage.setItem("version", DATA_VERSION);
@@ -452,42 +488,16 @@ export default function App() {
     setContentFilters(buildContentFilters());
     setNotes("");
     setFocusMode(false);
-    setDark(false);
-    setBgImage("");
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
   }, []);
   const toggleCollapse = useCallback((cat) => {
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
   }, []);
-  const handleBgFile = useCallback((e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2.5 * 1024 * 1024) {
-      alert("Файл слишком большой. Рекомендуется использовать изображения до 2 МБ.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result;
-      if (!dataUrl || typeof dataUrl !== "string") return;
-      setBgImage(dataUrl);
-      try {
-        localStorage.setItem("bgImage", dataUrl);
-      } catch (err) {
-        console.warn("localStorage full, bg will persist only for this session");
-      }
-    };
-    reader.onerror = () => {
-      console.error("FileReader error");
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  }, []);
-  const allTasks = Object.values(tasks ?? {}).flat();
-  const doneTasks = allTasks.filter((t) => t.done).length;
-  const totalTasks = allTasks.length;
-  const percent = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
+  const relevantTasks = useMemo(() => getRelevantTasks(tasks, contentFilters), [tasks, contentFilters]);
+  const visibleTasks = useMemo(() => getVisibleTasks(relevantTasks, focusMode), [relevantTasks, focusMode]);
+  const hiddenByFilters = getHiddenByFiltersCount(tasks, relevantTasks);
+  const { done: doneTasks, total: totalTasks, percent } = getOverallProgress(relevantTasks);
   const textColor = dark ? "#e8e8ea" : "#111";
   const mutedColor = dark ? "#a1a1aa" : "#555";
   const card = dark ? "#1A1D21" : "#ffffff";
@@ -548,23 +558,11 @@ export default function App() {
     },
   };
   const headerGlass = {
-    background: bgImage
-      ? dark
-        ? "rgba(12, 12, 18, 0.65)"
-        : "rgba(255, 255, 255, 0.75)"
-      : bg,
-    backdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
-    WebkitBackdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
+    background: bg,
     borderRadius: 16,
     padding: r.headerPad,
-    border: bgImage
-      ? `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}`
-      : `1px solid ${border}`,
-    boxShadow: bgImage
-      ? dark
-        ? "0 8px 32px rgba(0,0,0,0.4)"
-        : "0 8px 32px rgba(0,0,0,0.06)"
-      : `0 1px 3px ${dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.05)"}`,
+    border: `1px solid ${border}`,
+    boxShadow: `0 1px 3px ${dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.05)"}`,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -600,23 +598,6 @@ export default function App() {
       }}
       className={dark ? "dark" : ""}
     >
-      {bgImage && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 0,
-            pointerEvents: "none",
-            backgroundImage: `url(${bgImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
-      )}
       <div style={{ maxWidth: r.maxW, margin: "0 auto", position: "relative" }}>
         <style>{`
           body, html { margin: 0 !important; padding: 0 !important; }
@@ -634,11 +615,7 @@ export default function App() {
                 fontWeight: 700,
                 lineHeight: 1.1,
                 color: titleColor,
-                textShadow: bgImage
-                  ? dark
-                    ? "0 2px 8px rgba(0,0,0,0.6)"
-                    : "0 2px 8px rgba(255,255,255,0.6)"
-                  : "none",
+                textShadow: "none",
               }}
             >
               Чек-лист проверки
@@ -678,49 +655,16 @@ export default function App() {
               {/* Тема */}
               <button
                 type="button"
+                aria-label="Переключить тему"
                 style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
                 onClick={() => setDark((v) => !v)}
               >
                 {dark ? "☀️" : "🌙"}
               </button>
-              {/* Загрузка фона */}
-              <button
-                type="button"
-                style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
-                onClick={() => document.getElementById("bg-file-input").click()}
-              >
-                Фон
-              </button>
-              <input
-                id="bg-file-input"
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleBgFile}
-              />
-              {/* Сброс фона */}
-              {bgImage && (
-                <button
-                  type="button"
-                  style={{
-                    ...group1Btn,
-                    height: 28,
-                    minWidth: 20,
-                    padding: "0 4px",
-                    fontSize: 10,
-                    justifyContent: "center",
-                  }}
-                  onClick={() => {
-                    setBgImage("");
-                    localStorage.removeItem("bgImage");
-                  }}
-                >
-                  ✖
-                </button>
-              )}
               {/* Hard Reset */}
               <button
                 type="button"
+                aria-label="Полный сброс"
                 style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10, color: "red" }}
                 onClick={hardReset}
               >
@@ -733,18 +677,10 @@ export default function App() {
         <div
           style={{
             marginBottom: 20,
-            background: bgImage
-              ? dark
-                ? "rgba(12, 12, 18, 0.5)"
-                : "rgba(255, 255, 255, 0.7)"
-              : "transparent",
+            background: "transparent",
             borderRadius: 14,
             padding: isSmall ? "10px" : "14px",
-            backdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
-            WebkitBackdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
-            border: bgImage
-              ? `1px solid ${dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}`
-              : "none",
+            border: "none",
           }}
         >
           {/* 2a. Пресет + фокус + сброс фильтров и чекбоксов */}
@@ -760,6 +696,7 @@ export default function App() {
             {/* Пресет */}
             <div style={{ position: "relative" }}>
               <select
+                aria-label="Формат"
                 value={preset}
                 onChange={(e) => {
                   localStorage.removeItem("checklist");
@@ -811,6 +748,8 @@ export default function App() {
               type="button"
               style={group2Btn}
               onClick={() => setFocusMode((v) => !v)}
+              role="switch"
+              aria-checked={focusMode}
             >
               {focusMode ? "Фокус ON" : "Фокус OFF"}
             </button>
@@ -851,6 +790,7 @@ export default function App() {
                   onClick={() =>
                     setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))
                   }
+                  aria-pressed={contentFilters[key]}
                   style={{
                     ...btn,
                     height: 26,
@@ -869,34 +809,28 @@ export default function App() {
                 </button>
               ))}
             </div>
+            <output data-testid="hidden-by-filters">Скрыто фильтрами: {hiddenByFilters}</output>
           </div>
         </div>
         {/* ===== СПИСОК ЗАДАЧ ===== */}
         {Object.keys(tasks).map((cat) => (
           <div key={cat} style={{ marginBottom: 14 }}>
-            <div
+            <button
+              type="button"
+              aria-expanded={!collapsed[cat]}
+              aria-label={`Раздел ${cat}`}
               onClick={() => toggleCollapse(cat)}
               style={{
                 ...ui.categoryTitle,
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                background: bgImage
-                  ? dark
-                    ? "rgba(0,0,0,0.5)"
-                    : "rgba(255,255,255,0.75)"
-                  : dark
+                background: dark
                     ? "rgba(255,255,255,0.06)"
                     : "transparent",
                 padding: r.catPad,
                 borderRadius: 10,
-                backdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
-                WebkitBackdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
-                border: bgImage
-                  ? dark
-                    ? "1px solid rgba(255,255,255,0.1)"
-                    : "1px solid rgba(0,0,0,0.08)"
-                  : dark
+                border: dark
                     ? "1px solid rgba(255,255,255,0.08)"
                     : "none",
                 transition: "all 0.2s ease",
@@ -916,26 +850,22 @@ export default function App() {
                   fontWeight: 500,
                 }}
               >
-                {tasks[cat].filter((t) => t.done).length}/
-                {tasks[cat].length}{" "}
-                {tasks[cat].every((t) => t.done) ? " ✓" : ""}
+                {getCategoryProgress(relevantTasks, cat).done}/
+                {getCategoryProgress(relevantTasks, cat).total}{" "}
+                {getCategoryProgress(relevantTasks, cat).total > 0 && getCategoryProgress(relevantTasks, cat).done === getCategoryProgress(relevantTasks, cat).total ? " ✓" : ""}
               </span>
-            </div>
+            </button>
             {!collapsed[cat] && (
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                {tasks[cat].map((task, i) => {
-                  if (
-                    (cat === "Таблицы" && !contentFilters.tables) ||
-                    (task.feature && !contentFilters[task.feature])
-                  )
-                    return null;
+                {visibleTasks[cat].map((task) => {
+                  const i = tasks[cat].findIndex((item) => item.id === task.id);
                   return (
                     <label
                       key={`${cat}-${i}`}
                       className="task-card"
                       style={{
                         ...ui.card,
-                        display: focusMode && task.done ? "none" : "flex",
+                        display: "flex",
                       }}
                     >
                       <input
@@ -1007,6 +937,8 @@ export default function App() {
       <div style={{ position: "fixed", right: 12, bottom: 12, zIndex: 999 }}>
         {notesOpen && (
           <div
+            ref={notesPopoverRef}
+            data-testid="notes-popover"
             style={{
               width: r.notesW,
               maxWidth: 280,
@@ -1014,13 +946,7 @@ export default function App() {
               padding: 12,
               borderRadius: 16,
               border: `1px solid ${border}`,
-              background: bgImage
-                ? dark
-                  ? "rgba(15, 15, 20, 0.65)"
-                  : "rgba(255, 255, 255, 0.7)"
-                : card,
-              backdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
-              WebkitBackdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
+              background: card,
               boxShadow: dark
                 ? "0 12px 40px rgba(0,0,0,0.45)"
                 : "0 12px 30px rgba(0,0,0,0.12)",
@@ -1029,6 +955,7 @@ export default function App() {
           >
             <div style={{ fontWeight: 700, marginBottom: 6, color: titleColor, fontSize: 13 }}>
               Заметки
+              <button type="button" aria-label="Закрыть заметки" onClick={() => setNotesOpen(false)}>×</button>
             </div>
             <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
               <button
@@ -1065,6 +992,8 @@ export default function App() {
               </button>
             </div>
             <textarea
+              ref={notesTextareaRef}
+              aria-label="Заметки"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
@@ -1088,32 +1017,23 @@ export default function App() {
         <button
           type="button"
           className="notes-fab"
+          ref={notesFabRef}
+          aria-label="Открыть заметки"
+          aria-expanded={notesOpen}
           onClick={() => setNotesOpen((v) => !v)}
           style={{
             width: r.fabSize,
             height: r.fabSize,
             borderRadius: "50%",
-            background: bgImage
-              ? dark
-                ? "rgba(12, 12, 18, 0.5)"
-                : "rgba(255, 255, 255, 0.6)"
-              : dark
+            background: dark
                 ? "rgba(25, 25, 28, 0.75)"
                 : "rgba(255, 255, 255, 0.75)",
             backdropFilter: "blur(20px) saturate(200%)",
             WebkitBackdropFilter: "blur(20px) saturate(200%)",
-            border: bgImage
-              ? dark
-                ? "1px solid rgba(255,255,255,0.12)"
-                : "1px solid rgba(255,255,255,0.45)"
-              : dark
+            border: dark
                 ? "1px solid rgba(255,255,255,0.08)"
                 : "1px solid rgba(0,0,0,0.08)",
-            boxShadow: bgImage
-              ? dark
-                ? "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)"
-                : "0 10px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7)"
-              : dark
+            boxShadow: dark
                 ? "0 10px 40px rgba(0,0,0,0.4)"
                 : "0 10px 40px rgba(0,0,0,0.08)",
             color: dark ? "#FFDD2D" : "#111827",
