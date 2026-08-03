@@ -1,5 +1,17 @@
 # React + Vite
 
+## Проверки
+
+```bash
+npm run lint
+npm run test
+npm run build
+npm run test:e2e
+```
+
+Для browser-тестов однократно установите Chromium: `npx playwright install chromium`.
+`npm run test:visual` содержит намеренно пропущенные `@visual`-проверки: эталоны создаются только после визуального review согласованного редизайна.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

@@ -1,0 +1,59 @@
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it } from "vitest";
+import App from "./App";
+
+afterEach(() => {
+  cleanup();
+  document.documentElement.className = "";
+});
+
+describe("checklist application", () => {
+  it("persists a checked task and calculates progress from it", async () => {
+    const user = userEvent.setup();
+    const rendered = render(<App />);
+    const checkbox = screen.getByRole("checkbox", { name: /мягкий перенос/i });
+    await user.click(checkbox);
+    expect(checkbox).toBeChecked();
+    expect(screen.getByText(/1\/\d+ \(\d+%\)/)).toBeInTheDocument();
+    await waitFor(() => expect(localStorage.getItem("checklist")).toContain('"done":true'));
+
+    rendered.unmount();
+    render(<App />);
+    expect(screen.getByRole("checkbox", { name: /мягкий перенос/i })).toBeChecked();
+  });
+
+  it("makes a fully filtered category report 0/0 and shows the hidden count", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getAllByRole("button", { name: /Таблицы/ })[0]);
+    expect(screen.getByRole("button", { name: "Раздел Таблицы" })).toHaveTextContent("0/0");
+    expect(screen.getByTestId("hidden-by-filters")).toHaveTextContent("Скрыто фильтрами: 6");
+  });
+
+  it("keeps notes and the selected theme through the appropriate resets", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: "Переключить тему" }));
+    expect(document.documentElement).toHaveClass("dark");
+    await user.click(screen.getByRole("button", { name: "Открыть заметки" }));
+    const textarea = screen.getByRole("textbox", { name: "Заметки" });
+    expect(textarea).toHaveFocus();
+    await user.type(textarea, "note");
+    await user.click(screen.getByRole("button", { name: "Сброс" }));
+    expect(localStorage.getItem("notes")).toBe("note");
+    await user.click(screen.getByRole("button", { name: "Полный сброс" }));
+    expect(document.documentElement).toHaveClass("dark");
+    expect(localStorage.getItem("dark")).toBe("true");
+    expect(localStorage.getItem("notes")).toBe("");
+  });
+
+  it("migrates away legacy backgrounds without changing other saved values", async () => {
+    localStorage.setItem("bgImage", "legacy-image");
+    localStorage.setItem("notes", "keep me");
+    const { unmount } = render(<App />);
+    await waitFor(() => expect(localStorage.getItem("bgImage")).toBeNull());
+    expect(localStorage.getItem("notes")).toBe("keep me");
+    unmount();
+  });
+});
