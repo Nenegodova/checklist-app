@@ -370,6 +370,10 @@ export default function App() {
         });
       });
     }
+    // Удаляем раздел "Прочее" для пресета "default"
+    if (preset === "default" && clone["Прочее"]) {
+      delete clone["Прочее"];
+    }
     return clone;
   }, [preset]);
   const [tasks, setTasks] = useState(() => {
