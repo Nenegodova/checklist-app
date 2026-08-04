@@ -1,28 +1,72 @@
-# React + Vite
+# Чек-лист выпуска
 
-## Проверки
+React-приложение для проверки материалов перед выпуском. Отметки, выбранный формат,
+фильтры, тема и заметки сохраняются локально в браузере.
+
+## Быстрый старт
+
+Требуется актуальная LTS-версия Node.js.
 
 ```bash
+npm ci
+npm run dev
+```
+
+Vite выведет локальный адрес приложения в терминале.
+
+## Структура
+
+- `src/checklist-data.js` — пункты чек-листа, форматы, исключения и контентные фильтры.
+- `src/App.jsx` — состояние приложения, сохранение в `localStorage` и основные действия.
+- `src/components/ChecklistWorkspace.jsx` — компоновка экрана и навигация по разделам.
+- `src/components/TaskSection.jsx` — раздел, строки задач и состояния завершения.
+- `src/components/ConfirmationDialog.jsx` — подтверждение смены формата и полного сброса.
+- `src/components/NotesPopover.jsx` — заметки пользователя.
+- `src/components/FilterChips.jsx` — общий список контентных фильтров.
+- `src/lib/checklist-state.js` — чистые преобразования и расчёты состояния.
+- `src/lib/storage.js` — безопасное чтение JSON из браузерного хранилища.
+- `src/App.css` — стили приложения, включая адаптивные и тёмную тему.
+- `src/*.test.*` — unit- и интеграционные тесты; `e2e/` — браузерные сценарии.
+
+## Как менять чек-лист
+
+Основной список находится в `DATA`, а дополнительные пункты форматов — в `PRESETS`
+в файле `src/checklist-data.js`. Для пункта можно задать:
+
+```js
+{
+  id: "stable-id", // обязателен, если текст пункта может измениться
+  text: "Что проверить",
+  feature: "images",
+  links: [{ label: "Методичка", url: "https://example.com" }],
+  _sortOrder: 3,
+}
+```
+
+Если изменение данных несовместимо с уже сохранёнными отметками, увеличьте
+`DATA_VERSION`. Приложение сбросит только сохранённый чек-лист и свёрнутые разделы.
+
+## Проверки перед передачей изменений
+
+```bash
+npm run format:check
 npm run lint
 npm run test
 npm run build
 npm run test:e2e
 ```
 
-Для browser-тестов однократно установите Chromium: `npx playwright install chromium`.
-`npm run test:visual` содержит намеренно пропущенные `@visual`-проверки: эталоны создаются только после визуального review согласованного редизайна.
+Для браузерных тестов однократно установите Chromium:
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+```bash
+npx playwright install chromium
+```
 
-Currently, two official plugins are available:
+`npm run test:visual` содержит намеренно пропущенные `@visual`-проверки. Эталоны
+создаются после визуального ревью согласованного редизайна.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Артефакты и временные файлы
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+`artifacts/` содержит зафиксированные результаты дизайн- и interaction-аудитов и
+не считается временной папкой. Генерируемые `dist/`, `coverage/`, `test-results/`,
+`tmp/`, логи и системные файлы исключены через `.gitignore`.
