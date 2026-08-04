@@ -1,4 +1,4 @@
-export const DATA_VERSION = "1.1";
+export const DATA_VERSION = "1.2";
 export const NOTES_TEMPLATE = `Вопросы к редакции:
 —
 Поставить блокер:
@@ -76,11 +76,19 @@ const PRESETS = {
     Текст: [
       {
         _sortOrder: 1,
-        text: 'В начале статьи стоит плашка panel с абзацами p grade="secondary"_',
+        text: 'В начале статьи стоит плашка panel с абзацами p grade="secondary"',
       },
       {
         _sortOrder: 1,
-        text: "У авторов стоят анонимные аватарки anonym_male у мужчин и anonym_female у женщин, автор стоит после оглавления",
+        text: "Если у автора нет аватарки, то стоят анонимные: anonym_male у мужчин и anonym_female у женщин, автор стоит после оглавления",
+      },
+      {
+        _sortOrder: 3,
+        text: "Сокращения имен (Р., И. и прочие) в начале и конце предложения приклеены к следующему/предыдущему слову в предложении",
+      },
+      {
+        _sortOrder: 3,
+        text: "Эмодзи в конце предложения приклеены к предыдущему слову",
       },
       { _sortOrder: 7, text: 'Траты обозначены class="negative"' },
       { _sortOrder: 7, text: 'Доходы обозначены class="positive"' },
@@ -94,6 +102,12 @@ const PRESETS = {
       {
         _sortOrder: 5,
         text: "Подпись к обложке: Фотография — Ксения Михайлова",
+      },
+    ],
+    Выпуск: [
+      {
+        _sortOrder: 4,
+        text: "После выпуска прикрепить в кайтене ссылку на материал и меин-картинку",
       },
     ],
   },
@@ -287,6 +301,19 @@ const PRESET_EXCLUDES = {
       "shorts-list-format",
     ],
   },
+  spending: {
+    Текст: [
+      "lead",
+      "spending-poll",
+      "editor-badge",
+      "shorts-alt-h2-p",
+      "spending-card-title",
+      "spending-card-description",
+      "spending-card-price",
+      "spending-card-shop-hide",
+      "shorts-list-format",
+    ],
+  },
 };
 export const DATA = {
   Админка: [
@@ -370,6 +397,7 @@ export const DATA = {
       text: "Проверить оформление списков: цифровые и кастомные — с большой буквы, в конце пунктов точки. Списки с буллитами — с маленькой буквы, в конце пунктов точка с запятой, у последнего пункта — точка",
     },
     {
+      id: "spending-poll",
       text: "Опрос на месте, в нем предлоги приклеены к следующему слову, эмодзи отображаются корректно",
       feature: "poll",
     },
@@ -389,18 +417,22 @@ export const DATA = {
       id: "shorts-alt-h2-p",
     },
     {
+      id: "spending-card-title",
       text: "У карточек товаров есть картинка и название товара",
       feature: "prodcard",
     },
     {
+      id: "spending-card-description",
       text: "У карточек-сеток отсутствует описание и бирка",
       feature: "prodcard",
     },
     {
+      id: "spending-card-price",
       text: "Внутри тега <price> обязательно прописана цена товара. Знаки препинания внутрь тега <price> включаются по правилу ссылок (. ! ? :)",
       feature: "prodcard",
     },
     {
+      id: "spending-card-shop-hide",
       text: 'Если тег <price> стоит посреди текста, то скрываем название магазина через атрибут shop-hide="true"',
       feature: "prodcard",
     },
