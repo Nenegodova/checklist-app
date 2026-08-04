@@ -1,16 +1,65 @@
-# React + Vite
+# Чек-лист выпуска
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React-приложение для проверки материалов перед выпуском. Отметки, выбранный формат,
+фильтры, тема и заметки сохраняются локально в браузере.
 
-Currently, two official plugins are available:
+Подробный итог редизайна, сохранённые инварианты и намеренные изменения механики
+описаны в [релиз-логе](./RELEASE_NOTES.md).
+Результаты финальной проверки и состав удалённого тестового контура сохранены в
+[протоколе верификации](./VALIDATION_RECORD.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Быстрый старт
 
-## React Compiler
+Требуется актуальная LTS-версия Node.js.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm ci
+npm run dev
+```
 
-## Expanding the ESLint configuration
+Vite выведет локальный адрес приложения в терминале.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Структура
+
+- `src/checklist-data.js` — пункты чек-листа, форматы, исключения и контентные фильтры.
+- `src/App.jsx` — состояние приложения, сохранение в `localStorage` и основные действия.
+- `src/components/ChecklistWorkspace.jsx` — компоновка экрана и навигация по разделам.
+- `src/components/TaskSection.jsx` — раздел, строки задач и состояния завершения.
+- `src/components/ConfirmationDialog.jsx` — подтверждение смены формата и полного сброса.
+- `src/components/NotesPopover.jsx` — заметки пользователя.
+- `src/components/FilterChips.jsx` — общий список контентных фильтров.
+- `src/lib/checklist-state.js` — чистые преобразования и расчёты состояния.
+- `src/lib/storage.js` — безопасное чтение JSON из браузерного хранилища.
+- `src/App.css` — стили приложения, включая адаптивные и тёмную тему.
+
+## Как менять чек-лист
+
+Основной список находится в `DATA`, а дополнительные пункты форматов — в `PRESETS`
+в файле `src/checklist-data.js`. Для пункта можно задать:
+
+```js
+{
+  id: "stable-id", // обязателен, если текст пункта может измениться
+  text: "Что проверить",
+  feature: "images",
+  links: [{ label: "Методичка", url: "https://example.com" }],
+  _sortOrder: 3,
+}
+```
+
+Если изменение данных несовместимо с уже сохранёнными отметками, увеличьте
+`DATA_VERSION`. Приложение сбросит только сохранённый чек-лист и свёрнутые разделы.
+
+## Проверки перед передачей изменений
+
+```bash
+npm run format:check
+npm run lint
+npm run build
+```
+
+## Артефакты и временные файлы
+
+Генерируемые `dist/`, `tmp/`, логи и системные файлы исключены через `.gitignore`.
+Тестовый и QA-контур был удалён после финальной приёмки; его состав и результаты
+зафиксированы в `VALIDATION_RECORD.md`, а исходники доступны в истории git.
