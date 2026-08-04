@@ -42,8 +42,7 @@ describe("checklist application", () => {
     await user.type(textarea, "note");
     await user.click(screen.getByRole("button", { name: "Снять отметки" }));
     expect(localStorage.getItem("notes")).toBe("note");
-    await user.click(screen.getByRole("button", { name: "Меню действий" }));
-    await user.click(screen.getByRole("menuitem", { name: "Полный RESET" }));
+    await user.click(screen.getByRole("button", { name: "Полный RESET" }));
     expect(document.documentElement).toHaveClass("dark");
     expect(localStorage.getItem("dark")).toBe("true");
     expect(localStorage.getItem("notes")).toBe("");

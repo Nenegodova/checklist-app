@@ -22,23 +22,81 @@ test("task links do not change the neighbouring checkbox", async ({ page }) => {
   await expect(task).not.toBeChecked();
 });
 
-test("preset controls Misc and RESET preserves theme", async ({ page }) => {
+test("full RESET restores the checklist while preserving theme", async ({ page }) => {
   await page.getByRole("combobox", { name: "Формат" }).selectOption("tests");
   await expect(page.getByRole("button", { name: "Раздел Прочее" })).toBeVisible();
-  await page.getByRole("combobox", { name: "Формат" }).selectOption("invest");
-  await expect(page.getByRole("button", { name: "Раздел Прочее" })).toHaveCount(0);
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await task.check();
+  await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
+  await page.getByRole("button", { name: "Раздел Текст" }).click();
+  await page.getByRole("button", { name: "Открыть заметки" }).click();
+  await page.getByRole("textbox", { name: "Заметки" }).fill("сбросить");
+  await page.getByRole("switch", { name: /фокус/i }).click();
   await page.getByRole("button", { name: "Переключить тему" }).click();
-  await page.getByRole("button", { name: "Меню действий" }).click();
-  await page.getByRole("menuitem", { name: "Полный RESET" }).click();
+  await page.getByRole("button", { name: "Полный RESET" }).click();
+
+  await expect(page.getByRole("combobox", { name: "Формат" })).toHaveValue("default");
   await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(page.getByRole("switch", { name: /фокус/i })).toHaveAttribute("aria-checked", "false");
+  await expect(page.getByRole("checkbox", { name: /мягкий перенос/i })).not.toBeChecked();
+  await expect(page.getByRole("button", { name: "Таблицы", pressed: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Раздел Текст" })).toHaveAttribute("aria-expanded", "true");
+  await page.getByRole("button", { name: "Открыть заметки" }).click();
+  await expect(page.getByRole("textbox", { name: "Заметки" })).toHaveValue("");
 });
 
-test("actions menu closes with Escape", async ({ page }) => {
-  const menuButton = page.getByRole("button", { name: "Меню действий" });
-  await menuButton.click();
-  await expect(page.getByRole("menuitem", { name: "Полный RESET" })).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("menuitem", { name: "Полный RESET" })).toHaveCount(0);
+test("navigation stays pinned and focus follows clear marks", async ({ page }, testInfo) => {
+  await expect(page.locator(".topbar")).toHaveCSS("position", "sticky");
+  await expect(page.getByRole("switch", { name: /фокус/i })).toHaveCSS("border-top-width", "1px");
+
+  if (testInfo.project.name === "mobile") {
+    await expect(page.locator(".focus-dock")).toHaveCSS("position", "fixed");
+  } else {
+    await expect(page.locator(".sidebar")).toHaveCSS("position", "sticky");
+    const clearBox = await page.locator(".sidebar-clear-button").boundingBox();
+    const focusBox = await page.locator(".desktop-focus").boundingBox();
+    expect(focusBox?.y).toBeGreaterThan((clearBox?.y ?? 0) + (clearBox?.height ?? 0));
+  }
+
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect.poll(async () => (await page.locator(".topbar").boundingBox())?.y).toBe(0);
+});
+
+test("mobile header keeps format and actions aligned and centers the reset icon", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
+  const elements = [
+    page.locator(".header-format-control > span"),
+    page.getByRole("combobox", { name: "Формат" }),
+    page.getByRole("button", { name: "Переключить тему" }),
+    page.getByRole("button", { name: "Полный RESET" }),
+  ];
+  const boxes = await Promise.all(elements.map((element) => element.boundingBox()));
+  const centers = boxes.map((box) => (box?.y ?? 0) + (box?.height ?? 0) / 2);
+  expect(Math.max(...centers) - Math.min(...centers)).toBeLessThanOrEqual(1);
+
+  const resetBox = boxes.at(-1);
+  const iconBox = await page.locator(".reset-button svg").boundingBox();
+  expect((iconBox?.x ?? 0) + (iconBox?.width ?? 0) / 2).toBeCloseTo((resetBox?.x ?? 0) + (resetBox?.width ?? 0) / 2, 0);
+  expect((iconBox?.y ?? 0) + (iconBox?.height ?? 0) / 2).toBeCloseTo((resetBox?.y ?? 0) + (resetBox?.height ?? 0) / 2, 0);
+});
+
+test("dark theme keeps primary content readable", async ({ page }) => {
+  await page.getByRole("button", { name: "Переключить тему" }).click();
+  const contrast = await page.locator(".app").evaluate((app) => {
+    const parseRgb = (value) => value.match(/\d+/g).slice(0, 3).map(Number);
+    const luminance = (value) => {
+      const [red, green, blue] = parseRgb(value).map((channel) => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+    };
+    const styles = getComputedStyle(app);
+    const foreground = luminance(styles.color);
+    const background = luminance(styles.backgroundColor);
+    return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+  });
+  expect(contrast).toBeGreaterThanOrEqual(4.5);
 });
 
 test("changing format resets completion and accordion state", async ({ page }) => {
@@ -73,6 +131,7 @@ test("clear marks keeps the format, theme, and notes while restoring filters", a
   await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
   await page.getByRole("button", { name: "Открыть заметки" }).click();
   await page.getByRole("textbox", { name: "Заметки" }).fill("сохранить");
+  await page.getByRole("button", { name: "Закрыть заметки" }).click();
   await page.getByRole("button", { name: "Снять отметки" }).click();
 
   await expect(page.getByRole("combobox", { name: "Формат" })).toHaveValue("tests");
@@ -106,9 +165,18 @@ test("mobile section chips scroll to their section", async ({ page }, testInfo) 
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 });
 
-test("mobile page has no horizontal overflow", async ({ page }, testInfo) => {
+test("mobile page has no clipped main content", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  const clipped = await page.locator(".main-content").evaluate((main) =>
+    [...main.querySelectorAll("*")]
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { className: element.className, left: rect.left, right: rect.right };
+      })
+      .filter(({ left, right }) => left < 0 || right > window.innerWidth + 1),
+  );
+  expect(clipped).toEqual([]);
 });
 
 test.skip("@visual desktop-light", async ({ page }) => {
