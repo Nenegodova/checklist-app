@@ -35,6 +35,21 @@ test("focus mode hides completed relevant tasks without changing progress", asyn
   await expect(page.getByRole("button", { name: "Раздел Админка" })).toContainText("1/7");
 });
 
+test("notes move focus to the editor and close with Escape", async ({ page }) => {
+  const notesButton = page.getByRole("button", { name: "Открыть заметки" });
+  await notesButton.click();
+  await expect(page.getByRole("textbox", { name: "Заметки" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("textbox", { name: "Заметки" })).toHaveCount(0);
+  await expect(notesButton).toBeFocused();
+});
+
+test("mobile section chips scroll to their section", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
+  await page.locator(".mobile-category-nav button").filter({ hasText: "Выпуск" }).click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+});
+
 test("mobile page has no horizontal overflow", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
