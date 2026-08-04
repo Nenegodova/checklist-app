@@ -33,6 +33,14 @@ test("preset controls Misc and RESET preserves theme", async ({ page }) => {
   await expect(page.locator("html")).toHaveClass(/dark/);
 });
 
+test("actions menu closes with Escape", async ({ page }) => {
+  const menuButton = page.getByRole("button", { name: "Меню действий" });
+  await menuButton.click();
+  await expect(page.getByRole("menuitem", { name: "Полный RESET" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("menuitem", { name: "Полный RESET" })).toHaveCount(0);
+});
+
 test("changing format resets completion and accordion state", async ({ page }) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
