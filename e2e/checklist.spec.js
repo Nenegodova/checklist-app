@@ -40,6 +40,24 @@ test("every format builds its checklist and shows Misc only where defined", asyn
   }
 });
 
+test("clear marks keeps the format, theme, and notes while restoring filters", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Формат" }).selectOption("tests");
+  await page.getByRole("button", { name: "Переключить тему" }).click();
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await task.check();
+  await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
+  await page.getByRole("button", { name: "Открыть заметки" }).click();
+  await page.getByRole("textbox", { name: "Заметки" }).fill("сохранить");
+  await page.getByRole("button", { name: "Снять отметки" }).click();
+
+  await expect(page.getByRole("combobox", { name: "Формат" })).toHaveValue("tests");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(task).not.toBeChecked();
+  await expect(page.getByRole("button", { name: "Таблицы", pressed: true })).toBeVisible();
+  await page.getByRole("button", { name: "Открыть заметки" }).click();
+  await expect(page.getByRole("textbox", { name: "Заметки" })).toHaveValue("сохранить");
+});
+
 test("focus mode hides completed relevant tasks without changing progress", async ({ page }) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
