@@ -27,6 +27,19 @@ test("preset controls Misc and RESET preserves theme", async ({ page }) => {
   await expect(page.locator("html")).toHaveClass(/dark/);
 });
 
+test("every format builds its checklist and shows Misc only where defined", async ({ page }) => {
+  const formats = ["default", "invest", "shopping", "tests", "compare", "spending", "cd", "shorts", "ugc"];
+  const formatsWithMisc = new Set(["tests", "cd", "shorts"]);
+
+  for (const format of formats) {
+    await page.getByRole("combobox", { name: "Формат" }).selectOption(format);
+    await expect(page.getByRole("button", { name: "Раздел Админка" })).toBeVisible();
+    const misc = page.getByRole("button", { name: "Раздел Прочее" });
+    if (formatsWithMisc.has(format)) await expect(misc).toBeVisible();
+    else await expect(misc).toHaveCount(0);
+  }
+});
+
 test("focus mode hides completed relevant tasks without changing progress", async ({ page }) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
