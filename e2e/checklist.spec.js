@@ -27,6 +27,14 @@ test("preset controls Misc and RESET preserves theme", async ({ page }) => {
   await expect(page.locator("html")).toHaveClass(/dark/);
 });
 
+test("focus mode hides completed relevant tasks without changing progress", async ({ page }) => {
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await task.check();
+  await page.getByRole("switch", { name: /Режим фокуса|Фокус/ }).click();
+  await expect(task).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Раздел Админка" })).toContainText("1/7");
+});
+
 test("mobile page has no horizontal overflow", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
