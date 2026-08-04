@@ -6,14 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "format": "prettier --write src e2e eslint.config.js vite.config.js playwright.config.js package.json README.md index.html",
-    "format:check": "prettier --check src e2e eslint.config.js vite.config.js playwright.config.js package.json README.md index.html",
+    "format": "prettier --write src e2e scripts eslint.config.js vite.config.js playwright.config.js package.json README.md index.html",
+    "format:check": "prettier --check src e2e scripts eslint.config.js vite.config.js playwright.config.js package.json README.md index.html",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:redesign-comparison": "node scripts/redesign-comparison/run.mjs",
     "test:visual": "playwright test --grep @visual"
   },
   "dependencies": {
