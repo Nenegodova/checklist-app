@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import "./App.css";
 import {
   getCategoryProgress,
   getHiddenByFiltersCount,
@@ -258,38 +259,153 @@ function useMediaQuery(query) {
   const getMatches = () => (typeof window !== "undefined" ? window.matchMedia(query).matches : false);
   const [matches, setMatches] = useState(getMatches);
   useEffect(() => {
-    if (typeof window === "undefined") return;
     const media = window.matchMedia(query);
-    const handler = (e) => setMatches(e.matches);
+    const handler = (event) => setMatches(event.matches);
     media.addEventListener("change", handler);
     return () => media.removeEventListener("change", handler);
   }, [query]);
   return matches;
 }
-const renderTextWithLinks = (text, dark) => {
+const renderTextWithLinks = (text) => {
   if (!text) return null;
   const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g);
   return parts.map((part, i) => {
     if (!part) return null;
     if (part.startsWith("*") && part.endsWith("*")) {
-      return <strong key={i} style={{ fontWeight: 700 }}>{part.slice(1, -1)}</strong>;
+      return <strong key={i}>{part.slice(1, -1)}</strong>;
     }
     const match = part.match(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/);
     if (match) {
       const [, label, url] = match;
       return (
-        <a key={i} href={url} target="_blank" rel="noreferrer"
-          style={{
-            display: "inline-flex", alignItems: "center", padding: "2px 8px", marginLeft: 6,
-            borderRadius: 8, background: dark ? "#33334b" : "#e8e8ea", color: dark ? "#7ab7ff" : "#2563eb",
-            textDecoration: "none", fontSize: 13, fontWeight: 500
-          }}
-        >{label}</a>
+        <a key={i} href={url} target="_blank" rel="noreferrer" className="inline-link">{label}</a>
       );
     }
     return <span key={i}>{part}</span>;
   });
 };
+
+const PRESET_LABELS = {
+  default: "Обычный", invest: "Инвест", shopping: "Шопинг", tests: "Тест",
+  compare: "Сравнятор", spending: "Дневник трат", cd: "ЧД", shorts: "Шорты", ugc: "UGC",
+};
+
+function Workspace({
+  dark, setDark, preset, setPreset, tasks, collapsed, toggleCollapse, toggle,
+  contentFilters, setContentFilters, focusMode, setFocusMode, relevantTasks,
+  visibleTasks, hiddenByFilters, progress, resetFiltersAndCheckboxes, hardReset,
+  notes, setNotes, notesOpen, setNotesOpen, notesFabRef, notesPopoverRef, notesTextareaRef,
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const completedHidden = Object.values(relevantTasks).flat().filter((task) => task.done).length;
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const close = (event) => {
+      if (event.key === "Escape") setMenuOpen(false);
+      if (event.type === "mousedown" && !menuRef.current?.contains(event.target)) setMenuOpen(false);
+    };
+    document.addEventListener("keydown", close);
+    document.addEventListener("mousedown", close);
+    return () => {
+      document.removeEventListener("keydown", close);
+      document.removeEventListener("mousedown", close);
+    };
+  }, [menuOpen]);
+
+  const categoryProgress = (category) => getCategoryProgress(relevantTasks, category);
+  const scrollToCategory = (category) => {
+    document.getElementById(`category-${category}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <div className={`app ${dark ? "app-dark" : ""}`}>
+      <header className="topbar">
+        <div className="brand">
+          <p className="eyebrow">РЕДАКЦИОННЫЙ ИНСТРУМЕНТ</p>
+          <h1>Чек-лист проверки</h1>
+        </div>
+        <div className="header-progress" aria-label={`Общий прогресс: ${progress.done} из ${progress.total}`}>
+          <span className="progress-number">{progress.done}<small>/ {progress.total}</small></span>
+          <div className="progress-track"><span style={{ width: `${progress.percent}%` }} /></div>
+          <span className="progress-percent">{progress.percent}%</span>
+        </div>
+        <div className="header-actions">
+          <button className="icon-button" type="button" aria-label="Переключить тему" onClick={() => setDark((value) => !value)}>
+            {dark ? "☀" : "◐"}
+          </button>
+          <div className="menu-wrap" ref={menuRef}>
+            <button className="icon-button" type="button" aria-label="Меню действий" aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}>
+              <svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="4" cy="9" r="1.5" /><circle cx="9" cy="9" r="1.5" /><circle cx="14" cy="9" r="1.5" /></svg>
+            </button>
+            {menuOpen && <div className="action-menu" role="menu">
+              <button type="button" role="menuitem" onClick={() => { hardReset(); setMenuOpen(false); }}>Полный RESET</button>
+            </div>}
+          </div>
+        </div>
+      </header>
+
+      <div className="mobile-category-nav" aria-label="Разделы чек-листа">
+        {Object.keys(tasks).map((category) => {
+          const item = categoryProgress(category);
+          return <button key={category} type="button" onClick={() => scrollToCategory(category)}>{category} <span>{item.done}/{item.total}</span></button>;
+        })}
+      </div>
+
+      <div className="workspace">
+        <aside className="sidebar">
+          <label className="format-control"><span>ФОРМАТ</span><select aria-label="Формат" value={preset} onChange={(event) => {
+            localStorage.removeItem("checklist"); localStorage.removeItem("collapsed"); setPreset(event.target.value);
+          }}>{Object.entries(PRESET_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+          <nav className="section-nav" aria-label="Разделы чек-листа">
+            {Object.keys(tasks).map((category) => {
+              const item = categoryProgress(category);
+              return <button key={category} type="button" className={!collapsed[category] ? "active" : ""} onClick={() => toggleCollapse(category)}>
+                <span>{category}</span><small>{item.done}/{item.total}</small>
+              </button>;
+            })}
+          </nav>
+          <div className="sidebar-bottom">
+            <button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}>
+              <span><b>Режим фокуса</b><small>{focusMode ? `вкл · скрыто ${completedHidden} готовых` : "выкл"}</small></span><i aria-hidden="true" />
+            </button>
+            <button type="button" className="clear-button" onClick={resetFiltersAndCheckboxes}>Снять отметки</button>
+          </div>
+        </aside>
+
+        <main className="main-content">
+          <section className="controls" aria-label="Настройки списка">
+            <div className="format-heading"><span>Формат</span><strong>{PRESET_LABELS[preset]}</strong></div>
+            <div className="filters-heading"><span>Контент</span><output data-testid="hidden-by-filters">Скрыто фильтрами: {hiddenByFilters}</output></div>
+            <div className="filter-list">{Object.entries(CONTENT_FILTERS).map(([key, filter]) => <button key={key} type="button" className={contentFilters[key] ? "filter-chip active" : "filter-chip"} aria-pressed={contentFilters[key]} onClick={() => setContentFilters((value) => ({ ...value, [key]: !value[key] }))}>{filter.label}</button>)}</div>
+          </section>
+
+          <a className="method-link" href={METHODICHKA_URL} target="_blank" rel="noreferrer">Методички ↗</a>
+          <div className="task-sections">{Object.keys(tasks).map((category) => {
+            const item = categoryProgress(category);
+            return <section id={`category-${category}`} key={category} className={`task-section ${collapsed[category] ? "is-collapsed" : ""}`}>
+              <button className="section-heading" type="button" aria-expanded={!collapsed[category]} aria-label={`Раздел ${category}`} onClick={() => toggleCollapse(category)}><span>{category}</span><small>{item.done}/{item.total}</small><i aria-hidden="true">⌄</i></button>
+              {!collapsed[category] && <div className="task-list">{visibleTasks[category].map((task) => {
+                const index = tasks[category].findIndex((saved) => saved.id === task.id);
+                return <div className={`task-row ${task.done ? "is-done" : ""}`} key={`${category}-${task.id}`}>
+                  <input id={`${category}-${index}`} type="checkbox" checked={task.done} onChange={() => toggle(category, index)} />
+                  <label htmlFor={`${category}-${index}`} className="task-copy">{task.text && <span>{renderTextWithLinks(task.text)}</span>}{task.links?.length > 0 && <span className="task-links">{task.links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</span>}</label>
+                </div>;
+              })}{visibleTasks[category].length === 0 && <p className="empty-section">{focusMode && item.done ? "Все релевантные пункты выполнены" : "Нет пунктов для выбранных фильтров"}</p>}</div>}
+            </section>;
+          })}</div>
+        </main>
+      </div>
+
+      <div className="mobile-focus"><button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}><span><b>Фокус</b><small>{focusMode ? `скрыто ${completedHidden}` : "показывать всё"}</small></span><i aria-hidden="true" /></button></div>
+      <div className="notes-fab-wrapper">
+        {notesOpen && <div className="notes-window" ref={notesPopoverRef} data-testid="notes-popover"><div className="notes-title">Заметки <button type="button" aria-label="Закрыть заметки" onClick={() => setNotesOpen(false)}>×</button></div><div className="notes-actions"><button type="button" onClick={() => setNotes((value) => value.trim() ? value : NOTES_TEMPLATE)}>Вставить шаблон</button><button type="button" className="danger" onClick={() => setNotes("")}>Очистить</button></div><textarea ref={notesTextareaRef} aria-label="Заметки" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Заметки по ходу проверки" /></div>}
+        <button className="notes-fab" type="button" ref={notesFabRef} aria-label="Открыть заметки" aria-expanded={notesOpen} onClick={() => setNotesOpen((value) => !value)}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5.5h12M4 10h12M4 14.5h7" /></svg></button>
+      </div>
+    </div>
+  );
+}
 // --- Component ---
 export default function App() {
   const [dark, setDark] = useState(() => {
@@ -324,19 +440,12 @@ export default function App() {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isSmall = useMediaQuery("(max-width: 600px)");
   const r = {
-    pad: isSmall ? 12 : isMobile ? 20 : 30,
-    maxW: isSmall ? "calc(100% - 24px)" : "100%",
-    titleSize: isSmall ? 18 : isMobile ? 22 : 28,
-    progressSize: isSmall ? 10 : 13,
-    cardPad: isSmall ? "8px 10px" : "14px 16px",
-    taskSize: isSmall ? 11 : 13,
-    btnPad: isSmall ? "3px 6px" : "6px 12px",
-    btnSize: isSmall ? 10 : 13,
-    selectMinW: isSmall ? 90 : 140,
-    notesW: isSmall ? "min(320px, 90vw)" : 320,
-    fabSize: isSmall ? 44 : 58,
-    fabPad: isSmall ? 0 : "0 12px",
-    headerPad: isSmall ? "10px 12px" : isMobile ? "14px 16px" : "22px 24px",
+    pad: isSmall ? 12 : isMobile ? 20 : 30, maxW: isSmall ? "calc(100% - 24px)" : "100%",
+    titleSize: isSmall ? 18 : isMobile ? 22 : 28, progressSize: isSmall ? 10 : 13,
+    cardPad: isSmall ? "8px 10px" : "14px 16px", taskSize: isSmall ? 11 : 13,
+    btnPad: isSmall ? "3px 6px" : "6px 12px", btnSize: isSmall ? 10 : 13,
+    notesW: isSmall ? "min(320px, 90vw)" : 320, fabSize: isSmall ? 44 : 58,
+    fabPad: isSmall ? 0 : "0 12px", headerPad: isSmall ? "10px 12px" : isMobile ? "14px 16px" : "22px 24px",
     catPad: isSmall ? "3px 6px" : "6px 10px",
   };
   useEffect(() => {
@@ -584,7 +693,8 @@ export default function App() {
     padding: "2px 8px",
     fontSize: r.btnSize,
   };
-  return (
+  // eslint-disable-next-line no-constant-condition
+  if (false) return (
     <div
       style={{
         padding: r.pad,
@@ -1055,4 +1165,15 @@ export default function App() {
       </div>
     </div>
   );
+  return <Workspace
+    dark={dark} setDark={setDark} preset={preset} setPreset={setPreset}
+    tasks={tasks} collapsed={collapsed} toggleCollapse={toggleCollapse} toggle={toggle}
+    contentFilters={contentFilters} setContentFilters={setContentFilters}
+    focusMode={focusMode} setFocusMode={setFocusMode} relevantTasks={relevantTasks}
+    visibleTasks={visibleTasks} hiddenByFilters={hiddenByFilters}
+    progress={{ done: doneTasks, total: totalTasks, percent }}
+    resetFiltersAndCheckboxes={resetFiltersAndCheckboxes} hardReset={hardReset}
+    notes={notes} setNotes={setNotes} notesOpen={notesOpen} setNotesOpen={setNotesOpen}
+    notesFabRef={notesFabRef} notesPopoverRef={notesPopoverRef} notesTextareaRef={notesTextareaRef}
+  />;
 }

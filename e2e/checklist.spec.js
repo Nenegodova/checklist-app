@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 test("persists completion and filters across a reload", async ({ page }) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
-  await page.getByRole("button", { name: /Таблицы/ }).first().click();
+  await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
   await page.reload();
   await expect(page.getByTestId("hidden-by-filters")).toContainText("6");
   await expect(page.getByRole("checkbox", { name: /мягкий перенос/i })).toBeChecked();
@@ -22,7 +22,8 @@ test("preset controls Misc and RESET preserves theme", async ({ page }) => {
   await page.getByRole("combobox", { name: "Формат" }).selectOption("invest");
   await expect(page.getByRole("button", { name: "Раздел Прочее" })).toHaveCount(0);
   await page.getByRole("button", { name: "Переключить тему" }).click();
-  await page.getByRole("button", { name: "Полный сброс" }).click();
+  await page.getByRole("button", { name: "Меню действий" }).click();
+  await page.getByRole("menuitem", { name: "Полный RESET" }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
 });
 
