@@ -12,11 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Generated test and QA output
-coverage
-test-results
+# Generated output and temporary work
 tmp
-output/playwright
 
 # Editor directories and files
 .vscode/*
