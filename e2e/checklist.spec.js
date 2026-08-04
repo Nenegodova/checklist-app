@@ -33,6 +33,17 @@ test("preset controls Misc and RESET preserves theme", async ({ page }) => {
   await expect(page.locator("html")).toHaveClass(/dark/);
 });
 
+test("changing format resets completion and accordion state", async ({ page }) => {
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await task.check();
+  await page.getByRole("button", { name: "Раздел Текст" }).click();
+  await expect(page.getByRole("button", { name: "Раздел Текст" })).toHaveAttribute("aria-expanded", "false");
+
+  await page.getByRole("combobox", { name: "Формат" }).selectOption("tests");
+  await expect(task).not.toBeChecked();
+  await expect(page.getByRole("button", { name: "Раздел Текст" })).toHaveAttribute("aria-expanded", "true");
+});
+
 test("every format builds its checklist and shows Misc only where defined", async ({ page }) => {
   const formats = ["default", "invest", "shopping", "tests", "compare", "spending", "cd", "shorts", "ugc"];
   const formatsWithMisc = new Set(["tests", "cd", "shorts"]);

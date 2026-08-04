@@ -425,7 +425,7 @@ export default function App() {
   const notesFabRef = useRef(null);
   const notesTextareaRef = useRef(null);
   const notesPopoverRef = useRef(null);
-  const dataInitializedRef = useRef(false);
+  const previousPresetRef = useRef(preset);
   useEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
     const currentValue = localStorage.getItem("dark");
@@ -511,27 +511,14 @@ export default function App() {
     localStorage.setItem("notes", notes);
   }, [contentFilters, tasks, collapsed, notes]);
   useEffect(() => {
-    if (!dataInitializedRef.current) {
-      dataInitializedRef.current = true;
+    if (previousPresetRef.current === preset) {
       return;
     }
-    // The preset is an external persisted selection; changing it intentionally rebuilds task state.
-    setTasks((prev) => {
-      const next = {};
-      Object.keys(currentData).forEach((cat) => {
-        next[cat] = currentData[cat].map((t) => {
-          const id = typeof t === "string" ? t : t.id || t.text;
-          const text = typeof t === "string" ? t : t.text;
-          const links = typeof t === "string" ? [] : t.links || [];
-          const feature = typeof t === "string" ? null : t.feature || null;
-          const old = prev?.[cat]?.find((x) => x.id === id);
-          return { id, text, links, feature, done: old?.done ?? false };
-        });
-      });
-      return next;
-    });
-    setCollapsed((prev) => buildCollapsed(currentData, prev));
-  }, [currentData]);
+    previousPresetRef.current = preset;
+    // A format is a new checklist context: it intentionally resets completion and accordion state.
+    setTasks(buildTasks(currentData));
+    setCollapsed(buildCollapsed(currentData));
+  }, [currentData, preset]);
   const toggle = useCallback((cat, index) => {
     setTasks((prev) => {
       const updated = prev[cat].map((t, i) => (i === index ? { ...t, done: !t.done } : t));
