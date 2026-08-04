@@ -2,4 +2,6 @@
 @import "@fontsource/ibm-plex-sans/600.css";
 @import "@fontsource/ibm-plex-mono/400.css";
 
-#root { min-height:100vh; }
+#root {
+  min-height: 100vh;
+}
