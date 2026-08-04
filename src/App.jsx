@@ -279,22 +279,127 @@ const PRESET_LABELS = {
   compare: "Сравнятор", spending: "Дневник трат", cd: "ЧД", shorts: "Шорты", ugc: "UGC",
 };
 
+const getPresetData = (preset) => {
+  const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
+  const presetData = PRESETS[preset];
+  if (presetData) {
+    Object.keys(presetData).forEach((cat) => {
+      if (!clone[cat]) clone[cat] = [];
+      const baseItems = clone[cat].map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }));
+      const presetItems = presetData[cat].map((item) => ({ ...item, _sortOrder: item._sortOrder ?? 9999 }));
+      clone[cat] = [...baseItems, ...presetItems].sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
+    });
+  } else {
+    Object.keys(clone).forEach((cat) => {
+      clone[cat] = clone[cat]
+        .map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }))
+        .sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
+    });
+  }
+  const excludes = PRESET_EXCLUDES[preset];
+  if (excludes) {
+    Object.entries(excludes).forEach(([cat, ids]) => {
+      if (!clone[cat]) return;
+      clone[cat] = clone[cat].filter((item) => {
+        const itemId = item.id || item.text;
+        return !ids.includes(itemId);
+      });
+    });
+  }
+  if (preset === "default" && clone["Прочее"]) delete clone["Прочее"];
+  return clone;
+};
+
+function ConfirmationDialog({ action, onCancel, onConfirm }) {
+  const cancelRef = useRef(null);
+  const dialogRef = useRef(null);
+
+  useEffect(() => {
+    if (!action) return undefined;
+    cancelRef.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [action]);
+
+  if (!action) return null;
+  const isPreset = action.kind === "preset";
+  const title = isPreset ? "Сменить формат?" : "Сбросить чек-лист?";
+  const description = isPreset
+    ? `Отметки текущего формата будут сняты. Новый формат: «${PRESET_LABELS[action.value]}».`
+    : "Будут сброшены формат, отметки, фильтры и заметки. Выбранная тема сохранится.";
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onCancel();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const controls = [...dialogRef.current.querySelectorAll("button")].filter((button) => !button.disabled);
+    if (!controls.length) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  return (
+    <div className="dialog-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onCancel()}>
+      <section
+        className="confirm-dialog"
+        ref={dialogRef}
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        aria-describedby="confirm-description"
+        onKeyDown={handleKeyDown}
+      >
+        <div className="confirm-icon" aria-hidden="true">!</div>
+        <h2 id="confirm-title">{title}</h2>
+        <p id="confirm-description">{description}</p>
+        <div className="confirm-actions">
+          <button ref={cancelRef} type="button" onClick={onCancel}>Отмена</button>
+          <button className="danger-action" type="button" onClick={onConfirm}>{isPreset ? "Сменить формат" : "Сбросить"}</button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function Workspace({
-  dark, setDark, preset, setPreset, tasks, collapsed, toggleCollapse, toggle,
-  contentFilters, setContentFilters, focusMode, setFocusMode, relevantTasks,
+  dark, setDark, preset, switchPreset, tasks, collapsed, toggleCollapse, toggle,
+  contentFilters, toggleFilter, enableAllFilters, focusMode, setFocusMode, relevantTasks,
   visibleTasks, hiddenByFilters, progress, resetFiltersAndCheckboxes, hardReset,
   notes, setNotes, notesOpen, setNotesOpen, notesFabRef, notesPopoverRef, notesTextareaRef,
+  saveStatus, toast, dismissToast, undoClear, contextVersion,
 }) {
   const [activeCategory, setActiveCategory] = useState(() => Object.keys(tasks)[0]);
+  const [pendingAction, setPendingAction] = useState(null);
+  const formatSelectRef = useRef(null);
+  const resetButtonRef = useRef(null);
+  const actionTriggerRef = useRef(null);
+  const scrollingTargetRef = useRef(null);
+  const scrollTimerRef = useRef(null);
+  const previousContextVersionRef = useRef(contextVersion);
   const categories = Object.keys(tasks);
   const currentActiveCategory = categories.includes(activeCategory) ? activeCategory : categories[0];
   const completedHidden = Object.values(relevantTasks).flat().filter((task) => task.done).length;
+  const saveLabel = saveStatus === "saving" ? "Сохраняю…" : saveStatus === "error" ? "Не удалось сохранить" : "Сохранено";
 
   useEffect(() => {
     const categories = Object.keys(tasks);
     if (typeof IntersectionObserver === "undefined") return undefined;
 
     const observer = new IntersectionObserver((entries) => {
+      if (scrollingTargetRef.current) return;
       const visible = entries
         .filter((entry) => entry.isIntersecting)
         .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
@@ -309,21 +414,84 @@ function Workspace({
     return () => observer.disconnect();
   }, [tasks]);
 
+  useEffect(() => () => window.clearTimeout(scrollTimerRef.current), []);
+
+  useEffect(() => {
+    if (previousContextVersionRef.current === contextVersion) return;
+    previousContextVersionRef.current = contextVersion;
+    const firstCategory = Object.keys(tasks)[0];
+    setActiveCategory(firstCategory);
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      document.getElementById(`category-${firstCategory}`)?.querySelector(".section-heading")?.focus({ preventScroll: true });
+    });
+  }, [contextVersion, tasks]);
+
   const categoryProgress = (category) => getCategoryProgress(relevantTasks, category);
   const scrollToCategory = (category) => {
+    scrollingTargetRef.current = category;
     setActiveCategory(category);
     document.getElementById(`category-${category}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.clearTimeout(scrollTimerRef.current);
+    scrollTimerRef.current = window.setTimeout(() => {
+      scrollingTargetRef.current = null;
+      setActiveCategory(category);
+    }, 550);
   };
   const changePreset = (event) => {
-    localStorage.removeItem("checklist");
-    localStorage.removeItem("collapsed");
-    setPreset(event.target.value);
+    const nextPreset = event.target.value;
+    if (nextPreset === preset) return;
+    if (progress.done > 0) {
+      actionTriggerRef.current = formatSelectRef.current;
+      setPendingAction({ kind: "preset", value: nextPreset });
+      return;
+    }
+    switchPreset(nextPreset);
   };
-  const enableAllFilters = () => setContentFilters(buildContentFilters());
+  const requestReset = () => {
+    actionTriggerRef.current = resetButtonRef.current;
+    setPendingAction({ kind: "reset" });
+  };
+  const cancelPendingAction = () => {
+    setPendingAction(null);
+    window.requestAnimationFrame(() => actionTriggerRef.current?.focus());
+  };
+  const confirmPendingAction = () => {
+    const action = pendingAction;
+    setPendingAction(null);
+    if (action.kind === "preset") switchPreset(action.value);
+    else hardReset();
+  };
+  const scrollToNextCategory = (category) => {
+    const index = categories.indexOf(category);
+    const nextCategory = categories[index + 1];
+    if (nextCategory) scrollToCategory(nextCategory);
+  };
+  const hasIncompleteTasks = Object.values(relevantTasks).some((categoryTasks) => categoryTasks.some((task) => !task.done));
+  const goToNextIncomplete = () => {
+    const category = categories.find((name) => relevantTasks[name].some((task) => !task.done));
+    if (!category) return;
+    const task = relevantTasks[category].find((item) => !item.done);
+    const index = tasks[category].findIndex((item) => item.id === task.id);
+    scrollingTargetRef.current = category;
+    setActiveCategory(category);
+    if (collapsed[category]) toggleCollapse(category);
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      const checkbox = document.getElementById(`${category}-${index}`);
+      checkbox?.scrollIntoView({ behavior: "smooth", block: "center" });
+      checkbox?.focus({ preventScroll: true });
+      window.clearTimeout(scrollTimerRef.current);
+      scrollTimerRef.current = window.setTimeout(() => {
+        scrollingTargetRef.current = null;
+        setActiveCategory(category);
+      }, 550);
+    }));
+  };
 
   return (
     <div className={`app ${dark ? "app-dark" : ""}`}>
       <div className="app-frame">
+        <div className="sticky-header">
         <header className="topbar">
         <div className="brand">
           <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
@@ -333,16 +501,17 @@ function Workspace({
           <span className="progress-number">{progress.done}<small>/ {progress.total}</small></span>
           <div className="progress-track"><span style={{ width: `${progress.percent}%` }} /></div>
           <span className="progress-percent">{progress.percent}%</span>
+          <small className={`header-save-status save-status ${saveStatus === "error" ? "is-error" : ""}`}>{saveLabel}</small>
         </div>
         <a className="method-link header-method-link" href={METHODICHKA_URL} target="_blank" rel="noreferrer">Методички ↗</a>
-        <label className="format-control header-format-control"><span>ФОРМАТ</span><select aria-label="Формат" value={preset} onChange={changePreset}>
+        <label className="format-control header-format-control"><span>ФОРМАТ</span><select ref={formatSelectRef} aria-label="Формат" value={preset} onChange={changePreset}>
           {Object.entries(PRESET_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select></label>
         <div className="header-actions">
-          <button className="icon-button" type="button" aria-label="Переключить тему" onClick={() => setDark((value) => !value)}>
+          <button className="icon-button has-tooltip" data-testid="theme-toggle" type="button" aria-label={dark ? "Включить светлую тему" : "Включить тёмную тему"} aria-pressed={dark} data-tooltip={dark ? "Светлая тема" : "Тёмная тема"} onClick={() => setDark((value) => !value)}>
             {dark ? "☀" : "◐"}
           </button>
-          <button className="icon-button reset-button" type="button" aria-label="Полный RESET" onClick={hardReset}>
+          <button className="icon-button reset-button has-tooltip" data-testid="full-reset" ref={resetButtonRef} type="button" aria-label="Полный RESET" data-tooltip="Полный сброс" onClick={requestReset}>
             <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.4 7.1A6.2 6.2 0 1 1 4 12.2" /><path d="M4.4 3.8v3.7h3.7" /></svg>
             <span>Reset</span>
           </button>
@@ -356,13 +525,14 @@ function Workspace({
         })}
         <a className="method-link mobile-method-link" href={METHODICHKA_URL} target="_blank" rel="noreferrer">Методички ↗</a>
         </div>
+        </div>
 
         <div className="workspace">
         <aside className="sidebar">
           <section className="sidebar-progress" aria-label={`Прогресс в боковой панели: ${progress.done} из ${progress.total}`}>
             <div className="sidebar-progress-heading"><span className="progress-number">{progress.done}<small>/ {progress.total}</small></span><span className="progress-percent">{progress.percent}%</span></div>
             <div className="progress-track"><span style={{ width: `${progress.percent}%` }} /></div>
-            <small className="autosave-label">Сохраняется автоматически</small>
+            <small className={`autosave-label save-status ${saveStatus === "error" ? "is-error" : ""}`}>{saveLabel}</small>
           </section>
           <nav className="section-nav" aria-label="Разделы чек-листа">
             {Object.keys(tasks).map((category) => {
@@ -374,10 +544,11 @@ function Workspace({
           </nav>
           <section className="sidebar-filters" aria-label="Фильтры контента">
             <h2>Что есть в материале</h2>
-            <div className="filter-list">{Object.entries(CONTENT_FILTERS).map(([key, filter]) => <button key={key} type="button" className={contentFilters[key] ? "filter-chip active" : "filter-chip"} aria-pressed={contentFilters[key]} onClick={() => setContentFilters((value) => ({ ...value, [key]: !value[key] }))}>{filter.label}</button>)}</div>
+            <div className="filter-list">{Object.entries(CONTENT_FILTERS).map(([key, filter]) => <button key={key} type="button" className={contentFilters[key] ? "filter-chip active" : "filter-chip"} aria-pressed={contentFilters[key]} onClick={() => toggleFilter(key)}>{filter.label}</button>)}</div>
             <div className="sidebar-filter-summary"><output data-testid="desktop-hidden-by-filters">Скрыто: {hiddenByFilters}</output><button type="button" onClick={enableAllFilters}>Включить все</button></div>
           </section>
           <button type="button" className="clear-button sidebar-clear-button" onClick={resetFiltersAndCheckboxes}>Снять отметки</button>
+          <button type="button" className="next-task-button sidebar-next-task" disabled={!hasIncompleteTasks} onClick={goToNextIncomplete}>Следующий невыполненный →</button>
           <div className="desktop-focus">
             <button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}><span><b>Режим фокуса</b><small>{focusMode ? `вкл · скрыто ${completedHidden} готовых` : "выкл · показывать всё"}</small></span><i aria-hidden="true" /></button>
           </div>
@@ -387,21 +558,28 @@ function Workspace({
           <section className="controls" aria-label="Настройки списка">
             <div className="format-heading"><span>Формат</span><strong>{PRESET_LABELS[preset]}</strong></div>
             <div className="filters-heading"><span>Контент</span><output data-testid="hidden-by-filters">Скрыто фильтрами: {hiddenByFilters}</output></div>
-            <div className="filter-list">{Object.entries(CONTENT_FILTERS).map(([key, filter]) => <button key={key} type="button" className={contentFilters[key] ? "filter-chip active" : "filter-chip"} aria-pressed={contentFilters[key]} onClick={() => setContentFilters((value) => ({ ...value, [key]: !value[key] }))}>{filter.label}</button>)}</div>
+            <div className="filter-list">{Object.entries(CONTENT_FILTERS).map(([key, filter]) => <button key={key} type="button" className={contentFilters[key] ? "filter-chip active" : "filter-chip"} aria-pressed={contentFilters[key]} onClick={() => toggleFilter(key)}>{filter.label}</button>)}</div>
             <button type="button" className="clear-button mobile-clear-button" onClick={resetFiltersAndCheckboxes}>Снять отметки</button>
+            <button type="button" className="next-task-button mobile-next-task" disabled={!hasIncompleteTasks} onClick={goToNextIncomplete}>Следующий невыполненный →</button>
           </section>
 
           <div className="task-sections">{Object.keys(tasks).map((category) => {
             const item = categoryProgress(category);
+            const isComplete = item.total > 0 && item.done === item.total;
+            const hasNextCategory = categories.indexOf(category) < categories.length - 1;
             return <section id={`category-${category}`} key={category} data-category={category} className={`task-section ${collapsed[category] ? "is-collapsed" : ""}`}>
-              <button className="section-heading" type="button" aria-expanded={!collapsed[category]} aria-label={`Раздел ${category}`} onClick={() => toggleCollapse(category)}><span>{category}</span><small>{item.done}/{item.total}</small><i aria-hidden="true">⌄</i></button>
+              <button className="section-heading" type="button" aria-expanded={!collapsed[category]} aria-label={`Раздел ${category}`} onClick={() => toggleCollapse(category)}><span>{category}</span><small>{item.done}/{item.total}</small>{isComplete && <em>Готово</em>}<i aria-hidden="true">⌄</i></button>
               {!collapsed[category] && <div className="task-list">{visibleTasks[category].map((task) => {
                 const index = tasks[category].findIndex((saved) => saved.id === task.id);
-                return <div className={`task-row ${task.done ? "is-done" : ""}`} key={`${category}-${task.id}`}>
+                const toggleFromRow = (event) => {
+                  if (event.target.closest("a, button, input, label")) return;
+                  toggle(category, index);
+                };
+                return <div className={`task-row ${task.done ? "is-done" : ""}`} key={`${category}-${task.id}`} onClick={toggleFromRow}>
                   <label className="checkbox-control"><input id={`${category}-${index}`} type="checkbox" aria-label={task.text || task.links?.map((link) => link.label).join(", ") || "Пункт чек-листа"} checked={task.done} onChange={() => toggle(category, index)} /></label>
                   <div className="task-copy">{task.text && <span>{renderTextWithLinks(task.text)}</span>}{task.links?.length > 0 && <span className="task-links">{task.links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</span>}</div>
                 </div>;
-              })}{visibleTasks[category].length === 0 && <p className="empty-section">{focusMode && item.done ? "Все релевантные пункты выполнены" : "Нет пунктов для выбранных фильтров"}</p>}</div>}
+              })}{visibleTasks[category].length === 0 && <div className="empty-section"><p>{focusMode && isComplete ? "Все релевантные пункты выполнены" : "Нет пунктов для выбранных фильтров"}</p>{focusMode && isComplete && <div className="empty-actions"><button type="button" onClick={() => setFocusMode(false)}>Показать всё</button><button type="button" onClick={resetFiltersAndCheckboxes}>Снять отметки</button></div>}</div>}{isComplete && !focusMode && <div className="completion-banner"><span><b>Раздел завершён</b><small>Все релевантные пункты отмечены</small></span>{hasNextCategory && <button type="button" onClick={() => scrollToNextCategory(category)}>Следующий раздел →</button>}</div>}</div>}
             </section>;
           })}</div>
         </main>
@@ -410,9 +588,12 @@ function Workspace({
 
       <div className="focus-dock"><button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}><span><b>Фокус</b><small>{focusMode ? `скрыто ${completedHidden} готовых` : "показывать всё"}</small></span><i aria-hidden="true" /></button></div>
       <div className="notes-fab-wrapper">
-        {notesOpen && <div className="notes-window" ref={notesPopoverRef} data-testid="notes-popover"><div className="notes-title">Заметки <button type="button" aria-label="Закрыть заметки" onClick={() => setNotesOpen(false)}>×</button></div><div className="notes-actions"><button type="button" onClick={() => setNotes((value) => value.trim() ? value : NOTES_TEMPLATE)}>Вставить шаблон</button><button type="button" className="danger" onClick={() => setNotes("")}>Очистить</button></div><textarea ref={notesTextareaRef} aria-label="Заметки" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Заметки по ходу проверки" /></div>}
-        <button className="notes-fab" type="button" ref={notesFabRef} aria-label="Открыть заметки" aria-expanded={notesOpen} onClick={() => setNotesOpen((value) => !value)}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5.5h12M4 10h12M4 14.5h7" /></svg></button>
+        {notesOpen && <div className="notes-window" ref={notesPopoverRef} data-testid="notes-popover" role="dialog" aria-modal="false" aria-labelledby="notes-title"><div className="notes-title" id="notes-title">Заметки <button type="button" aria-label="Закрыть заметки" onClick={() => setNotesOpen(false)}>×</button></div><div className="notes-actions"><button type="button" onClick={() => setNotes((value) => value.trim() ? value : NOTES_TEMPLATE)}>Вставить шаблон</button><button type="button" className="danger" onClick={() => setNotes("")}>Очистить</button></div><textarea ref={notesTextareaRef} aria-label="Заметки" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Заметки по ходу проверки" /><small className={`notes-save-status save-status ${saveStatus === "error" ? "is-error" : ""}`}>{saveLabel}</small></div>}
+        <button className="notes-fab has-tooltip" type="button" ref={notesFabRef} aria-label="Открыть заметки" data-tooltip="Заметки" aria-expanded={notesOpen} onClick={() => setNotesOpen((value) => !value)}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5.5h12M4 10h12M4 14.5h7" /></svg></button>
       </div>
+      {toast && <div className="toast" role="status"><span>{toast.message}</span>{toast.canUndo && <button type="button" onClick={undoClear}>Вернуть</button>}<button className="toast-close" type="button" aria-label="Закрыть уведомление" onClick={dismissToast}>×</button></div>}
+      <div className="sr-only" aria-live="polite">Прогресс: {progress.done} из {progress.total}. Скрыто фильтрами: {hiddenByFilters}. {saveLabel}.</div>
+      <ConfirmationDialog action={pendingAction} onCancel={cancelPendingAction} onConfirm={confirmPendingAction} />
     </div>
   );
 }
@@ -439,28 +620,62 @@ export default function App() {
     return () => mq.removeEventListener("change", handler);
   }, []);
   const [preset, setPreset] = useState(() => localStorage.getItem("preset") || "default");
+  const currentData = useMemo(() => getPresetData(preset), [preset]);
   const [contentFilters, setContentFilters] = useState(() => readStorageJSON("contentFilters") || buildContentFilters());
   const [focusMode, setFocusMode] = useState(false);
-  const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
+  const [notes, setNotesState] = useState(() => localStorage.getItem("notes") || "");
   const [notesOpen, setNotesOpen] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("saved");
+  const [toast, setToast] = useState(null);
+  const [undoState, setUndoState] = useState(null);
+  const [contextVersion, setContextVersion] = useState(0);
   const notesFabRef = useRef(null);
   const notesTextareaRef = useRef(null);
   const notesPopoverRef = useRef(null);
-  const previousPresetRef = useRef(preset);
+  const saveTimerRef = useRef(null);
+
+  const markSaving = useCallback(() => {
+    window.clearTimeout(saveTimerRef.current);
+    setSaveStatus("saving");
+  }, []);
+
+  const scheduleSaved = useCallback(() => {
+    window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(() => setSaveStatus("saved"), 420);
+  }, []);
+
+  const reportSaveError = useCallback(() => {
+    window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(() => setSaveStatus("error"), 0);
+  }, []);
+
+  const updateDark = useCallback((updater) => {
+    markSaving();
+    setDark(updater);
+  }, [markSaving]);
+
+  const setNotes = useCallback((updater) => {
+    markSaving();
+    setNotesState((value) => typeof updater === "function" ? updater(value) : updater);
+  }, [markSaving]);
+
   useEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
-    const currentValue = localStorage.getItem("dark");
-    if (currentValue !== String(dark)) {
-      localStorage.setItem("dark", String(dark));
+    try {
+      const currentValue = localStorage.getItem("dark");
+      if (currentValue !== String(dark)) localStorage.setItem("dark", String(dark));
+      scheduleSaved();
+    } catch {
+      reportSaveError();
     }
-  }, [dark]);
+  }, [dark, reportSaveError, scheduleSaved]);
   useEffect(() => {
-    // Legacy custom backgrounds are deliberately discarded without touching other data.
-    localStorage.removeItem("bgImage");
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("preset", preset);
-  }, [preset]);
+    try {
+      localStorage.removeItem("bgImage");
+    } catch {
+      reportSaveError();
+    }
+  }, [reportSaveError]);
   useEffect(() => {
     if (!notesOpen) return undefined;
     notesTextareaRef.current?.focus();
@@ -480,39 +695,6 @@ export default function App() {
   useEffect(() => {
     if (!notesOpen) notesFabRef.current?.focus();
   }, [notesOpen]);
-  const currentData = useMemo(() => {
-    const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
-    const presetData = PRESETS[preset];
-    if (presetData) {
-      Object.keys(presetData).forEach((cat) => {
-        if (!clone[cat]) clone[cat] = [];
-        const baseItems = clone[cat].map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }));
-        const presetItems = presetData[cat].map((item) => ({ ...item, _sortOrder: item._sortOrder ?? 9999 }));
-        clone[cat] = [...baseItems, ...presetItems].sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
-      });
-    } else {
-      Object.keys(clone).forEach((cat) => {
-        clone[cat] = clone[cat]
-          .map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }))
-          .sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
-      });
-    }
-    const excludes = PRESET_EXCLUDES[preset];
-    if (excludes) {
-      Object.entries(excludes).forEach(([cat, ids]) => {
-        if (!clone[cat]) return;
-        clone[cat] = clone[cat].filter((item) => {
-          const itemId = item.id || item.text;
-          return !ids.includes(itemId);
-        });
-      });
-    }
-    // Удаляем раздел "Прочее" для пресета "default"
-    if (preset === "default" && clone["Прочее"]) {
-      delete clone["Прочее"];
-    }
-    return clone;
-  }, [preset]);
   const [tasks, setTasks] = useState(() => {
     const savedVersion = localStorage.getItem("version");
     const saved = readStorageJSON("checklist");
@@ -526,82 +708,107 @@ export default function App() {
   });
   const [collapsed, setCollapsed] = useState(() => readStorageJSON("collapsed") || buildCollapsed(currentData));
   useEffect(() => {
-    localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
-    localStorage.setItem("checklist", JSON.stringify(tasks));
-    localStorage.setItem("collapsed", JSON.stringify(collapsed));
-    localStorage.setItem("notes", notes);
-  }, [contentFilters, tasks, collapsed, notes]);
-  useEffect(() => {
-    if (previousPresetRef.current === preset) {
-      return;
+    try {
+      localStorage.setItem("preset", preset);
+      localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
+      localStorage.setItem("checklist", JSON.stringify(tasks));
+      localStorage.setItem("collapsed", JSON.stringify(collapsed));
+      localStorage.setItem("notes", notes);
+      localStorage.setItem("version", DATA_VERSION);
+      scheduleSaved();
+    } catch {
+      reportSaveError();
     }
-    previousPresetRef.current = preset;
-    // A format is a new checklist context: it intentionally resets completion and accordion state.
-    setTasks(buildTasks(currentData));
-    setCollapsed(buildCollapsed(currentData));
-  }, [currentData, preset]);
+  }, [collapsed, contentFilters, notes, preset, reportSaveError, scheduleSaved, tasks]);
+
+  useEffect(() => () => window.clearTimeout(saveTimerRef.current), []);
+
+  useEffect(() => {
+    if (!toast) return undefined;
+    const timeout = window.setTimeout(() => setToast(null), toast.canUndo ? 8000 : 4200);
+    return () => window.clearTimeout(timeout);
+  }, [toast]);
+
   const toggle = useCallback((cat, index) => {
+    markSaving();
     setTasks((prev) => {
       const updated = prev[cat].map((t, i) => (i === index ? { ...t, done: !t.done } : t));
       return { ...prev, [cat]: updated };
     });
-  }, []);
-  useEffect(() => {
-    // Accordion state follows task completion and therefore must be reconciled after a task update.
-    const cats = Object.keys(tasks);
-    const lastDoneCat = [...cats].reverse().find((cat) => tasks[cat]?.every((catTask) => catTask.done));
-    if (!lastDoneCat) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setCollapsed((prev) => {
-      const next = { ...prev };
-      if (lastDoneCat) {
-        next[lastDoneCat] = true;
-        const idx = cats.indexOf(lastDoneCat);
-        for (let i = idx + 1; i < cats.length; i++) {
-          if (tasks[cats[i]]?.some((t) => !t.done)) {
-            next[cats[i]] = false;
-            break;
-          }
-        }
-      }
-      return next;
-    });
-  }, [tasks]);
-  // --- Reset: фильтры + чекбоксы (группа 2, частое использование) ---
+  }, [markSaving]);
+
+  const toggleFilter = useCallback((key) => {
+    markSaving();
+    setContentFilters((value) => ({ ...value, [key]: !value[key] }));
+  }, [markSaving]);
+
+  const enableAllFilters = useCallback(() => {
+    markSaving();
+    setContentFilters(buildContentFilters());
+  }, [markSaving]);
+
+  const switchPreset = useCallback((nextPreset) => {
+    const nextData = getPresetData(nextPreset);
+    markSaving();
+    setPreset(nextPreset);
+    setTasks(buildTasks(nextData));
+    setCollapsed(buildCollapsed(nextData));
+    setFocusMode(false);
+    setContextVersion((value) => value + 1);
+    setToast({ message: `Формат «${PRESET_LABELS[nextPreset]}» выбран`, canUndo: false });
+  }, [markSaving]);
+
   const resetFiltersAndCheckboxes = useCallback(() => {
-    localStorage.removeItem("checklist");
+    markSaving();
+    setUndoState({ tasks, contentFilters });
     setContentFilters(buildContentFilters());
     setTasks(buildTasks(currentData));
-  }, [currentData]);
-  // --- Hard reset (группа 1, единоразовое) ---
+    setToast({ message: "Отметки сняты, фильтры включены", canUndo: true });
+  }, [contentFilters, currentData, markSaving, tasks]);
+
+  const undoClear = useCallback(() => {
+    if (!undoState) return;
+    markSaving();
+    setTasks(undoState.tasks);
+    setContentFilters(undoState.contentFilters);
+    setUndoState(null);
+    setToast({ message: "Отметки и фильтры восстановлены", canUndo: false });
+  }, [markSaving, undoState]);
+
   const hardReset = useCallback(() => {
-    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version"].forEach((key) =>
-      localStorage.removeItem(key)
-    );
-    localStorage.setItem("version", DATA_VERSION);
+    markSaving();
     setPreset("default");
     setContentFilters(buildContentFilters());
-    setNotes("");
+    setNotesState("");
     setFocusMode(false);
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
-  }, []);
+    setUndoState(null);
+    setContextVersion((value) => value + 1);
+    setToast({ message: "Чек-лист сброшен, тема сохранена", canUndo: false });
+  }, [markSaving]);
+
   const toggleCollapse = useCallback((cat) => {
+    markSaving();
     setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
-  }, []);
+  }, [markSaving]);
+
+  const dismissToast = useCallback(() => setToast(null), []);
   const relevantTasks = useMemo(() => getRelevantTasks(tasks, contentFilters), [tasks, contentFilters]);
   const visibleTasks = useMemo(() => getVisibleTasks(relevantTasks, focusMode), [relevantTasks, focusMode]);
   const hiddenByFilters = getHiddenByFiltersCount(tasks, relevantTasks);
   const { done: doneTasks, total: totalTasks, percent } = getOverallProgress(relevantTasks);
   return <Workspace
-    dark={dark} setDark={setDark} preset={preset} setPreset={setPreset}
+    dark={dark} setDark={updateDark} preset={preset} switchPreset={switchPreset}
     tasks={tasks} collapsed={collapsed} toggleCollapse={toggleCollapse} toggle={toggle}
-    contentFilters={contentFilters} setContentFilters={setContentFilters}
+    contentFilters={contentFilters} toggleFilter={toggleFilter} enableAllFilters={enableAllFilters}
     focusMode={focusMode} setFocusMode={setFocusMode} relevantTasks={relevantTasks}
     visibleTasks={visibleTasks} hiddenByFilters={hiddenByFilters}
     progress={{ done: doneTasks, total: totalTasks, percent }}
     resetFiltersAndCheckboxes={resetFiltersAndCheckboxes} hardReset={hardReset}
     notes={notes} setNotes={setNotes} notesOpen={notesOpen} setNotesOpen={setNotesOpen}
     notesFabRef={notesFabRef} notesPopoverRef={notesPopoverRef} notesTextareaRef={notesTextareaRef}
+    saveStatus={saveStatus} toast={toast} dismissToast={dismissToast} undoClear={undoClear}
+    contextVersion={contextVersion}
   />;
 }

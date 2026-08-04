@@ -34,7 +34,7 @@ describe("checklist application", () => {
   it("keeps notes and the selected theme through the appropriate resets", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: "Переключить тему" }));
+    await user.click(screen.getByRole("button", { name: "Включить тёмную тему" }));
     expect(document.documentElement).toHaveClass("dark");
     await user.click(screen.getByRole("button", { name: "Открыть заметки" }));
     const textarea = screen.getByRole("textbox", { name: "Заметки" });
@@ -43,9 +43,45 @@ describe("checklist application", () => {
     await user.click(screen.getByRole("button", { name: "Снять отметки" }));
     expect(localStorage.getItem("notes")).toBe("note");
     await user.click(screen.getByRole("button", { name: "Полный RESET" }));
+    expect(screen.getByRole("alertdialog", { name: "Сбросить чек-лист?" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Сбросить" }));
     expect(document.documentElement).toHaveClass("dark");
     expect(localStorage.getItem("dark")).toBe("true");
     expect(localStorage.getItem("notes")).toBe("");
+  });
+
+  it("protects a checklist with progress before changing format", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const checkbox = screen.getByRole("checkbox", { name: /мягкий перенос/i });
+    const format = screen.getByRole("combobox", { name: "Формат" });
+    await user.click(checkbox);
+
+    await user.selectOptions(format, "tests");
+    expect(screen.getByRole("alertdialog", { name: "Сменить формат?" })).toBeInTheDocument();
+    expect(format).toHaveValue("default");
+    await user.click(screen.getByRole("button", { name: "Отмена" }));
+    expect(checkbox).toBeChecked();
+
+    await user.selectOptions(format, "tests");
+    await user.click(screen.getByRole("button", { name: "Сменить формат" }));
+    expect(format).toHaveValue("tests");
+    expect(screen.getByRole("checkbox", { name: /мягкий перенос/i })).not.toBeChecked();
+  });
+
+  it("undoes clear marks together with the previous filter state", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const checkbox = screen.getByRole("checkbox", { name: /мягкий перенос/i });
+    await user.click(checkbox);
+    await user.click(screen.getByRole("button", { name: "Таблицы", pressed: true }));
+    await user.click(screen.getByRole("button", { name: "Снять отметки" }));
+    expect(checkbox).not.toBeChecked();
+    expect(screen.getByRole("button", { name: "Таблицы", pressed: true })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Вернуть" }));
+    expect(checkbox).toBeChecked();
+    expect(screen.getByRole("button", { name: "Таблицы", pressed: false })).toBeInTheDocument();
   });
 
   it("migrates away legacy backgrounds without changing other saved values", async () => {

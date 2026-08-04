@@ -32,8 +32,10 @@ test("full RESET restores the checklist while preserving theme", async ({ page }
   await page.getByRole("button", { name: "Открыть заметки" }).click();
   await page.getByRole("textbox", { name: "Заметки" }).fill("сбросить");
   await page.getByRole("switch", { name: /фокус/i }).click();
-  await page.getByRole("button", { name: "Переключить тему" }).click();
+  await page.getByTestId("theme-toggle").click();
   await page.getByRole("button", { name: "Полный RESET" }).click();
+  await expect(page.getByRole("alertdialog", { name: "Сбросить чек-лист?" })).toBeVisible();
+  await page.getByRole("button", { name: "Сбросить", exact: true }).click();
 
   await expect(page.getByRole("combobox", { name: "Формат" })).toHaveValue("default");
   await expect(page.locator("html")).toHaveClass(/dark/);
@@ -46,7 +48,7 @@ test("full RESET restores the checklist while preserving theme", async ({ page }
 });
 
 test("navigation stays pinned and focus follows clear marks", async ({ page }, testInfo) => {
-  await expect(page.locator(".topbar")).toHaveCSS("position", "sticky");
+  await expect(page.locator(".sticky-header")).toHaveCSS("position", "sticky");
   await expect(page.getByRole("switch", { name: /фокус/i })).toHaveCSS("border-top-width", "1px");
 
   if (testInfo.project.name === "mobile") {
@@ -67,7 +69,7 @@ test("mobile header keeps format and actions aligned and centers the reset icon"
   const elements = [
     page.locator(".header-format-control > span"),
     page.getByRole("combobox", { name: "Формат" }),
-    page.getByRole("button", { name: "Переключить тему" }),
+    page.getByTestId("theme-toggle"),
     page.getByRole("button", { name: "Полный RESET" }),
   ];
   const boxes = await Promise.all(elements.map((element) => element.boundingBox()));
@@ -81,7 +83,7 @@ test("mobile header keeps format and actions aligned and centers the reset icon"
 });
 
 test("dark theme keeps primary content readable", async ({ page }) => {
-  await page.getByRole("button", { name: "Переключить тему" }).click();
+  await page.getByTestId("theme-toggle").click();
   const contrast = await page.locator(".app").evaluate((app) => {
     const parseRgb = (value) => value.match(/\d+/g).slice(0, 3).map(Number);
     const luminance = (value) => {
@@ -99,15 +101,19 @@ test("dark theme keeps primary content readable", async ({ page }) => {
   expect(contrast).toBeGreaterThanOrEqual(4.5);
 });
 
-test("changing format resets completion and accordion state", async ({ page }) => {
+test("changing format asks before resetting completion and restores context", async ({ page }) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
   await page.getByRole("button", { name: "Раздел Текст" }).click();
   await expect(page.getByRole("button", { name: "Раздел Текст" })).toHaveAttribute("aria-expanded", "false");
 
   await page.getByRole("combobox", { name: "Формат" }).selectOption("tests");
+  await expect(page.getByRole("alertdialog", { name: "Сменить формат?" })).toBeVisible();
+  await page.getByRole("button", { name: "Сменить формат" }).click();
   await expect(task).not.toBeChecked();
   await expect(page.getByRole("button", { name: "Раздел Текст" })).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByRole("button", { name: "Раздел Админка" })).toBeFocused();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 });
 
 test("every format builds its checklist and shows Misc only where defined", async ({ page }) => {
@@ -125,7 +131,7 @@ test("every format builds its checklist and shows Misc only where defined", asyn
 
 test("clear marks keeps the format, theme, and notes while restoring filters", async ({ page }) => {
   await page.getByRole("combobox", { name: "Формат" }).selectOption("tests");
-  await page.getByRole("button", { name: "Переключить тему" }).click();
+  await page.getByTestId("theme-toggle").click();
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
   await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
@@ -140,6 +146,35 @@ test("clear marks keeps the format, theme, and notes while restoring filters", a
   await expect(page.getByRole("button", { name: "Таблицы", pressed: true })).toBeVisible();
   await page.getByRole("button", { name: "Открыть заметки" }).click();
   await expect(page.getByRole("textbox", { name: "Заметки" })).toHaveValue("сохранить");
+});
+
+test("clear marks can be undone together with filters", async ({ page }) => {
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await task.check();
+  await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
+  await page.getByRole("button", { name: "Снять отметки" }).click();
+  await expect(task).not.toBeChecked();
+  await expect(page.getByRole("button", { name: "Таблицы", pressed: true })).toBeVisible();
+  await page.getByRole("button", { name: "Вернуть" }).click();
+  await expect(task).toBeChecked();
+  await expect(page.getByRole("button", { name: "Таблицы", exact: true, pressed: false })).toBeVisible();
+});
+
+test("clicking task copy toggles the task without changing link behavior", async ({ page }) => {
+  const task = page.getByRole("checkbox", { name: "Проверить, что коллеги закрыли вкладку с визивигом" });
+  const row = page.locator(".task-row").filter({ has: task });
+  await row.locator(".task-copy").click();
+  await expect(task).toBeChecked();
+});
+
+test("next incomplete expands its section and moves keyboard focus", async ({ page }) => {
+  const section = page.getByRole("button", { name: "Раздел Админка" });
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await section.click();
+  await expect(section).toHaveAttribute("aria-expanded", "false");
+  await page.getByRole("button", { name: "Следующий невыполненный →" }).click();
+  await expect(section).toHaveAttribute("aria-expanded", "true");
+  await expect(task).toBeFocused();
 });
 
 test("focus mode hides completed relevant tasks without changing progress", async ({ page }) => {
@@ -163,6 +198,8 @@ test("mobile section chips scroll to their section", async ({ page }, testInfo) 
   test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
   await page.locator(".mobile-category-nav button").filter({ hasText: "Выпуск" }).click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await expect(page.locator(".mobile-category-nav")).toBeVisible();
+  await expect.poll(async () => (await page.locator(".sticky-header").boundingBox())?.y).toBe(0);
 });
 
 test("mobile page has no clipped main content", async ({ page }, testInfo) => {
