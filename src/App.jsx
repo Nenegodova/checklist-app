@@ -378,8 +378,8 @@ function Workspace({
               {!collapsed[category] && <div className="task-list">{visibleTasks[category].map((task) => {
                 const index = tasks[category].findIndex((saved) => saved.id === task.id);
                 return <div className={`task-row ${task.done ? "is-done" : ""}`} key={`${category}-${task.id}`}>
-                  <input id={`${category}-${index}`} type="checkbox" checked={task.done} onChange={() => toggle(category, index)} />
-                  <label htmlFor={`${category}-${index}`} className="task-copy">{task.text && <span>{renderTextWithLinks(task.text)}</span>}{task.links?.length > 0 && <span className="task-links">{task.links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</span>}</label>
+                  <label className="checkbox-control"><input id={`${category}-${index}`} type="checkbox" aria-label={task.text || task.links?.map((link) => link.label).join(", ") || "Пункт чек-листа"} checked={task.done} onChange={() => toggle(category, index)} /></label>
+                  <div className="task-copy">{task.text && <span>{renderTextWithLinks(task.text)}</span>}{task.links?.length > 0 && <span className="task-links">{task.links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</span>}</div>
                 </div>;
               })}{visibleTasks[category].length === 0 && <p className="empty-section">{focusMode && item.done ? "Все релевантные пункты выполнены" : "Нет пунктов для выбранных фильтров"}</p>}</div>}
             </section>;

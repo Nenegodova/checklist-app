@@ -16,6 +16,12 @@ test("persists completion and filters across a reload", async ({ page }) => {
   await expect(page.locator("body")).not.toContainText("Фон");
 });
 
+test("task links do not change the neighbouring checkbox", async ({ page }) => {
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await page.getByRole("link", { name: "Символы ↗" }).click({ modifiers: ["Meta"] });
+  await expect(task).not.toBeChecked();
+});
+
 test("preset controls Misc and RESET preserves theme", async ({ page }) => {
   await page.getByRole("combobox", { name: "Формат" }).selectOption("tests");
   await expect(page.getByRole("button", { name: "Раздел Прочее" })).toBeVisible();
