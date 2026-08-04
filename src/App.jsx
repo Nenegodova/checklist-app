@@ -285,81 +285,101 @@ function Workspace({
   visibleTasks, hiddenByFilters, progress, resetFiltersAndCheckboxes, hardReset,
   notes, setNotes, notesOpen, setNotesOpen, notesFabRef, notesPopoverRef, notesTextareaRef,
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+  const [activeCategory, setActiveCategory] = useState(() => Object.keys(tasks)[0]);
+  const categories = Object.keys(tasks);
+  const currentActiveCategory = categories.includes(activeCategory) ? activeCategory : categories[0];
   const completedHidden = Object.values(relevantTasks).flat().filter((task) => task.done).length;
 
   useEffect(() => {
-    if (!menuOpen) return undefined;
-    const close = (event) => {
-      if (event.key === "Escape") setMenuOpen(false);
-      if (event.type === "mousedown" && !menuRef.current?.contains(event.target)) setMenuOpen(false);
-    };
-    document.addEventListener("keydown", close);
-    document.addEventListener("mousedown", close);
-    return () => {
-      document.removeEventListener("keydown", close);
-      document.removeEventListener("mousedown", close);
-    };
-  }, [menuOpen]);
+    const categories = Object.keys(tasks);
+    if (typeof IntersectionObserver === "undefined") return undefined;
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
+      const category = visible[0]?.target.dataset.category;
+      if (category) setActiveCategory(category);
+    }, { rootMargin: "-15% 0px -70% 0px", threshold: 0 });
+
+    categories.forEach((category) => {
+      const section = document.getElementById(`category-${category}`);
+      if (section) observer.observe(section);
+    });
+    return () => observer.disconnect();
+  }, [tasks]);
 
   const categoryProgress = (category) => getCategoryProgress(relevantTasks, category);
   const scrollToCategory = (category) => {
+    setActiveCategory(category);
     document.getElementById(`category-${category}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+  const changePreset = (event) => {
+    localStorage.removeItem("checklist");
+    localStorage.removeItem("collapsed");
+    setPreset(event.target.value);
+  };
+  const enableAllFilters = () => setContentFilters(buildContentFilters());
 
   return (
     <div className={`app ${dark ? "app-dark" : ""}`}>
-      <header className="topbar">
+      <div className="app-frame">
+        <header className="topbar">
         <div className="brand">
-          <p className="eyebrow">РЕДАКЦИОННЫЙ ИНСТРУМЕНТ</p>
-          <h1>Чек-лист проверки</h1>
+          <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
+          <p className="eyebrow">РЕДАКЦИЯ · ВЫПУСК СТАТЕЙ</p>
         </div>
         <div className="header-progress" aria-label={`Общий прогресс: ${progress.done} из ${progress.total}`}>
           <span className="progress-number">{progress.done}<small>/ {progress.total}</small></span>
           <div className="progress-track"><span style={{ width: `${progress.percent}%` }} /></div>
           <span className="progress-percent">{progress.percent}%</span>
         </div>
+        <a className="method-link header-method-link" href={METHODICHKA_URL} target="_blank" rel="noreferrer">Методички ↗</a>
+        <label className="format-control header-format-control"><span>ФОРМАТ</span><select aria-label="Формат" value={preset} onChange={changePreset}>
+          {Object.entries(PRESET_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+        </select></label>
         <div className="header-actions">
           <button className="icon-button" type="button" aria-label="Переключить тему" onClick={() => setDark((value) => !value)}>
             {dark ? "☀" : "◐"}
           </button>
-          <div className="menu-wrap" ref={menuRef}>
-            <button className="icon-button" type="button" aria-label="Меню действий" aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}>
-              <svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="4" cy="9" r="1.5" /><circle cx="9" cy="9" r="1.5" /><circle cx="14" cy="9" r="1.5" /></svg>
-            </button>
-            {menuOpen && <div className="action-menu" role="menu">
-              <button type="button" role="menuitem" onClick={() => { hardReset(); setMenuOpen(false); }}>Полный RESET</button>
-            </div>}
-          </div>
+          <button className="icon-button reset-button" type="button" aria-label="Полный RESET" onClick={hardReset}>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.4 7.1A6.2 6.2 0 1 1 4 12.2" /><path d="M4.4 3.8v3.7h3.7" /></svg>
+            <span>Reset</span>
+          </button>
         </div>
-      </header>
+        </header>
 
-      <div className="mobile-category-nav" aria-label="Разделы чек-листа">
+        <div className="mobile-category-nav" aria-label="Разделы чек-листа">
         {Object.keys(tasks).map((category) => {
           const item = categoryProgress(category);
-          return <button key={category} type="button" onClick={() => scrollToCategory(category)}>{category} <span>{item.done}/{item.total}</span></button>;
+          return <button key={category} type="button" className={category === currentActiveCategory ? "active" : ""} aria-current={category === currentActiveCategory ? "true" : undefined} onClick={() => scrollToCategory(category)}>{category} <span>{item.done}/{item.total}</span></button>;
         })}
-      </div>
+        <a className="method-link mobile-method-link" href={METHODICHKA_URL} target="_blank" rel="noreferrer">Методички ↗</a>
+        </div>
 
-      <div className="workspace">
+        <div className="workspace">
         <aside className="sidebar">
-          <label className="format-control"><span>ФОРМАТ</span><select aria-label="Формат" value={preset} onChange={(event) => {
-            localStorage.removeItem("checklist"); localStorage.removeItem("collapsed"); setPreset(event.target.value);
-          }}>{Object.entries(PRESET_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+          <section className="sidebar-progress" aria-label={`Прогресс в боковой панели: ${progress.done} из ${progress.total}`}>
+            <div className="sidebar-progress-heading"><span className="progress-number">{progress.done}<small>/ {progress.total}</small></span><span className="progress-percent">{progress.percent}%</span></div>
+            <div className="progress-track"><span style={{ width: `${progress.percent}%` }} /></div>
+            <small className="autosave-label">Сохраняется автоматически</small>
+          </section>
           <nav className="section-nav" aria-label="Разделы чек-листа">
             {Object.keys(tasks).map((category) => {
               const item = categoryProgress(category);
-              return <button key={category} type="button" className={!collapsed[category] ? "active" : ""} onClick={() => toggleCollapse(category)}>
+              return <button key={category} type="button" className={category === currentActiveCategory ? "active" : ""} aria-current={category === currentActiveCategory ? "true" : undefined} onClick={() => scrollToCategory(category)}>
                 <span>{category}</span><small>{item.done}/{item.total}</small>
               </button>;
             })}
           </nav>
-          <div className="sidebar-bottom">
-            <button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}>
-              <span><b>Режим фокуса</b><small>{focusMode ? `вкл · скрыто ${completedHidden} готовых` : "выкл"}</small></span><i aria-hidden="true" />
-            </button>
-            <button type="button" className="clear-button" onClick={resetFiltersAndCheckboxes}>Снять отметки</button>
+          <section className="sidebar-filters" aria-label="Фильтры контента">
+            <h2>Что есть в материале</h2>
+            <div className="filter-list">{Object.entries(CONTENT_FILTERS).map(([key, filter]) => <button key={key} type="button" className={contentFilters[key] ? "filter-chip active" : "filter-chip"} aria-pressed={contentFilters[key]} onClick={() => setContentFilters((value) => ({ ...value, [key]: !value[key] }))}>{filter.label}</button>)}</div>
+            <div className="sidebar-filter-summary"><output data-testid="desktop-hidden-by-filters">Скрыто: {hiddenByFilters}</output><button type="button" onClick={enableAllFilters}>Включить все</button></div>
+          </section>
+          <button type="button" className="clear-button sidebar-clear-button" onClick={resetFiltersAndCheckboxes}>Снять отметки</button>
+          <div className="desktop-focus">
+            <button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}><span><b>Режим фокуса</b><small>{focusMode ? `вкл · скрыто ${completedHidden} готовых` : "выкл · показывать всё"}</small></span><i aria-hidden="true" /></button>
           </div>
         </aside>
 
@@ -368,12 +388,12 @@ function Workspace({
             <div className="format-heading"><span>Формат</span><strong>{PRESET_LABELS[preset]}</strong></div>
             <div className="filters-heading"><span>Контент</span><output data-testid="hidden-by-filters">Скрыто фильтрами: {hiddenByFilters}</output></div>
             <div className="filter-list">{Object.entries(CONTENT_FILTERS).map(([key, filter]) => <button key={key} type="button" className={contentFilters[key] ? "filter-chip active" : "filter-chip"} aria-pressed={contentFilters[key]} onClick={() => setContentFilters((value) => ({ ...value, [key]: !value[key] }))}>{filter.label}</button>)}</div>
+            <button type="button" className="clear-button mobile-clear-button" onClick={resetFiltersAndCheckboxes}>Снять отметки</button>
           </section>
 
-          <a className="method-link" href={METHODICHKA_URL} target="_blank" rel="noreferrer">Методички ↗</a>
           <div className="task-sections">{Object.keys(tasks).map((category) => {
             const item = categoryProgress(category);
-            return <section id={`category-${category}`} key={category} className={`task-section ${collapsed[category] ? "is-collapsed" : ""}`}>
+            return <section id={`category-${category}`} key={category} data-category={category} className={`task-section ${collapsed[category] ? "is-collapsed" : ""}`}>
               <button className="section-heading" type="button" aria-expanded={!collapsed[category]} aria-label={`Раздел ${category}`} onClick={() => toggleCollapse(category)}><span>{category}</span><small>{item.done}/{item.total}</small><i aria-hidden="true">⌄</i></button>
               {!collapsed[category] && <div className="task-list">{visibleTasks[category].map((task) => {
                 const index = tasks[category].findIndex((saved) => saved.id === task.id);
@@ -385,9 +405,10 @@ function Workspace({
             </section>;
           })}</div>
         </main>
+        </div>
       </div>
 
-      <div className="mobile-focus"><button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}><span><b>Фокус</b><small>{focusMode ? `скрыто ${completedHidden}` : "показывать всё"}</small></span><i aria-hidden="true" /></button></div>
+      <div className="focus-dock"><button type="button" className={`focus-control ${focusMode ? "is-on" : ""}`} role="switch" aria-checked={focusMode} onClick={() => setFocusMode((value) => !value)}><span><b>Фокус</b><small>{focusMode ? `скрыто ${completedHidden} готовых` : "показывать всё"}</small></span><i aria-hidden="true" /></button></div>
       <div className="notes-fab-wrapper">
         {notesOpen && <div className="notes-window" ref={notesPopoverRef} data-testid="notes-popover"><div className="notes-title">Заметки <button type="button" aria-label="Закрыть заметки" onClick={() => setNotesOpen(false)}>×</button></div><div className="notes-actions"><button type="button" onClick={() => setNotes((value) => value.trim() ? value : NOTES_TEMPLATE)}>Вставить шаблон</button><button type="button" className="danger" onClick={() => setNotes("")}>Очистить</button></div><textarea ref={notesTextareaRef} aria-label="Заметки" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Заметки по ходу проверки" /></div>}
         <button className="notes-fab" type="button" ref={notesFabRef} aria-label="Открыть заметки" aria-expanded={notesOpen} onClick={() => setNotesOpen((value) => !value)}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5.5h12M4 10h12M4 14.5h7" /></svg></button>
