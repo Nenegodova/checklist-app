@@ -156,7 +156,7 @@ const PRESETS = {
 const PRESET_EXCLUDES = {
   cd: { "Текст": ["lead", "heading-levels", "editor-badge"], "Админка": ["cover-author", "cover-type", "utm", "credit"] },
   shorts: { "Текст": ["tooltip-link", "currency-tooltip", "lists-style", "utm", "shorts-alt-h2-p", "shorts-list-format"] },
-  spending: { "Текст": ["lead", "spending-poll", "spending-pnl", "spending-card", "spending-shorts",] },
+  spending: { "Текст": ["lead", "spending-poll", "editor-badge", "spending-card", "shorts-alt-h2-p", "spending-shorts"] },
 };
 const DATA = {
   "Админка": [
@@ -186,24 +186,24 @@ const DATA = {
     { id: "tooltip-link", text: "Тултип не стоит рядом со ссылкой" },
     { id: "lists-style", text: "Проверить оформление списков: цифровые и кастомные — с большой буквы, в конце пунктов точки. Списки с буллитами — с маленькой буквы, в конце пунктов точка с запятой, у последнего пункта — точка" },
     { id: "spending-poll", text: "Опрос на месте, в нем предлоги приклеены к следующему слову, эмодзи отображаются корректно", feature: "poll" },
-    { id: "editor-badge, spending-pnl", text: "В конце материала стоит верная плашка телеграм-канала редакции" },
+    { id: "editor-badge", text: "В конце материала стоит верная плашка телеграм-канала редакции" },
     { text: "Расставить поля, если нужно, они не стоят рядом с баннерами, анкетами, картинками и таблицами" },
     { text: "Все примечания редакторов в квадратных скобках, выделенные красным цветом, учтены: необходимые элементы добавлены и корректно отображаются, а служебные пометки удалены" },
-    { id: "shorts-alt-h2-p, spending-shorts", text: "В шортах заполнен alt=\"\", заголовок h2 level=\"3\", текст внутри  p grade=\"medium\"", feature: "shorts" },
+    { id: "shorts-alt-h2-p", text: "В шортах заполнен alt=\"\", заголовок h2 level=\"3\", текст внутри  p grade=\"medium\"", feature: "shorts" },
     { id: "spending-card", text: "У карточек товаров есть картинка и название товара", feature: "prodcard" },
     { id: "spending-card", text: "У карточек-сеток отсутствует описание и бирка", feature: "prodcard" },
     { id: "spending-card", text: "Внутри тега <price> обязательно прописана цена товара. Знаки препинания внутрь тега <price> включаются по правилу ссылок (. ! ? :)", feature: "prodcard" },
     { id: "spending-card", text: "Если тег <price> стоит посреди текста, то скрываем название магазина через атрибут shop-hide=\"true\"", feature: "prodcard" },
     {
       text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, строчки отбиты <br/>", feature: "shorts",
-      id: "shorts-list-format, spending-shorts"
+      id: "shorts-list-format"
     },
   ],
   "Таблицы": [
     { text: "У таблицы есть заголовок" },
    { text: "У таблиц с <thead> есть атрибут sticky-header=\"true\"" },
     { text: "Красиво отрегулированы ширины: если текста много или колонок три и более, то их ширину можно растянуть. При этом ширина одной колонки не должна превышать 350 пикселей. Если текста мало, то колонки узкие" },
-    { text: "Данные в ячейках выровнены по правилам", links: [{ label: "Методичка", url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.oddbhw32m71r/"  }]  },
+    { text: "Данные в ячейках выровнены по правилам", links: [{ label: "Методичка", url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.hqvrmuvld38v"  }]  },
     { text: "Списки в таблицах оформлены по правилам" , links: [{ label: "Методичка", url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.d9k5whxwvw7i"  }] },
     { text: "Если в таблице сравниваются числа, то строки отсортированы от большего к меньшему" },
   ],
