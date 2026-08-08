@@ -89,7 +89,7 @@ describe("checklist application", () => {
     ).not.toBeChecked();
   });
 
-  it("undoes clear marks together with the previous filter state", async () => {
+  it("clears marks without touching filters, and undo restores only the marks", async () => {
     const user = userEvent.setup();
     render(<App />);
     const checkbox = screen.getByRole("checkbox", { name: /мягкий перенос/i });
@@ -100,7 +100,7 @@ describe("checklist application", () => {
     await user.click(screen.getByRole("button", { name: "Снять отметки" }));
     expect(checkbox).not.toBeChecked();
     expect(
-      screen.getByRole("button", { name: "Таблицы", pressed: true }),
+      screen.getByRole("button", { name: "Таблицы", pressed: false }),
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Вернуть" }));
@@ -108,6 +108,27 @@ describe("checklist application", () => {
     expect(
       screen.getByRole("button", { name: "Таблицы", pressed: false }),
     ).toBeInTheDocument();
+  });
+
+  it("resets filters without touching marks, and undo restores only the filters", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const checkbox = screen.getByRole("checkbox", { name: /мягкий перенос/i });
+    await user.click(checkbox);
+    await user.click(
+      screen.getByRole("button", { name: "Таблицы", pressed: true }),
+    );
+    await user.click(screen.getByRole("button", { name: "Включить все" }));
+    expect(
+      screen.getByRole("button", { name: "Таблицы", pressed: true }),
+    ).toBeInTheDocument();
+    expect(checkbox).toBeChecked();
+
+    await user.click(screen.getByRole("button", { name: "Вернуть" }));
+    expect(
+      screen.getByRole("button", { name: "Таблицы", pressed: false }),
+    ).toBeInTheDocument();
+    expect(checkbox).toBeChecked();
   });
 
   it("migrates away legacy backgrounds without changing other saved values", async () => {

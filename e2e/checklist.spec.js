@@ -198,7 +198,7 @@ test("every format builds its checklist and shows Misc only where defined", asyn
   }
 });
 
-test("clear marks keeps the format, theme, and notes while restoring filters", async ({
+test("clear marks keeps the format, theme, notes, and filters", async ({
   page,
 }) => {
   await page.getByRole("combobox", { name: "Формат" }).selectOption("tests");
@@ -217,7 +217,7 @@ test("clear marks keeps the format, theme, and notes while restoring filters", a
   await expect(page.locator("html")).toHaveClass(/dark/);
   await expect(task).not.toBeChecked();
   await expect(
-    page.getByRole("button", { name: "Таблицы", pressed: true }),
+    page.getByRole("button", { name: "Таблицы", exact: true, pressed: false }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Открыть заметки" }).click();
   await expect(page.getByRole("textbox", { name: "Заметки" })).toHaveValue(
@@ -225,14 +225,38 @@ test("clear marks keeps the format, theme, and notes while restoring filters", a
   );
 });
 
-test("clear marks can be undone together with filters", async ({ page }) => {
+test("clear marks does not touch filters, and undo restores only the marks", async ({
+  page,
+}) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
   await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
   await page.getByRole("button", { name: "Снять отметки" }).click();
   await expect(task).not.toBeChecked();
   await expect(
-    page.getByRole("button", { name: "Таблицы", pressed: true }),
+    page.getByRole("button", { name: "Таблицы", exact: true, pressed: false }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Вернуть" }).click();
+  await expect(task).toBeChecked();
+  await expect(
+    page.getByRole("button", { name: "Таблицы", exact: true, pressed: false }),
+  ).toBeVisible();
+});
+
+test("resetting filters does not touch marks, and undo restores only the filters", async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name !== "desktop",
+    "reset-filters button only exists in the desktop sidebar",
+  );
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await task.check();
+  await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
+  await page.getByRole("button", { name: "Включить все" }).click();
+  await expect(task).toBeChecked();
+  await expect(
+    page.getByRole("button", { name: "Таблицы", exact: true, pressed: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Вернуть" }).click();
   await expect(task).toBeChecked();

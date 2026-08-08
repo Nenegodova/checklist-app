@@ -206,10 +206,12 @@ export default function App() {
     [markSaving],
   );
 
-  const enableAllFilters = useCallback(() => {
+  const resetFilters = useCallback(() => {
     markSaving();
+    setUndoState({ kind: "filters", contentFilters });
     setContentFilters(buildContentFilters());
-  }, [markSaving]);
+    setToast({ message: "Фильтры сброшены", canUndo: true });
+  }, [contentFilters, markSaving]);
 
   const switchPreset = useCallback(
     (nextPreset) => {
@@ -228,21 +230,24 @@ export default function App() {
     [markSaving],
   );
 
-  const resetFiltersAndCheckboxes = useCallback(() => {
+  const clearMarks = useCallback(() => {
     markSaving();
-    setUndoState({ tasks, contentFilters });
-    setContentFilters(buildContentFilters());
+    setUndoState({ kind: "marks", tasks });
     setTasks(buildTasks(currentData));
-    setToast({ message: "Отметки сняты, фильтры включены", canUndo: true });
-  }, [contentFilters, currentData, markSaving, tasks]);
+    setToast({ message: "Отметки сняты", canUndo: true });
+  }, [currentData, markSaving, tasks]);
 
   const undoClear = useCallback(() => {
     if (!undoState) return;
     markSaving();
-    setTasks(undoState.tasks);
-    setContentFilters(undoState.contentFilters);
+    if (undoState.kind === "marks") {
+      setTasks(undoState.tasks);
+      setToast({ message: "Отметки восстановлены", canUndo: false });
+    } else {
+      setContentFilters(undoState.contentFilters);
+      setToast({ message: "Фильтры восстановлены", canUndo: false });
+    }
     setUndoState(null);
-    setToast({ message: "Отметки и фильтры восстановлены", canUndo: false });
   }, [markSaving, undoState]);
 
   const hardReset = useCallback(() => {
@@ -276,6 +281,11 @@ export default function App() {
     [relevantTasks, focusMode],
   );
   const hiddenByFilters = getHiddenByFiltersCount(tasks, relevantTasks);
+  const filtersAreDefault = useMemo(
+    () =>
+      JSON.stringify(contentFilters) === JSON.stringify(buildContentFilters()),
+    [contentFilters],
+  );
   const {
     done: doneTasks,
     total: totalTasks,
@@ -293,14 +303,15 @@ export default function App() {
       toggle={toggle}
       contentFilters={contentFilters}
       toggleFilter={toggleFilter}
-      enableAllFilters={enableAllFilters}
+      resetFilters={resetFilters}
+      filtersAreDefault={filtersAreDefault}
       focusMode={focusMode}
       setFocusMode={setFocusMode}
       relevantTasks={relevantTasks}
       visibleTasks={visibleTasks}
       hiddenByFilters={hiddenByFilters}
       progress={{ done: doneTasks, total: totalTasks, percent }}
-      resetFiltersAndCheckboxes={resetFiltersAndCheckboxes}
+      clearMarks={clearMarks}
       hardReset={hardReset}
       notes={notes}
       setNotes={setNotes}

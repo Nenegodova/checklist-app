@@ -17,14 +17,14 @@ export default function ChecklistWorkspace({
   toggle,
   contentFilters,
   toggleFilter,
-  enableAllFilters,
+  resetFilters,
   focusMode,
   setFocusMode,
   relevantTasks,
   visibleTasks,
   hiddenByFilters,
   progress,
-  resetFiltersAndCheckboxes,
+  clearMarks,
   hardReset,
   notes,
   setNotes,
@@ -342,7 +342,7 @@ export default function ChecklistWorkspace({
                 <output data-testid="desktop-hidden-by-filters">
                   Скрыто: {hiddenByFilters}
                 </output>
-                <button type="button" onClick={enableAllFilters}>
+                <button type="button" onClick={resetFilters}>
                   Включить все
                 </button>
               </div>
@@ -350,7 +350,7 @@ export default function ChecklistWorkspace({
             <button
               type="button"
               className="clear-button sidebar-clear-button"
-              onClick={resetFiltersAndCheckboxes}
+              onClick={clearMarks}
             >
               Снять отметки
             </button>
@@ -399,7 +399,7 @@ export default function ChecklistWorkspace({
               <button
                 type="button"
                 className="clear-button mobile-clear-button"
-                onClick={resetFiltersAndCheckboxes}
+                onClick={clearMarks}
               >
                 Снять отметки
               </button>
@@ -427,7 +427,7 @@ export default function ChecklistWorkspace({
                   onToggleCollapse={toggleCollapse}
                   onToggleTask={toggle}
                   onShowAll={() => setFocusMode(false)}
-                  onReset={resetFiltersAndCheckboxes}
+                  onReset={clearMarks}
                   onNextCategory={scrollToNextCategory}
                 />
               ))}
