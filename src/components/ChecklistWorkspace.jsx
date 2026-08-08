@@ -365,38 +365,36 @@ export default function ChecklistWorkspace({
           </aside>
 
           <main className="main-content">
-            <section className="controls" aria-label="Настройки списка">
-              <ContentFilterBar
-                values={contentFilters}
-                onToggle={toggleFilter}
-                hiddenByFilters={hiddenByFilters}
-                onReset={resetFilters}
-                canReset={!filtersAreDefault}
-              />
-              <button
-                type="button"
-                className="clear-button mobile-clear-button"
-                onClick={clearMarks}
-              >
-                Снять отметки
-              </button>
-              <button
-                type="button"
-                className="next-task-button mobile-next-task"
-                disabled={!hasIncompleteTasks}
-                onClick={goToNextIncomplete}
-              >
-                Следующий невыполненный →
-              </button>
-              <FocusToggle
-                className="mobile-focus"
-                focusMode={focusMode}
-                onToggle={() => setFocusMode((value) => !value)}
-                completedHidden={completedHidden}
-                title="Фокус"
-                compact
-              />
-            </section>
+            <ContentFilterBar
+              values={contentFilters}
+              onToggle={toggleFilter}
+              hiddenByFilters={hiddenByFilters}
+              onReset={resetFilters}
+              canReset={!filtersAreDefault}
+            />
+            <button
+              type="button"
+              className="clear-button mobile-clear-button"
+              onClick={clearMarks}
+            >
+              Снять отметки
+            </button>
+            <button
+              type="button"
+              className="next-task-button mobile-next-task"
+              disabled={!hasIncompleteTasks}
+              onClick={goToNextIncomplete}
+            >
+              Следующий невыполненный →
+            </button>
+            <FocusToggle
+              className="mobile-focus"
+              focusMode={focusMode}
+              onToggle={() => setFocusMode((value) => !value)}
+              completedHidden={completedHidden}
+              title="Фокус"
+              compact
+            />
 
             <div className="task-sections">
               {categories.map((category, index) => (

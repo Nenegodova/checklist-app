@@ -11,6 +11,7 @@
   --danger: #b42318;
   --shadow: 0 18px 45px rgba(23, 24, 26, 0.08);
   --radius: 12px;
+  --topbar-h: 86px;
 }
 :root.dark,
 .app-dark {
@@ -70,7 +71,7 @@ input:focus-visible {
   position: sticky;
   z-index: 20;
   top: 0;
-  min-height: 82px;
+  min-height: var(--topbar-h);
   display: flex;
   align-items: center;
   gap: 20px;
@@ -90,8 +91,6 @@ input:focus-visible {
 }
 .eyebrow,
 .format-control span,
-.format-heading span,
-.filters-heading span,
 .section-heading span,
 .progress-percent {
   font-family: "IBM Plex Mono", monospace;
@@ -177,7 +176,7 @@ input:focus-visible {
   background: color-mix(in srgb, var(--danger) 7%, var(--surface));
 }
 .workspace {
-  min-height: calc(100vh - 144px);
+  min-height: calc(100vh - var(--topbar-h) - 62px);
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   align-items: start;
@@ -185,8 +184,8 @@ input:focus-visible {
 }
 .sidebar {
   position: sticky;
-  top: 82px;
-  max-height: calc(100vh - 82px);
+  top: var(--topbar-h);
+  max-height: calc(100vh - var(--topbar-h));
   display: flex;
   align-self: start;
   flex-direction: column;
@@ -215,13 +214,6 @@ input:focus-visible {
 }
 .header-format-control {
   display: none;
-  width: auto;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 10px;
-}
-.header-format-control select {
-  width: 180px;
 }
 .sidebar-progress {
   display: grid;
@@ -281,60 +273,7 @@ input:focus-visible {
   font-family: "IBM Plex Mono", monospace;
   color: var(--muted);
 }
-.sidebar-filters {
-  display: grid;
-  gap: 11px;
-  padding: 20px 11px 0;
-  border-top: 1px solid var(--line);
-}
-.sidebar-filters h2 {
-  margin: 0;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.sidebar-filters .filter-list {
-  gap: 5px;
-}
-.sidebar-filters .filter-chip {
-  padding: 5px 8px;
-  border-style: dashed;
-  font-size: 11px;
-}
-.sidebar-filters .filter-chip.active {
-  border-color: var(--ink);
-  border-style: solid;
-  background: var(--ink);
-  color: var(--surface);
-}
-.sidebar-filters .filter-chip:not(.active) {
-  text-decoration: none;
-}
-.sidebar-filter-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--muted);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 9px;
-  text-transform: uppercase;
-}
-.sidebar-filter-summary button {
-  padding: 0;
-  border: 0;
-  border-bottom: 1px solid currentColor;
-  background: none;
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  text-transform: inherit;
-}
 .sidebar-clear-button {
-  margin: 0 11px;
-}
-.desktop-focus {
   margin: 0 11px;
 }
 .sidebar {
@@ -350,9 +289,6 @@ input:focus-visible {
 .section-nav button.active::before {
   top: 7px;
   bottom: 7px;
-}
-.sidebar-filters {
-  padding-top: 16px;
 }
 .focus-control {
   display: flex;
@@ -404,6 +340,14 @@ input:focus-visible {
   transform: translateX(15px);
   background: var(--accent-ink);
 }
+.header-focus {
+  display: flex;
+  flex: 0 0 auto;
+}
+.header-focus .focus-control {
+  width: 200px;
+  padding: 8px 10px;
+}
 .clear-button {
   padding: 11px;
   border: 1px solid var(--line);
@@ -421,34 +365,62 @@ input:focus-visible {
   position: relative;
   padding: 0 clamp(20px, 4vw, 48px) 50px;
 }
-.controls {
+.content-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 14px 20px;
   padding-bottom: 22px;
   border-bottom: 1px solid var(--line);
 }
-.format-heading {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-  margin-bottom: 22px;
+.content-filters-primary {
+  display: grid;
+  gap: 11px;
+  min-width: 0;
 }
-.format-heading span,
-.filters-heading span {
+.content-filters-primary h2 {
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--muted);
 }
-.format-heading strong {
-  font-size: 19px;
-}
-.filters-heading {
+.content-filters-secondary {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: baseline;
-  margin-bottom: 9px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  white-space: nowrap;
 }
-.filters-heading output {
+.content-filters-secondary output {
   color: var(--muted);
   font-family: "IBM Plex Mono", monospace;
   font-size: 11px;
+  text-transform: uppercase;
+}
+.filters-reset-button {
+  min-height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.filters-reset-button:hover:not(:disabled) {
+  color: var(--ink);
+}
+.filters-reset-button:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 .filter-list {
   display: flex;
@@ -457,21 +429,19 @@ input:focus-visible {
 }
 .filter-chip {
   padding: 7px 10px;
-  border: 1px solid var(--line-strong);
+  border: 1px dashed var(--line-strong);
   border-radius: 999px;
   background: transparent;
+  color: var(--muted);
   cursor: pointer;
   font-size: 13px;
 }
 .filter-chip.active {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-ink);
+  border-color: var(--ink);
+  border-style: solid;
+  background: var(--ink);
+  color: var(--surface);
   font-weight: 600;
-}
-.filter-chip:not(.active) {
-  color: var(--muted);
-  text-decoration: line-through;
 }
 .method-link {
   flex: 0 0 auto;
@@ -772,17 +742,20 @@ input:focus-visible {
   .main-content {
     padding: 0 16px 25px;
   }
-  .controls {
-    display: block;
+  .content-filters {
+    grid-template-columns: minmax(0, 1fr);
     padding: 18px 0;
+  }
+  .content-filters-secondary {
+    align-items: flex-start;
   }
   .mobile-clear-button {
     display: block;
     width: 100%;
     margin-top: 14px;
   }
-  .format-heading {
-    display: none;
+  .filters-reset-button {
+    min-height: 44px;
   }
   .method-link {
     position: static;
