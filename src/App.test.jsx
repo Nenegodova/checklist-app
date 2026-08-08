@@ -114,21 +114,47 @@ describe("checklist application", () => {
     const user = userEvent.setup();
     render(<App />);
     const checkbox = screen.getByRole("checkbox", { name: /мягкий перенос/i });
+    const resetFiltersButton = screen.getByRole("button", {
+      name: "Сбросить фильтры",
+    });
+    expect(resetFiltersButton).toBeDisabled();
+
     await user.click(checkbox);
     await user.click(
       screen.getByRole("button", { name: "Таблицы", pressed: true }),
     );
-    await user.click(screen.getByRole("button", { name: "Сбросить фильтры" }));
+    expect(resetFiltersButton).toBeEnabled();
+
+    await user.click(resetFiltersButton);
     expect(
       screen.getByRole("button", { name: "Таблицы", pressed: true }),
     ).toBeInTheDocument();
     expect(checkbox).toBeChecked();
+    expect(resetFiltersButton).toBeDisabled();
 
     await user.click(screen.getByRole("button", { name: "Вернуть" }));
     expect(
       screen.getByRole("button", { name: "Таблицы", pressed: false }),
     ).toBeInTheDocument();
     expect(checkbox).toBeChecked();
+    expect(resetFiltersButton).toBeEnabled();
+  });
+
+  it("renders a link-only task as an accessible link that does not toggle the checkbox", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const taskLabel =
+      "Пометка про иноагентов/экстремистов в инфоблоке оформлена корректно";
+    const checkbox = screen.getByRole("checkbox", { name: taskLabel });
+    const link = screen.getByRole("link", { name: new RegExp(taskLabel) });
+    expect(link).toHaveClass("task-link-primary");
+    // The arrow is decorative; screen readers should announce the label plus
+    // "откроется в новой вкладке" without the arrow polluting the name.
+    expect(link).toHaveTextContent("откроется в новой вкладке");
+    expect(link.querySelector('[aria-hidden="true"]')).toHaveTextContent("↗");
+
+    await user.click(link);
+    expect(checkbox).not.toBeChecked();
   });
 
   it("migrates away legacy backgrounds without changing other saved values", async () => {

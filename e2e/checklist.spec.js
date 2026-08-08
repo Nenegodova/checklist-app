@@ -26,6 +26,19 @@ test("task links do not change the neighbouring checkbox", async ({ page }) => {
   await expect(task).not.toBeChecked();
 });
 
+test("completed task links keep a single strikethrough instead of stacking with the underline", async ({
+  page,
+}) => {
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  const link = page.getByRole("link", {
+    name: "Символы откроется в новой вкладке",
+  });
+  await expect(link).toHaveCSS("text-decoration-line", "underline");
+
+  await task.check();
+  await expect(link).toHaveCSS("text-decoration-line", "line-through");
+});
+
 test("full RESET restores the checklist while preserving theme", async ({
   page,
 }) => {
@@ -173,6 +186,27 @@ test("changing format asks before resetting completion and restores context", as
     page.getByRole("button", { name: "Раздел Админка" }),
   ).toBeFocused();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+});
+
+test("canceling a format change returns focus to the visible format select", async ({
+  page,
+}) => {
+  // Two <select> nodes exist in the DOM (header + sidebar), shown one at a
+  // time by breakpoint; only one is ever visible/focusable per viewport, so
+  // this locator exercises the offsetParent-based pick in changePreset.
+  const format = page.getByRole("combobox", { name: "Формат" });
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  await task.check();
+
+  await format.selectOption("tests");
+  await expect(
+    page.getByRole("alertdialog", { name: "Сменить формат?" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Отмена" }).click();
+
+  await expect(format).toBeFocused();
+  await expect(format).toHaveValue("default");
+  await expect(task).toBeChecked();
 });
 
 test("every format builds its checklist and shows Misc only where defined", async ({
