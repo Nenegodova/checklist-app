@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { METHODICHKA_URL, PRESET_LABELS } from "../checklist-data";
 import { getCategoryProgress } from "../lib/checklist-state";
 import ConfirmationDialog from "./ConfirmationDialog";
+import ContentFilterBar from "./ContentFilterBar";
 import FilterChips from "./FilterChips";
+import FocusToggle from "./FocusToggle";
+import FormatControl from "./FormatControl";
 import NotesPopover from "./NotesPopover";
 import TaskSection from "./TaskSection";
 
@@ -212,21 +215,12 @@ export default function ChecklistWorkspace({
             >
               Методички ↗
             </a>
-            <label className="format-control header-format-control">
-              <span>ФОРМАТ</span>
-              <select
-                ref={formatSelectRef}
-                aria-label="Формат"
-                value={preset}
-                onChange={changePreset}
-              >
-                {Object.entries(PRESET_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <FormatControl
+              preset={preset}
+              onChange={changePreset}
+              selectRef={formatSelectRef}
+              className="header-format-control"
+            />
             <div className="header-actions">
               <button
                 className="icon-button has-tooltip"
@@ -335,18 +329,12 @@ export default function ChecklistWorkspace({
                 );
               })}
             </nav>
-            <section className="sidebar-filters" aria-label="Фильтры контента">
-              <h2>Что есть в материале</h2>
-              <FilterChips values={contentFilters} onToggle={toggleFilter} />
-              <div className="sidebar-filter-summary">
-                <output data-testid="desktop-hidden-by-filters">
-                  Скрыто: {hiddenByFilters}
-                </output>
-                <button type="button" onClick={resetFilters}>
-                  Включить все
-                </button>
-              </div>
-            </section>
+            <ContentFilterBar
+              values={contentFilters}
+              onToggle={toggleFilter}
+              hiddenByFilters={hiddenByFilters}
+              onReset={resetFilters}
+            />
             <button
               type="button"
               className="clear-button sidebar-clear-button"
@@ -362,25 +350,13 @@ export default function ChecklistWorkspace({
             >
               Следующий невыполненный →
             </button>
-            <div className="desktop-focus">
-              <button
-                type="button"
-                className={`focus-control ${focusMode ? "is-on" : ""}`}
-                role="switch"
-                aria-checked={focusMode}
-                onClick={() => setFocusMode((value) => !value)}
-              >
-                <span>
-                  <b>Режим фокуса</b>
-                  <small>
-                    {focusMode
-                      ? `вкл · скрыто ${completedHidden} готовых`
-                      : "выкл · показывать всё"}
-                  </small>
-                </span>
-                <i aria-hidden="true" />
-              </button>
-            </div>
+            <FocusToggle
+              className="desktop-focus"
+              focusMode={focusMode}
+              onToggle={() => setFocusMode((value) => !value)}
+              completedHidden={completedHidden}
+              title="Режим фокуса"
+            />
           </aside>
 
           <main className="main-content">
@@ -436,25 +412,14 @@ export default function ChecklistWorkspace({
         </div>
       </div>
 
-      <div className="focus-dock">
-        <button
-          type="button"
-          className={`focus-control ${focusMode ? "is-on" : ""}`}
-          role="switch"
-          aria-checked={focusMode}
-          onClick={() => setFocusMode((value) => !value)}
-        >
-          <span>
-            <b>Фокус</b>
-            <small>
-              {focusMode
-                ? `скрыто ${completedHidden} готовых`
-                : "показывать всё"}
-            </small>
-          </span>
-          <i aria-hidden="true" />
-        </button>
-      </div>
+      <FocusToggle
+        className="focus-dock"
+        focusMode={focusMode}
+        onToggle={() => setFocusMode((value) => !value)}
+        completedHidden={completedHidden}
+        title="Фокус"
+        compact
+      />
       <NotesPopover
         notes={notes}
         onChange={setNotes}
