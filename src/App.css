@@ -358,9 +358,6 @@ input:focus-visible {
 .clear-button:hover {
   border-color: var(--ink);
 }
-.focus-dock {
-  display: none;
-}
 .main-content {
   position: relative;
   padding: 0 clamp(20px, 4vw, 48px) 50px;
@@ -660,7 +657,7 @@ input:focus-visible {
 }
 @media (max-width: 800px) {
   .app {
-    padding: 12px 0 92px;
+    padding: 12px 0 24px;
   }
   .app-frame {
     min-height: 0;
@@ -769,19 +766,14 @@ input:focus-visible {
     padding-top: 23px;
   }
   .mobile-focus {
-    position: fixed;
-    z-index: 8;
-    right: 0;
-    bottom: 0;
-    left: 0;
     display: block;
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--line);
-    background: var(--surface);
+    width: 100%;
+    margin-top: 14px;
+    scroll-margin-top: 176px;
   }
   .notes-fab-wrapper {
     right: 18px;
-    bottom: 84px;
+    bottom: 18px;
   }
   .notes-fab {
     width: 50px;
@@ -827,20 +819,6 @@ input:focus-visible {
     border: 1px solid var(--line);
     border-radius: 99px;
     white-space: nowrap;
-  }
-  .focus-dock {
-    position: fixed;
-    z-index: 8;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: block;
-    width: auto;
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--line);
-    border-radius: 0;
-    background: var(--surface);
-    backdrop-filter: none;
   }
 }
 
@@ -1168,7 +1146,7 @@ input:focus-visible {
     min-height: 36px;
   }
   .task-section {
-    scroll-margin-top: 155px;
+    scroll-margin-top: 176px;
   }
   .task-row {
     margin-right: -6px;
@@ -1181,7 +1159,6 @@ input:focus-visible {
     flex-direction: column;
   }
   .toast {
-    bottom: 92px;
     font-size: 13px;
   }
   .confirm-dialog {

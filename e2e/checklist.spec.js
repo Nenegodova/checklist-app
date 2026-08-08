@@ -39,6 +39,7 @@ test("full RESET restores the checklist while preserving theme", async ({
   await page.getByRole("button", { name: "Раздел Текст" }).click();
   await page.getByRole("button", { name: "Открыть заметки" }).click();
   await page.getByRole("textbox", { name: "Заметки" }).fill("сбросить");
+  await page.getByRole("button", { name: "Закрыть заметки" }).click();
   await page.getByRole("switch", { name: /фокус/i }).click();
   await page.getByTestId("theme-toggle").click();
   await page.getByRole("button", { name: "Полный RESET" }).click();
@@ -78,7 +79,11 @@ test("navigation stays pinned and focus follows clear marks", async ({
   );
 
   if (testInfo.project.name === "mobile") {
-    await expect(page.locator(".mobile-focus")).toHaveCSS("position", "fixed");
+    await expect(page.locator(".mobile-focus")).not.toHaveCSS(
+      "position",
+      "fixed",
+    );
+    await expect(page.getByRole("switch", { name: /фокус/i })).toBeVisible();
   } else {
     await expect(page.locator(".sidebar")).toHaveCSS("position", "sticky");
     await expect(page.locator(".header-focus")).toBeVisible();
