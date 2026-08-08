@@ -78,14 +78,13 @@ test("navigation stays pinned and focus follows clear marks", async ({
   );
 
   if (testInfo.project.name === "mobile") {
-    await expect(page.locator(".focus-dock")).toHaveCSS("position", "fixed");
+    await expect(page.locator(".mobile-focus")).toHaveCSS("position", "fixed");
   } else {
     await expect(page.locator(".sidebar")).toHaveCSS("position", "sticky");
+    await expect(page.locator(".header-focus")).toBeVisible();
+    const nextTaskBox = await page.locator(".sidebar-next-task").boundingBox();
     const clearBox = await page.locator(".sidebar-clear-button").boundingBox();
-    const focusBox = await page.locator(".desktop-focus").boundingBox();
-    expect(focusBox?.y).toBeGreaterThan(
-      (clearBox?.y ?? 0) + (clearBox?.height ?? 0),
-    );
+    expect(nextTaskBox?.y).toBeLessThan(clearBox?.y ?? 0);
   }
 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
@@ -245,15 +244,11 @@ test("clear marks does not touch filters, and undo restores only the marks", asy
 
 test("resetting filters does not touch marks, and undo restores only the filters", async ({
   page,
-}, testInfo) => {
-  test.skip(
-    testInfo.project.name !== "desktop",
-    "reset-filters button only exists in the desktop sidebar",
-  );
+}) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
   await page.getByRole("button", { name: "Таблицы", pressed: true }).click();
-  await page.getByRole("button", { name: "Включить все" }).click();
+  await page.getByRole("button", { name: "Сбросить фильтры" }).click();
   await expect(task).toBeChecked();
   await expect(
     page.getByRole("button", { name: "Таблицы", exact: true, pressed: true }),

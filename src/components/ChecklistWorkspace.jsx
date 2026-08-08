@@ -3,7 +3,6 @@ import { METHODICHKA_URL, PRESET_LABELS } from "../checklist-data";
 import { getCategoryProgress } from "../lib/checklist-state";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ContentFilterBar from "./ContentFilterBar";
-import FilterChips from "./FilterChips";
 import FocusToggle from "./FocusToggle";
 import FormatControl from "./FormatControl";
 import NotesPopover from "./NotesPopover";
@@ -21,6 +20,7 @@ export default function ChecklistWorkspace({
   contentFilters,
   toggleFilter,
   resetFilters,
+  filtersAreDefault,
   focusMode,
   setFocusMode,
   relevantTasks,
@@ -46,7 +46,8 @@ export default function ChecklistWorkspace({
     () => Object.keys(tasks)[0],
   );
   const [pendingAction, setPendingAction] = useState(null);
-  const formatSelectRef = useRef(null);
+  const headerFormatSelectRef = useRef(null);
+  const sidebarFormatSelectRef = useRef(null);
   const resetButtonRef = useRef(null);
   const actionTriggerRef = useRef(null);
   const scrollingTargetRef = useRef(null);
@@ -123,11 +124,15 @@ export default function ChecklistWorkspace({
       setActiveCategory(category);
     }, 550);
   };
+  const getVisibleFormatSelect = () =>
+    [headerFormatSelectRef.current, sidebarFormatSelectRef.current].find(
+      (el) => el && el.offsetParent !== null,
+    ) ?? null;
   const changePreset = (event) => {
     const nextPreset = event.target.value;
     if (nextPreset === preset) return;
     if (progress.done > 0) {
-      actionTriggerRef.current = formatSelectRef.current;
+      actionTriggerRef.current = getVisibleFormatSelect();
       setPendingAction({ kind: "preset", value: nextPreset });
       return;
     }
@@ -218,8 +223,15 @@ export default function ChecklistWorkspace({
             <FormatControl
               preset={preset}
               onChange={changePreset}
-              selectRef={formatSelectRef}
+              selectRef={headerFormatSelectRef}
               className="header-format-control"
+            />
+            <FocusToggle
+              className="header-focus"
+              focusMode={focusMode}
+              onToggle={() => setFocusMode((value) => !value)}
+              completedHidden={completedHidden}
+              title="Режим фокуса"
             />
             <div className="header-actions">
               <button
@@ -286,6 +298,12 @@ export default function ChecklistWorkspace({
 
         <div className="workspace">
           <aside className="sidebar">
+            <FormatControl
+              preset={preset}
+              onChange={changePreset}
+              selectRef={sidebarFormatSelectRef}
+              className="sidebar-format-control"
+            />
             <section
               className="sidebar-progress"
               aria-label={`Прогресс в боковой панели: ${progress.done} из ${progress.total}`}
@@ -329,19 +347,6 @@ export default function ChecklistWorkspace({
                 );
               })}
             </nav>
-            <ContentFilterBar
-              values={contentFilters}
-              onToggle={toggleFilter}
-              hiddenByFilters={hiddenByFilters}
-              onReset={resetFilters}
-            />
-            <button
-              type="button"
-              className="clear-button sidebar-clear-button"
-              onClick={clearMarks}
-            >
-              Снять отметки
-            </button>
             <button
               type="button"
               className="next-task-button sidebar-next-task"
@@ -350,28 +355,24 @@ export default function ChecklistWorkspace({
             >
               Следующий невыполненный →
             </button>
-            <FocusToggle
-              className="desktop-focus"
-              focusMode={focusMode}
-              onToggle={() => setFocusMode((value) => !value)}
-              completedHidden={completedHidden}
-              title="Режим фокуса"
-            />
+            <button
+              type="button"
+              className="clear-button sidebar-clear-button"
+              onClick={clearMarks}
+            >
+              Снять отметки
+            </button>
           </aside>
 
           <main className="main-content">
             <section className="controls" aria-label="Настройки списка">
-              <div className="format-heading">
-                <span>Формат</span>
-                <strong>{PRESET_LABELS[preset]}</strong>
-              </div>
-              <div className="filters-heading">
-                <span>Контент</span>
-                <output data-testid="hidden-by-filters">
-                  Скрыто фильтрами: {hiddenByFilters}
-                </output>
-              </div>
-              <FilterChips values={contentFilters} onToggle={toggleFilter} />
+              <ContentFilterBar
+                values={contentFilters}
+                onToggle={toggleFilter}
+                hiddenByFilters={hiddenByFilters}
+                onReset={resetFilters}
+                canReset={!filtersAreDefault}
+              />
               <button
                 type="button"
                 className="clear-button mobile-clear-button"
@@ -387,6 +388,14 @@ export default function ChecklistWorkspace({
               >
                 Следующий невыполненный →
               </button>
+              <FocusToggle
+                className="mobile-focus"
+                focusMode={focusMode}
+                onToggle={() => setFocusMode((value) => !value)}
+                completedHidden={completedHidden}
+                title="Фокус"
+                compact
+              />
             </section>
 
             <div className="task-sections">
@@ -412,14 +421,6 @@ export default function ChecklistWorkspace({
         </div>
       </div>
 
-      <FocusToggle
-        className="focus-dock"
-        focusMode={focusMode}
-        onToggle={() => setFocusMode((value) => !value)}
-        completedHidden={completedHidden}
-        title="Фокус"
-        compact
-      />
       <NotesPopover
         notes={notes}
         onChange={setNotes}

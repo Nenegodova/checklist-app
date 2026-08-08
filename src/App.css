@@ -214,9 +214,9 @@ input:focus-visible {
   cursor: pointer;
 }
 .header-format-control {
+  display: none;
   width: auto;
   flex: 0 0 auto;
-  display: flex;
   align-items: center;
   gap: 10px;
 }
@@ -422,7 +422,6 @@ input:focus-visible {
   padding: 0 clamp(20px, 4vw, 48px) 50px;
 }
 .controls {
-  display: none;
   padding-bottom: 22px;
   border-bottom: 1px solid var(--line);
 }
@@ -684,6 +683,7 @@ input:focus-visible {
 }
 .mobile-category-nav,
 .mobile-clear-button,
+.mobile-focus,
 .mobile-method-link,
 .mobile-next-task {
   display: none;
@@ -817,6 +817,9 @@ input:focus-visible {
 }
 @media (max-width: 800px) {
   .header-method-link {
+    display: none;
+  }
+  .header-focus {
     display: none;
   }
   .header-format-control {

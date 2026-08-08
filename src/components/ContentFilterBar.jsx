@@ -5,19 +5,23 @@ export default function ContentFilterBar({
   onToggle,
   hiddenByFilters,
   onReset,
+  canReset,
 }) {
   return (
-    <section className="sidebar-filters" aria-label="Фильтры контента">
+    <section className="content-filters" aria-label="Фильтры контента">
       <h2>Что есть в материале</h2>
       <FilterChips values={values} onToggle={onToggle} />
-      <div className="sidebar-filter-summary">
-        <output data-testid="desktop-hidden-by-filters">
-          Скрыто: {hiddenByFilters}
-        </output>
-        <button type="button" onClick={onReset}>
-          Включить все
-        </button>
-      </div>
+      <output data-testid="hidden-by-filters">
+        Скрыто фильтрами: {hiddenByFilters}
+      </output>
+      <button
+        type="button"
+        data-testid="reset-filters"
+        onClick={onReset}
+        disabled={!canReset}
+      >
+        Сбросить фильтры
+      </button>
     </section>
   );
 }

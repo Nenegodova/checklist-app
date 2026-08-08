@@ -29,8 +29,8 @@ Vite выведет локальный адрес приложения в тер
 - `src/components/NotesPopover.jsx` — заметки пользователя.
 - `src/components/FilterChips.jsx` — общий список контентных фильтров.
 - `src/components/ContentFilterBar.jsx` — заголовок, чипы и сброс контентных фильтров.
-- `src/components/FocusToggle.jsx` — переключатель режима фокуса (шапка/сайдбар/мобилка).
-- `src/components/FormatControl.jsx` — селект формата материала.
+- `src/components/FocusToggle.jsx` — переключатель режима фокуса (шапка на десктопе, панель фильтров на мобилке).
+- `src/components/FormatControl.jsx` — селект формата материала (рендерится в шапке на мобилке и в сайдбаре на десктопе).
 - `src/lib/checklist-state.js` — чистые преобразования и расчёты состояния.
 - `src/lib/storage.js` — безопасное чтение JSON из браузерного хранилища.
 - `src/App.css` — стили приложения, включая адаптивные и тёмную тему.

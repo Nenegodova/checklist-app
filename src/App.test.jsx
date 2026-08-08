@@ -118,7 +118,7 @@ describe("checklist application", () => {
     await user.click(
       screen.getByRole("button", { name: "Таблицы", pressed: true }),
     );
-    await user.click(screen.getByRole("button", { name: "Включить все" }));
+    await user.click(screen.getByRole("button", { name: "Сбросить фильтры" }));
     expect(
       screen.getByRole("button", { name: "Таблицы", pressed: true }),
     ).toBeInTheDocument();
