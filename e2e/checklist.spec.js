@@ -21,7 +21,7 @@ test("persists completion and filters across a reload", async ({ page }) => {
 test("task links do not change the neighbouring checkbox", async ({ page }) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await page
-    .getByRole("link", { name: "Символы ↗" })
+    .getByRole("link", { name: "Символы откроется в новой вкладке" })
     .click({ modifiers: ["Meta"] });
   await expect(task).not.toBeChecked();
 });

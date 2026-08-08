@@ -36,6 +36,7 @@ function TaskRow({ category, index, task, onToggle }) {
     task.text ||
     task.links?.map((link) => link.label).join(", ") ||
     "Пункт чек-листа";
+  const isPrimaryLink = !task.text && task.links?.length === 1;
 
   return (
     <div
@@ -57,19 +58,34 @@ function TaskRow({ category, index, task, onToggle }) {
             <ChecklistText text={task.text} />
           </span>
         )}
-        {task.links?.length > 0 && (
-          <span className="task-links">
-            {task.links.map((link) => (
-              <a
-                key={link.url}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {link.label} ↗
-              </a>
-            ))}
-          </span>
+        {isPrimaryLink ? (
+          <a
+            className="task-link-primary"
+            href={task.links[0].url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {task.links[0].label}
+            <span aria-hidden="true"> ↗</span>
+            <span className="sr-only"> откроется в новой вкладке</span>
+          </a>
+        ) : (
+          task.links?.length > 0 && (
+            <span className="task-links">
+              {task.links.map((link) => (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {link.label}
+                  <span aria-hidden="true"> ↗</span>
+                  <span className="sr-only"> откроется в новой вкладке</span>
+                </a>
+              ))}
+            </span>
+          )
         )}
       </div>
     </div>

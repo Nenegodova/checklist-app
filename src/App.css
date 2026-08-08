@@ -442,13 +442,17 @@ input:focus-visible {
 }
 .method-link {
   flex: 0 0 auto;
-  color: var(--muted);
+  color: var(--ink);
   font-family: "IBM Plex Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.06em;
   text-decoration: none;
   text-transform: uppercase;
   border-bottom: 1px solid currentColor;
+}
+.method-link:hover,
+.method-link:focus-visible {
+  border-bottom-color: var(--accent);
 }
 .task-sections {
   display: grid;
@@ -550,24 +554,45 @@ input:focus-visible {
   min-width: 0;
   max-width: 100%;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 6px 16px;
 }
 .task-links a,
-.inline-link {
+.inline-link,
+.task-link-primary {
   width: max-content;
   max-width: 100%;
   overflow-wrap: anywhere;
-  color: var(--muted);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 11px;
-  text-decoration: none;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  padding: 3px 6px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.task-links a:hover,
+.task-links a:focus-visible,
+.inline-link:hover,
+.inline-link:focus-visible,
+.task-link-primary:hover,
+.task-link-primary:focus-visible {
+  text-decoration-thickness: 2.5px;
+}
+.task-links a {
+  padding: 4px 0;
+  font-size: 14px;
 }
 .inline-link {
   display: inline-block;
   margin-left: 5px;
+}
+.task-link-primary {
+  display: block;
+  font-size: inherit;
+}
+.is-done .task-links a,
+.is-done .task-link-primary {
+  color: var(--muted);
+  text-decoration-line: line-through;
+  text-decoration-color: var(--line-strong);
 }
 .empty-section {
   margin: 0;
@@ -761,6 +786,9 @@ input:focus-visible {
   }
   .task-copy {
     font-size: 16px;
+  }
+  .task-links a {
+    padding: 12px 0;
   }
   .section-heading {
     padding-top: 23px;
