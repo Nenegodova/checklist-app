@@ -12,6 +12,7 @@
   --shadow: 0 18px 45px rgba(23, 24, 26, 0.08);
   --radius: 12px;
   --topbar-h: 86px;
+  --completion-treat-h: clamp(56px, 7vh, 78px);
 }
 :root.dark,
 .app-dark {
@@ -1070,6 +1071,14 @@ input:focus-visible {
   border: 0;
   font-size: 18px;
   line-height: 1;
+}
+.sidebar-completion-treat {
+  align-self: center;
+  margin-top: auto;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  animation: surface-in 0.25s ease-out;
 }
 .dialog-backdrop {
   position: fixed;

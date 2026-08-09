@@ -60,6 +60,8 @@ export default function ChecklistWorkspace({
   const completedHidden = Object.values(relevantTasks)
     .flat()
     .filter((task) => task.done).length;
+  const isChecklistComplete =
+    progress.total > 0 && progress.done === progress.total;
   const saveLabel =
     saveStatus === "saving"
       ? "Сохраняю…"
@@ -378,6 +380,14 @@ export default function ChecklistWorkspace({
             >
               Снять отметки
             </button>
+            {isChecklistComplete && (
+              <img
+                className="sidebar-completion-treat"
+                src="/cat-scuba-kicau.gif"
+                alt=""
+                aria-hidden="true"
+              />
+            )}
           </aside>
 
           <main className="main-content">
