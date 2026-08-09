@@ -401,21 +401,22 @@ input:focus-visible {
 }
 .filters-reset-button {
   min-height: 36px;
-  padding: 0;
+  padding: 0 14px;
   display: inline-flex;
   align-items: center;
-  border: 0;
-  border-bottom: 1px solid currentColor;
-  background: none;
-  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
   cursor: pointer;
   font: inherit;
   font-family: "IBM Plex Mono", monospace;
   font-size: 11px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 .filters-reset-button:hover:not(:disabled) {
-  color: var(--ink);
+  border-color: var(--ink);
 }
 .filters-reset-button:disabled {
   opacity: 0.45;
