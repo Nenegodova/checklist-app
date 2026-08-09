@@ -453,7 +453,7 @@ export const DATA = {
       links: [
         {
           label: "Методичка",
-          url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.oddbhw32m71r/",
+          url: "https://docs.google.com/document/d/1vUzQiyxHYyNmwbSonuSRvMOtjGmiTvuLn0gFNWlFzEI/edit?tab=t.0#heading=h.hqvrmuvld38v",
         },
       ],
     },
