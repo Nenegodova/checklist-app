@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { METHODICHKA_URL, PRESET_LABELS } from "../checklist-data";
 import { getCategoryProgress } from "../lib/checklist-state";
 import ConfirmationDialog from "./ConfirmationDialog";
-import FilterChips from "./FilterChips";
+import ContentFilterBar from "./ContentFilterBar";
+import FocusToggle from "./FocusToggle";
+import FormatControl from "./FormatControl";
 import NotesPopover from "./NotesPopover";
 import TaskSection from "./TaskSection";
 
@@ -17,14 +19,15 @@ export default function ChecklistWorkspace({
   toggle,
   contentFilters,
   toggleFilter,
-  enableAllFilters,
+  resetFilters,
+  filtersAreDefault,
   focusMode,
   setFocusMode,
   relevantTasks,
   visibleTasks,
   hiddenByFilters,
   progress,
-  resetFiltersAndCheckboxes,
+  clearMarks,
   hardReset,
   notes,
   setNotes,
@@ -43,7 +46,8 @@ export default function ChecklistWorkspace({
     () => Object.keys(tasks)[0],
   );
   const [pendingAction, setPendingAction] = useState(null);
-  const formatSelectRef = useRef(null);
+  const headerFormatSelectRef = useRef(null);
+  const sidebarFormatSelectRef = useRef(null);
   const resetButtonRef = useRef(null);
   const actionTriggerRef = useRef(null);
   const scrollingTargetRef = useRef(null);
@@ -56,6 +60,8 @@ export default function ChecklistWorkspace({
   const completedHidden = Object.values(relevantTasks)
     .flat()
     .filter((task) => task.done).length;
+  const isChecklistComplete =
+    progress.total > 0 && progress.done === progress.total;
   const saveLabel =
     saveStatus === "saving"
       ? "Сохраняю…"
@@ -108,23 +114,44 @@ export default function ChecklistWorkspace({
 
   const categoryProgress = (category) =>
     getCategoryProgress(relevantTasks, category);
+  // Header and filters bar heights vary by breakpoint, preset, and chip wrapping, so a
+  // fixed scroll-margin-top can't track them — measure what's actually pinned right now.
+  const getStickyOffset = () => {
+    const headerHeight =
+      document.querySelector(".sticky-header")?.getBoundingClientRect()
+        .height ?? 0;
+    const filtersHeight =
+      document.querySelector(".content-filters")?.getBoundingClientRect()
+        .height ?? 0;
+    return headerHeight + filtersHeight;
+  };
   const scrollToCategory = (category) => {
     scrollingTargetRef.current = category;
     setActiveCategory(category);
-    document
-      .getElementById(`category-${category}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const target = document.getElementById(`category-${category}`);
+    if (target) {
+      const top =
+        target.getBoundingClientRect().top +
+        window.scrollY -
+        getStickyOffset() -
+        12;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
     window.clearTimeout(scrollTimerRef.current);
     scrollTimerRef.current = window.setTimeout(() => {
       scrollingTargetRef.current = null;
       setActiveCategory(category);
     }, 550);
   };
+  const getVisibleFormatSelect = () =>
+    [headerFormatSelectRef.current, sidebarFormatSelectRef.current].find(
+      (el) => el && el.offsetParent !== null,
+    ) ?? null;
   const changePreset = (event) => {
     const nextPreset = event.target.value;
     if (nextPreset === preset) return;
     if (progress.done > 0) {
-      actionTriggerRef.current = formatSelectRef.current;
+      actionTriggerRef.current = getVisibleFormatSelect();
       setPendingAction({ kind: "preset", value: nextPreset });
       return;
     }
@@ -184,7 +211,14 @@ export default function ChecklistWorkspace({
           <header className="topbar">
             <div className="brand">
               <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
-              <p className="eyebrow">РЕДАКЦИЯ · ВЫПУСК СТАТЕЙ</p>
+              <a
+                className="method-link header-method-link"
+                href={METHODICHKA_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Методички ↗
+              </a>
             </div>
             <div
               className="header-progress"
@@ -204,29 +238,19 @@ export default function ChecklistWorkspace({
                 {saveLabel}
               </small>
             </div>
-            <a
-              className="method-link header-method-link"
-              href={METHODICHKA_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Методички ↗
-            </a>
-            <label className="format-control header-format-control">
-              <span>ФОРМАТ</span>
-              <select
-                ref={formatSelectRef}
-                aria-label="Формат"
-                value={preset}
-                onChange={changePreset}
-              >
-                {Object.entries(PRESET_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <FormatControl
+              preset={preset}
+              onChange={changePreset}
+              selectRef={headerFormatSelectRef}
+              className="header-format-control"
+            />
+            <FocusToggle
+              className="header-focus"
+              focusMode={focusMode}
+              onToggle={() => setFocusMode((value) => !value)}
+              completedHidden={completedHidden}
+              title="Режим фокуса"
+            />
             <div className="header-actions">
               <button
                 className="icon-button has-tooltip"
@@ -259,26 +283,30 @@ export default function ChecklistWorkspace({
             </div>
           </header>
 
-          <div className="mobile-category-nav" aria-label="Разделы чек-листа">
-            {Object.keys(tasks).map((category) => {
-              const item = categoryProgress(category);
-              return (
-                <button
-                  key={category}
-                  type="button"
-                  className={category === currentActiveCategory ? "active" : ""}
-                  aria-current={
-                    category === currentActiveCategory ? "true" : undefined
-                  }
-                  onClick={() => scrollToCategory(category)}
-                >
-                  {category}{" "}
-                  <span>
-                    {item.done}/{item.total}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="mobile-category-nav-row">
+            <div className="mobile-category-nav" aria-label="Разделы чек-листа">
+              {Object.keys(tasks).map((category) => {
+                const item = categoryProgress(category);
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    className={
+                      category === currentActiveCategory ? "active" : ""
+                    }
+                    aria-current={
+                      category === currentActiveCategory ? "true" : undefined
+                    }
+                    onClick={() => scrollToCategory(category)}
+                  >
+                    {category}{" "}
+                    <span>
+                      {item.done}/{item.total}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
             <a
               className="method-link mobile-method-link"
               href={METHODICHKA_URL}
@@ -292,6 +320,12 @@ export default function ChecklistWorkspace({
 
         <div className="workspace">
           <aside className="sidebar">
+            <FormatControl
+              preset={preset}
+              onChange={changePreset}
+              selectRef={sidebarFormatSelectRef}
+              className="sidebar-format-control"
+            />
             <section
               className="sidebar-progress"
               aria-label={`Прогресс в боковой панели: ${progress.done} из ${progress.total}`}
@@ -335,25 +369,6 @@ export default function ChecklistWorkspace({
                 );
               })}
             </nav>
-            <section className="sidebar-filters" aria-label="Фильтры контента">
-              <h2>Что есть в материале</h2>
-              <FilterChips values={contentFilters} onToggle={toggleFilter} />
-              <div className="sidebar-filter-summary">
-                <output data-testid="desktop-hidden-by-filters">
-                  Скрыто: {hiddenByFilters}
-                </output>
-                <button type="button" onClick={enableAllFilters}>
-                  Включить все
-                </button>
-              </div>
-            </section>
-            <button
-              type="button"
-              className="clear-button sidebar-clear-button"
-              onClick={resetFiltersAndCheckboxes}
-            >
-              Снять отметки
-            </button>
             <button
               type="button"
               className="next-task-button sidebar-next-task"
@@ -362,56 +377,54 @@ export default function ChecklistWorkspace({
             >
               Следующий невыполненный →
             </button>
-            <div className="desktop-focus">
-              <button
-                type="button"
-                className={`focus-control ${focusMode ? "is-on" : ""}`}
-                role="switch"
-                aria-checked={focusMode}
-                onClick={() => setFocusMode((value) => !value)}
-              >
-                <span>
-                  <b>Режим фокуса</b>
-                  <small>
-                    {focusMode
-                      ? `вкл · скрыто ${completedHidden} готовых`
-                      : "выкл · показывать всё"}
-                  </small>
-                </span>
-                <i aria-hidden="true" />
-              </button>
-            </div>
+            <button
+              type="button"
+              className="clear-button sidebar-clear-button"
+              onClick={clearMarks}
+            >
+              Снять отметки
+            </button>
+            {isChecklistComplete && (
+              <img
+                className="sidebar-completion-treat"
+                src="/cat-scuba-kicau.gif"
+                alt=""
+                aria-hidden="true"
+              />
+            )}
           </aside>
 
           <main className="main-content">
-            <section className="controls" aria-label="Настройки списка">
-              <div className="format-heading">
-                <span>Формат</span>
-                <strong>{PRESET_LABELS[preset]}</strong>
-              </div>
-              <div className="filters-heading">
-                <span>Контент</span>
-                <output data-testid="hidden-by-filters">
-                  Скрыто фильтрами: {hiddenByFilters}
-                </output>
-              </div>
-              <FilterChips values={contentFilters} onToggle={toggleFilter} />
-              <button
-                type="button"
-                className="clear-button mobile-clear-button"
-                onClick={resetFiltersAndCheckboxes}
-              >
-                Снять отметки
-              </button>
-              <button
-                type="button"
-                className="next-task-button mobile-next-task"
-                disabled={!hasIncompleteTasks}
-                onClick={goToNextIncomplete}
-              >
-                Следующий невыполненный →
-              </button>
-            </section>
+            <ContentFilterBar
+              values={contentFilters}
+              onToggle={toggleFilter}
+              hiddenByFilters={hiddenByFilters}
+              onReset={resetFilters}
+              canReset={!filtersAreDefault}
+            />
+            <button
+              type="button"
+              className="clear-button mobile-clear-button"
+              onClick={clearMarks}
+            >
+              Снять отметки
+            </button>
+            <button
+              type="button"
+              className="next-task-button mobile-next-task"
+              disabled={!hasIncompleteTasks}
+              onClick={goToNextIncomplete}
+            >
+              Следующий невыполненный →
+            </button>
+            <FocusToggle
+              className="mobile-focus"
+              focusMode={focusMode}
+              onToggle={() => setFocusMode((value) => !value)}
+              completedHidden={completedHidden}
+              title="Фокус"
+              compact
+            />
 
             <div className="task-sections">
               {categories.map((category, index) => (
@@ -427,7 +440,7 @@ export default function ChecklistWorkspace({
                   onToggleCollapse={toggleCollapse}
                   onToggleTask={toggle}
                   onShowAll={() => setFocusMode(false)}
-                  onReset={resetFiltersAndCheckboxes}
+                  onReset={clearMarks}
                   onNextCategory={scrollToNextCategory}
                 />
               ))}
@@ -436,25 +449,6 @@ export default function ChecklistWorkspace({
         </div>
       </div>
 
-      <div className="focus-dock">
-        <button
-          type="button"
-          className={`focus-control ${focusMode ? "is-on" : ""}`}
-          role="switch"
-          aria-checked={focusMode}
-          onClick={() => setFocusMode((value) => !value)}
-        >
-          <span>
-            <b>Фокус</b>
-            <small>
-              {focusMode
-                ? `скрыто ${completedHidden} готовых`
-                : "показывать всё"}
-            </small>
-          </span>
-          <i aria-hidden="true" />
-        </button>
-      </div>
       <NotesPopover
         notes={notes}
         onChange={setNotes}
