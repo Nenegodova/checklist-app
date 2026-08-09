@@ -192,7 +192,14 @@ export default function ChecklistWorkspace({
           <header className="topbar">
             <div className="brand">
               <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
-              <p className="eyebrow">РЕДАКЦИЯ · ВЫПУСК СТАТЕЙ</p>
+              <a
+                className="method-link header-method-link"
+                href={METHODICHKA_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Методички ↗
+              </a>
             </div>
             <div
               className="header-progress"
@@ -212,14 +219,6 @@ export default function ChecklistWorkspace({
                 {saveLabel}
               </small>
             </div>
-            <a
-              className="method-link header-method-link"
-              href={METHODICHKA_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Методички ↗
-            </a>
             <FormatControl
               preset={preset}
               onChange={changePreset}
