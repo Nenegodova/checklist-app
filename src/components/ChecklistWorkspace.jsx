@@ -112,12 +112,29 @@ export default function ChecklistWorkspace({
 
   const categoryProgress = (category) =>
     getCategoryProgress(relevantTasks, category);
+  // Header and filters bar heights vary by breakpoint, preset, and chip wrapping, so a
+  // fixed scroll-margin-top can't track them — measure what's actually pinned right now.
+  const getStickyOffset = () => {
+    const headerHeight =
+      document.querySelector(".sticky-header")?.getBoundingClientRect()
+        .height ?? 0;
+    const filtersHeight =
+      document.querySelector(".content-filters")?.getBoundingClientRect()
+        .height ?? 0;
+    return headerHeight + filtersHeight;
+  };
   const scrollToCategory = (category) => {
     scrollingTargetRef.current = category;
     setActiveCategory(category);
-    document
-      .getElementById(`category-${category}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const target = document.getElementById(`category-${category}`);
+    if (target) {
+      const top =
+        target.getBoundingClientRect().top +
+        window.scrollY -
+        getStickyOffset() -
+        12;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
     window.clearTimeout(scrollTimerRef.current);
     scrollTimerRef.current = window.setTimeout(() => {
       scrollingTargetRef.current = null;

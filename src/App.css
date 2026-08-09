@@ -471,7 +471,9 @@ input:focus-visible {
   min-width: 0;
 }
 .task-section {
-  scroll-margin-top: 16px;
+  /* Approximates topbar + sticky filters bar height for native scroll-into-view
+     (keyboard focus); the click-driven jumps in scrollToCategory measure the real height. */
+  scroll-margin-top: 240px;
 }
 .section-heading {
   width: 100%;
@@ -805,7 +807,7 @@ input:focus-visible {
     display: block;
     width: 100%;
     margin-top: 14px;
-    scroll-margin-top: 176px;
+    scroll-margin-top: 400px;
   }
   .notes-fab-wrapper {
     right: 18px;
@@ -1183,7 +1185,7 @@ input:focus-visible {
     min-height: 36px;
   }
   .task-section {
-    scroll-margin-top: 176px;
+    scroll-margin-top: 400px;
   }
   .task-row {
     margin-right: -6px;
