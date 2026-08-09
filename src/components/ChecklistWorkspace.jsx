@@ -283,26 +283,30 @@ export default function ChecklistWorkspace({
             </div>
           </header>
 
-          <div className="mobile-category-nav" aria-label="Разделы чек-листа">
-            {Object.keys(tasks).map((category) => {
-              const item = categoryProgress(category);
-              return (
-                <button
-                  key={category}
-                  type="button"
-                  className={category === currentActiveCategory ? "active" : ""}
-                  aria-current={
-                    category === currentActiveCategory ? "true" : undefined
-                  }
-                  onClick={() => scrollToCategory(category)}
-                >
-                  {category}{" "}
-                  <span>
-                    {item.done}/{item.total}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="mobile-category-nav-row">
+            <div className="mobile-category-nav" aria-label="Разделы чек-листа">
+              {Object.keys(tasks).map((category) => {
+                const item = categoryProgress(category);
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    className={
+                      category === currentActiveCategory ? "active" : ""
+                    }
+                    aria-current={
+                      category === currentActiveCategory ? "true" : undefined
+                    }
+                    onClick={() => scrollToCategory(category)}
+                  >
+                    {category}{" "}
+                    <span>
+                      {item.done}/{item.total}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
             <a
               className="method-link mobile-method-link"
               href={METHODICHKA_URL}

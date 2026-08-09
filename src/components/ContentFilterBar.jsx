@@ -1,3 +1,4 @@
+import { useState } from "react";
 import FilterChips from "./FilterChips";
 
 export default function ContentFilterBar({
@@ -7,16 +8,26 @@ export default function ContentFilterBar({
   onReset,
   canReset,
 }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <section className="content-filters" aria-label="Фильтры контента">
+    <section
+      className={`content-filters ${collapsed ? "is-collapsed" : ""}`}
+      aria-label="Фильтры контента"
+    >
       <div className="content-filters-primary">
-        <h2>Что есть в материале</h2>
-        <FilterChips values={values} onToggle={onToggle} />
+        <button
+          type="button"
+          className="content-filters-toggle"
+          aria-expanded={!collapsed}
+          onClick={() => setCollapsed((value) => !value)}
+        >
+          <h2>Что есть в материале</h2>
+          <i aria-hidden="true">⌄</i>
+        </button>
+        {!collapsed && <FilterChips values={values} onToggle={onToggle} />}
       </div>
       <div className="content-filters-secondary">
-        <output data-testid="hidden-by-filters">
-          Скрыто фильтрами: {hiddenByFilters}
-        </output>
         <button
           type="button"
           className="filters-reset-button"
@@ -26,6 +37,9 @@ export default function ContentFilterBar({
         >
           Сбросить фильтры
         </button>
+        <output data-testid="hidden-by-filters">
+          Скрыто фильтрами: {hiddenByFilters}
+        </output>
       </div>
     </section>
   );

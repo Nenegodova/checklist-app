@@ -390,6 +390,25 @@ input:focus-visible {
   text-transform: uppercase;
   color: var(--muted);
 }
+.content-filters-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: default;
+  pointer-events: none;
+  text-align: left;
+}
+.content-filters-toggle i {
+  display: none;
+  margin-left: auto;
+  font-style: normal;
+  color: var(--muted);
+  transition: transform 0.15s;
+}
 .content-filters-secondary {
   display: flex;
   flex-direction: column;
@@ -398,6 +417,7 @@ input:focus-visible {
   white-space: nowrap;
 }
 .content-filters-secondary output {
+  order: -1;
   color: var(--muted);
   font-family: "IBM Plex Mono", monospace;
   font-size: 11px;
@@ -684,6 +704,7 @@ input:focus-visible {
   stroke-linecap: round;
 }
 .mobile-category-nav,
+.mobile-category-nav-row,
 .mobile-clear-button,
 .mobile-focus,
 .mobile-method-link,
@@ -692,10 +713,10 @@ input:focus-visible {
 }
 @media (max-width: 800px) {
   :root {
-    --topbar-h: 176px;
+    --topbar-h: 169px;
   }
   .app {
-    padding: 12px 0 24px;
+    padding: 0 0 24px;
   }
   .app-frame {
     min-height: 0;
@@ -743,13 +764,19 @@ input:focus-visible {
   .sidebar {
     display: none;
   }
+  .mobile-category-nav-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
   .mobile-category-nav {
     display: flex;
+    flex: 1;
+    min-width: 0;
     gap: 7px;
     overflow-x: auto;
     padding: 10px 16px;
-    border-bottom: 1px solid var(--line);
-    background: var(--surface);
     scrollbar-width: none;
   }
   .mobile-category-nav button {
@@ -781,6 +808,25 @@ input:focus-visible {
     grid-template-columns: minmax(0, 1fr);
     margin: 0 -6px;
     padding: 20px 9px 18px;
+  }
+  .content-filters-toggle {
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .content-filters-toggle i {
+    display: block;
+  }
+  .content-filters.is-collapsed .content-filters-toggle i {
+    transform: rotate(-90deg);
+  }
+  .content-filters-secondary {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .content-filters-secondary output {
+    order: 0;
   }
   .mobile-clear-button {
     display: block;
@@ -853,7 +899,9 @@ input:focus-visible {
   }
   .mobile-method-link {
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
+    margin: 0 14px 0 0;
     padding: 7px 10px;
     border: 1px solid var(--line);
     border-radius: 99px;
