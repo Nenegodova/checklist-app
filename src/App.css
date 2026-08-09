@@ -596,6 +596,7 @@ input:focus-visible {
 }
 .is-done .task-links a,
 .is-done .task-link-primary {
+  color: var(--muted);
   text-decoration-line: line-through;
   text-decoration-color: var(--line-strong);
 }
