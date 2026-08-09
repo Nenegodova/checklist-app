@@ -361,12 +361,16 @@ input:focus-visible {
   padding: 0 clamp(20px, 4vw, 48px) 50px;
 }
 .content-filters {
+  position: sticky;
+  z-index: 15;
+  top: var(--topbar-h);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 14px 20px;
-  padding-bottom: 22px;
+  padding: 26px 0 22px;
   border-bottom: 1px solid var(--line);
+  background: var(--surface);
 }
 .content-filters-primary {
   display: grid;
@@ -679,6 +683,9 @@ input:focus-visible {
   display: none;
 }
 @media (max-width: 800px) {
+  :root {
+    --topbar-h: 176px;
+  }
   .app {
     padding: 12px 0 24px;
   }
@@ -764,7 +771,7 @@ input:focus-visible {
   }
   .content-filters {
     grid-template-columns: minmax(0, 1fr);
-    padding: 18px 0;
+    padding: 20px 0 18px;
   }
   .content-filters-secondary {
     align-items: flex-start;
