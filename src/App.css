@@ -370,7 +370,8 @@ input:focus-visible {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 14px 20px;
-  padding: 26px 0 22px;
+  margin: 0 -10px;
+  padding: 26px 13px 22px;
   border-bottom: 1px solid var(--line);
   background: var(--surface);
 }
@@ -775,7 +776,8 @@ input:focus-visible {
   }
   .content-filters {
     grid-template-columns: minmax(0, 1fr);
-    padding: 20px 0 18px;
+    margin: 0 -6px;
+    padding: 20px 9px 18px;
   }
   .mobile-clear-button {
     display: block;
