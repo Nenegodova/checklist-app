@@ -1,73 +1,22 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
-const DATA_VERSION = "1.1";
-const NOTES_TEMPLATE = `Вопросы к редакции:
-—
-Поставить блокер:
-—
-Правки для фотореда/дизайнера:
-—`;
-const METHODICHKA_URL =
-  "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994";
-const CONTENT_FILTERS = {
-  tables: { label: "Таблицы", default: true },
-  screenshots: { label: "Скрины", default: true },
-  images: { label: "Картинки", default: true },
-  poll: { label: "Опрос", default: true },
-  infographic: { label: "Инфографика", default: true },
-  prodcard: { label: "Карточки товаров", default: true },
-  shorts: { label: "Шорты", default: true },
-};
-const buildContentFilters = () => {
-  const result = {};
-  Object.entries(CONTENT_FILTERS).forEach(([key, value]) => {
-    result[key] = value.default;
-  });
-  return result;
-};
-const PRESETS = {
-  default: {},
-  invest: {
-    "Админка": [
-      { _sortOrder: 6, text: "Заполнено краткое описание" },
-      { _sortOrder: 3, text: "Заполнен тикер" },
-    ],
-  },
-  shopping: {
-    "Админка": [
-      { _sortOrder: 4, text: "В подвале стоит: Цены действительны на момент публикации" },
-    ],
-    "Текст": [
-      { _sortOrder: 17, text: "Список в шортах: первая строчка с большой, следующие с маленькой, в конце каждой строчки точка, кроме последней, отбиты <br/>" },
-    ],
-  },
-  tests: {
-    "Текст": [
-      { _sortOrder: 0, text: "В мини⁠-⁠тестах автор и подпись стоят перед лидом" },
-      { _sortOrder: 6, text: "Внутри конфига есть все необходимые склейки" },
-    ],
-    "Админка": [
-      { _sortOrder: 2, text: "Тег noadscalctest" },
-      { _sortOrder: 3, text: "В больших тестах под обложкой указан иллюстратор" },
-    ],
-    "Прочее": [
-      { text: "В кайтене прикреплены ссылки на админку и конфиг" },
-      { links: [{ label: "Методичка тесты", url: "https://docs.google.com/document/d/1vBoENUtJI2UHtbBrLqVgPxuoEBE0yNvYhhATKmwiXzU/edit?tab=t.0#bookmark=id.sgzp2wu0gy8c" }] },
-    ],
-  },
-  spending: {
-    "Текст": [
-      { _sortOrder: 1, text: "В начале статьи стоит плашка panel с абзацами p grade=\"secondary\"" },
-      { _sortOrder: 1, text: "Если у автора нет аватарки, то стоят анонимные: anonym_male у мужчин и anonym_female у женщин, автор стоит после оглавления" },
-      { _sortOrder: 3, text: "Сокращения имен (Р., И. и прочие) в начале и конце предложения приклеены к следующему/предыдущему слову в предложении" },
-      { _sortOrder: 3, text: "Эмодзи в конце предложения приклеены к предыдущему слову" },
-      { _sortOrder: 7, text: "Траты обозначены class=\"negative\"" },
-      { _sortOrder: 7, text: "Доходы обозначены class=\"positive\"" },
-      { _sortOrder: 2, text: "Все заголовки в дневниках трат кроме заголовков дней h2 level=\"2\"" },
-    ],
-    "Админка": [
-      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-      { _sortOrder: 5, text: "Подпись к обложке: Фотография — Ксения Михайлова" },
-    ],
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import "./App.css";
+import ChecklistWorkspace from "./components/ChecklistWorkspace";
+import {
+  DATA,
+  DATA_VERSION,
+  PRESET_LABELS,
+  buildContentFilters,
+  getPresetData,
+} from "./checklist-data";
+import {
+  buildCollapsed,
+  buildTasks,
+  getHiddenByFiltersCount,
+  getOverallProgress,
+  getRelevantTasks,
+  getVisibleTasks,
+} from "./lib/checklist-state";
+import { readStorageJSON } from "./lib/storage";
 
     "Выпуск": [
       { _sortOrder: 4, text: "После выпуска прикрепить в кайтене ссылку на материал и меин-картинку" },
@@ -297,7 +246,10 @@ export default function App() {
     try {
       const saved = localStorage.getItem("dark");
       if (saved !== null) return saved === "true";
-      return typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return (
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      );
     } catch {
       return false;
     }
@@ -313,80 +265,105 @@ export default function App() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-  const [preset, setPreset] = useState(() => localStorage.getItem("preset") || "default");
-  const [contentFilters, setContentFilters] = useState(() => readStorageJSON("contentFilters") || buildContentFilters());
+  const [preset, setPreset] = useState(
+    () => localStorage.getItem("preset") || "default",
+  );
+  const currentData = useMemo(() => getPresetData(preset), [preset]);
+  const [contentFilters, setContentFilters] = useState(
+    () => readStorageJSON("contentFilters") || buildContentFilters(),
+  );
   const [focusMode, setFocusMode] = useState(false);
-  const [notes, setNotes] = useState(() => localStorage.getItem("notes") || "");
+  const [notes, setNotesState] = useState(
+    () => localStorage.getItem("notes") || "",
+  );
   const [notesOpen, setNotesOpen] = useState(false);
-  const [bgImage, setBgImage] = useState(() => {
-    try {
-      const saved = localStorage.getItem("bgImage");
-      return saved || "";
-    } catch {
-      return "";
-    }
-  });
-  const isMobile = useMediaQuery("(max-width: 900px)");
-  const isSmall = useMediaQuery("(max-width: 600px)");
-  const r = {
-    pad: isSmall ? 12 : isMobile ? 20 : 30,
-    maxW: isSmall ? "calc(100% - 24px)" : "100%",
-    titleSize: isSmall ? 18 : isMobile ? 22 : 28,
-    progressSize: isSmall ? 10 : 13,
-    cardPad: isSmall ? "8px 10px" : "14px 16px",
-    taskSize: isSmall ? 11 : 13,
-    btnPad: isSmall ? "3px 6px" : "6px 12px",
-    btnSize: isSmall ? 10 : 13,
-    selectMinW: isSmall ? 90 : 140,
-    notesW: isSmall ? "min(320px, 90vw)" : 320,
-    fabSize: isSmall ? 44 : 58,
-    fabPad: isSmall ? 0 : "0 12px",
-    headerPad: isSmall ? "10px 12px" : isMobile ? "14px 16px" : "22px 24px",
-    catPad: isSmall ? "3px 6px" : "6px 10px",
-  };
+  const [saveStatus, setSaveStatus] = useState("saved");
+  const [toast, setToast] = useState(null);
+  const [undoState, setUndoState] = useState(null);
+  const [contextVersion, setContextVersion] = useState(0);
+  const notesFabRef = useRef(null);
+  const notesTextareaRef = useRef(null);
+  const notesPopoverRef = useRef(null);
+  const saveTimerRef = useRef(null);
+
+  const markSaving = useCallback(() => {
+    window.clearTimeout(saveTimerRef.current);
+    setSaveStatus("saving");
+  }, []);
+
+  const scheduleSaved = useCallback(() => {
+    window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(() => setSaveStatus("saved"), 420);
+  }, []);
+
+  const reportSaveError = useCallback(() => {
+    window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(() => setSaveStatus("error"), 0);
+  }, []);
+
+  const updateDark = useCallback(
+    (updater) => {
+      markSaving();
+      setDark(updater);
+    },
+    [markSaving],
+  );
+
+  const setNotes = useCallback(
+    (updater) => {
+      markSaving();
+      setNotesState((value) =>
+        typeof updater === "function" ? updater(value) : updater,
+      );
+    },
+    [markSaving],
+  );
+
   useEffect(() => {
     document.documentElement.className = dark ? "dark" : "";
-    const currentValue = localStorage.getItem("dark");
-    if (currentValue !== String(dark)) {
-      localStorage.setItem("dark", String(dark));
+    try {
+      const currentValue = localStorage.getItem("dark");
+      if (currentValue !== String(dark))
+        localStorage.setItem("dark", String(dark));
+      scheduleSaved();
+    } catch {
+      reportSaveError();
     }
-  }, [dark]);
-  const currentData = useMemo(() => {
-    const clone = typeof structuredClone === "function" ? structuredClone(DATA) : JSON.parse(JSON.stringify(DATA));
-    const presetData = PRESETS[preset];
-    if (presetData) {
-      Object.keys(presetData).forEach((cat) => {
-        if (!clone[cat]) clone[cat] = [];
-        const baseItems = clone[cat].map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }));
-        const presetItems = presetData[cat].map((item) => ({ ...item, _sortOrder: item._sortOrder ?? 9999 }));
-        clone[cat] = [...baseItems, ...presetItems].sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
-      });
-    } else {
-      Object.keys(clone).forEach((cat) => {
-        clone[cat] = clone[cat]
-          .map((item, i) => ({ ...item, _sortOrder: item._sortOrder ?? i }))
-          .sort((a, b) => (a._sortOrder ?? Infinity) - (b._sortOrder ?? Infinity));
-      });
+  }, [dark, reportSaveError, scheduleSaved]);
+  useEffect(() => {
+    try {
+      localStorage.removeItem("bgImage");
+    } catch {
+      reportSaveError();
     }
-    const excludes = PRESET_EXCLUDES[preset];
-    if (excludes) {
-      Object.entries(excludes).forEach(([cat, ids]) => {
-        if (!clone[cat]) return;
-        clone[cat] = clone[cat].filter((item) => {
-          const itemId = item.id || item.text;
-          return !ids.includes(itemId);
-        });
-      });
-    }
-    // Удаляем раздел "Прочее" для пресета "default"
-    if (preset === "default" && clone["Прочее"]) {
-      delete clone["Прочее"];
-    }
-    return clone;
-  }, [preset]);
+  }, [reportSaveError]);
+  useEffect(() => {
+    if (!notesOpen) return undefined;
+    notesTextareaRef.current?.focus();
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setNotesOpen(false);
+    };
+    const closeOnOutsideClick = (event) => {
+      if (
+        !notesPopoverRef.current?.contains(event.target) &&
+        !notesFabRef.current?.contains(event.target)
+      )
+        setNotesOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+    };
+  }, [notesOpen]);
+  useEffect(() => {
+    if (!notesOpen) notesFabRef.current?.focus();
+  }, [notesOpen]);
   const [tasks, setTasks] = useState(() => {
     const savedVersion = localStorage.getItem("version");
     const saved = readStorageJSON("checklist");
+    // The data version invalidates saved tasks whenever checklist content changes.
     if (savedVersion !== DATA_VERSION) {
       localStorage.removeItem("checklist");
       localStorage.removeItem("collapsed");
@@ -395,752 +372,182 @@ export default function App() {
     }
     return saved || buildTasks(currentData);
   });
-  const [collapsed, setCollapsed] = useState(() => readStorageJSON("collapsed") || buildCollapsed(currentData));
+  const [collapsed, setCollapsed] = useState(
+    () => readStorageJSON("collapsed") || buildCollapsed(currentData),
+  );
   useEffect(() => {
-    localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
-    localStorage.setItem("checklist", JSON.stringify(tasks));
-    localStorage.setItem("collapsed", JSON.stringify(collapsed));
-    localStorage.setItem("notes", notes);
-    localStorage.setItem("bgImage", bgImage || "");
-  }, [contentFilters, tasks, collapsed, notes, bgImage]);
+    try {
+      localStorage.setItem("preset", preset);
+      localStorage.setItem("contentFilters", JSON.stringify(contentFilters));
+      localStorage.setItem("checklist", JSON.stringify(tasks));
+      localStorage.setItem("collapsed", JSON.stringify(collapsed));
+      localStorage.setItem("notes", notes);
+      localStorage.setItem("version", DATA_VERSION);
+      scheduleSaved();
+    } catch {
+      reportSaveError();
+    }
+  }, [
+    collapsed,
+    contentFilters,
+    notes,
+    preset,
+    reportSaveError,
+    scheduleSaved,
+    tasks,
+  ]);
+
+  useEffect(() => () => window.clearTimeout(saveTimerRef.current), []);
+
   useEffect(() => {
-    setTasks((prev) => {
-      const next = {};
-      Object.keys(currentData).forEach((cat) => {
-        next[cat] = currentData[cat].map((t) => {
-          const id = typeof t === "string" ? t : t.id || t.text;
-          const text = typeof t === "string" ? t : t.text;
-          const links = typeof t === "string" ? [] : t.links || [];
-          const feature = typeof t === "string" ? null : t.feature || null;
-          const old = prev?.[cat]?.find((x) => x.id === id);
-          return { id, text, links, feature, done: old?.done ?? false };
-        });
-      });
-      return next;
-    });
-    setCollapsed((prev) => buildCollapsed(currentData, prev));
-  }, [currentData]);
-  const toggle = useCallback((cat, index) => {
-    setTasks((prev) => {
-      const updated = prev[cat].map((t, i) => (i === index ? { ...t, done: !t.done } : t));
-      return { ...prev, [cat]: updated };
-    });
-  }, []);
-  useEffect(() => {
-    setCollapsed((prev) => {
-      let next = { ...prev };
-      const cats = Object.keys(tasks);
-      const lastDoneCat = [...cats].reverse().find((cat) => tasks[cat]?.every((t) => t.done));
-      if (lastDoneCat) {
-        next[lastDoneCat] = true;
-        const idx = cats.indexOf(lastDoneCat);
-        for (let i = idx + 1; i < cats.length; i++) {
-          if (tasks[cats[i]]?.some((t) => !t.done)) {
-            next[cats[i]] = false;
-            break;
-          }
-        }
-      }
-      return next;
-    });
-  }, [tasks]);
-  // --- Reset: фильтры + чекбоксы (группа 2, частое использование) ---
-  const resetFiltersAndCheckboxes = useCallback(() => {
-    localStorage.removeItem("checklist");
-    setContentFilters(buildContentFilters());
-    setTasks(buildTasks(currentData));
-  }, [currentData]);
-  // --- Hard reset (группа 1, единоразовое) ---
-  const hardReset = useCallback(() => {
-    ["preset", "notes", "checklist", "collapsed", "contentFilters", "version", "dark", "bgImage"].forEach((key) =>
-      localStorage.removeItem(key)
+    if (!toast) return undefined;
+    const timeout = window.setTimeout(
+      () => setToast(null),
+      toast.canUndo ? 8000 : 4200,
     );
-    localStorage.setItem("version", DATA_VERSION);
+    return () => window.clearTimeout(timeout);
+  }, [toast]);
+
+  const toggle = useCallback(
+    (cat, index) => {
+      markSaving();
+      setTasks((prev) => {
+        const updated = prev[cat].map((t, i) =>
+          i === index ? { ...t, done: !t.done } : t,
+        );
+        return { ...prev, [cat]: updated };
+      });
+    },
+    [markSaving],
+  );
+
+  const toggleFilter = useCallback(
+    (key) => {
+      markSaving();
+      setContentFilters((value) => ({ ...value, [key]: !value[key] }));
+    },
+    [markSaving],
+  );
+
+  const resetFilters = useCallback(() => {
+    markSaving();
+    setUndoState({ kind: "filters", contentFilters });
+    setContentFilters(buildContentFilters());
+    setToast({ message: "Фильтры сброшены", canUndo: true });
+  }, [contentFilters, markSaving]);
+
+  const switchPreset = useCallback(
+    (nextPreset) => {
+      const nextData = getPresetData(nextPreset);
+      markSaving();
+      setPreset(nextPreset);
+      setTasks(buildTasks(nextData));
+      setCollapsed(buildCollapsed(nextData));
+      setFocusMode(false);
+      setContextVersion((value) => value + 1);
+      setToast({
+        message: `Формат «${PRESET_LABELS[nextPreset]}» выбран`,
+        canUndo: false,
+      });
+    },
+    [markSaving],
+  );
+
+  const clearMarks = useCallback(() => {
+    markSaving();
+    setUndoState({ kind: "marks", tasks });
+    setTasks(buildTasks(currentData));
+    setToast({ message: "Отметки сняты", canUndo: true });
+  }, [currentData, markSaving, tasks]);
+
+  const undoClear = useCallback(() => {
+    if (!undoState) return;
+    markSaving();
+    if (undoState.kind === "marks") {
+      setTasks(undoState.tasks);
+      setToast({ message: "Отметки восстановлены", canUndo: false });
+    } else {
+      setContentFilters(undoState.contentFilters);
+      setToast({ message: "Фильтры восстановлены", canUndo: false });
+    }
+    setUndoState(null);
+  }, [markSaving, undoState]);
+
+  const hardReset = useCallback(() => {
+    markSaving();
     setPreset("default");
     setContentFilters(buildContentFilters());
-    setNotes("");
+    setNotesState("");
     setFocusMode(false);
-    setDark(false);
-    setBgImage("");
     setTasks(buildTasks(DATA));
     setCollapsed(buildCollapsed(DATA));
-  }, []);
-  const toggleCollapse = useCallback((cat) => {
-    setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
-  }, []);
-  const handleBgFile = useCallback((e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2.5 * 1024 * 1024) {
-      alert("Файл слишком большой. Рекомендуется использовать изображения до 2 МБ.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result;
-      if (!dataUrl || typeof dataUrl !== "string") return;
-      setBgImage(dataUrl);
-      try {
-        localStorage.setItem("bgImage", dataUrl);
-      } catch (err) {
-        console.warn("localStorage full, bg will persist only for this session");
-      }
-    };
-    reader.onerror = () => {
-      console.error("FileReader error");
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  }, []);
-  const allTasks = Object.values(tasks ?? {}).flat();
-  const doneTasks = allTasks.filter((t) => t.done).length;
-  const totalTasks = allTasks.length;
-  const percent = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
-  const textColor = dark ? "#e8e8ea" : "#111";
-  const mutedColor = dark ? "#a1a1aa" : "#555";
-  const card = dark ? "#1A1D21" : "#ffffff";
-  const border = dark ? "#2F343C" : "#E5E7EB";
-  const bg = dark ? "#111315" : "#F6F7F9";
-  const titleColor = dark ? "#FFFFFF" : "#111827";
-  const categoryColor = dark ? "#F3F4F6" : "#111827";
-  const controlBase = {
-    height: 30,
-    padding: r.btnPad,
-    borderRadius: 8,
-    fontSize: r.btnSize,
-    lineHeight: "18px",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "all 0.15s ease",
-    boxShadow: "none",
-    outline: "none",
-  };
-  const makeControl = (isDark) => ({
-    ...controlBase,
-    border: `1px solid ${isDark ? "#2a2a2e" : "#d1d5db"}`,
-    background: isDark ? "#1A1D21" : "#ffffff",
-    color: isDark ? "#e8e8ea" : "#111827",
-  });
-  const btn = makeControl(dark);
-  const ui = {
-    categoryTitle: {
-      cursor: "pointer",
-      marginBottom: 10,
-      fontSize: 14,
-      fontWeight: 600,
-      color: categoryColor,
-      display: "flex",
-      alignItems: "center",
-      gap: 12,
+    setUndoState(null);
+    setContextVersion((value) => value + 1);
+    setToast({ message: "Чек-лист сброшен, тема сохранена", canUndo: false });
+  }, [markSaving]);
+
+  const toggleCollapse = useCallback(
+    (cat) => {
+      markSaving();
+      setCollapsed((prev) => ({ ...prev, [cat]: !prev[cat] }));
     },
-    card: {
-      display: "flex",
-      alignItems: "flex-start",
-      gap: 8,
-      padding: r.cardPad,
-      border: `1px solid ${border}`,
-      background: card,
-      textAlign: "left",
-      borderRadius: 14,
-      transition: "all 0.15s ease",
-      boxShadow: dark ? "0 1px 2px rgba(0,0,0,0.3)" : "0 1px 2px rgba(0,0,0,0.05)",
-    },
-    taskText: {
-      flex: 1,
-      fontSize: r.taskSize,
-      lineHeight: "16px",
-      color: textColor,
-      textDecoration: "none",
-    },
-  };
-  const headerGlass = {
-    background: bgImage
-      ? dark
-        ? "rgba(12, 12, 18, 0.65)"
-        : "rgba(255, 255, 255, 0.75)"
-      : bg,
-    backdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
-    WebkitBackdropFilter: bgImage ? "blur(18px) saturate(170%)" : "none",
-    borderRadius: 16,
-    padding: r.headerPad,
-    border: bgImage
-      ? `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"}`
-      : `1px solid ${border}`,
-    boxShadow: bgImage
-      ? dark
-        ? "0 8px 32px rgba(0,0,0,0.4)"
-        : "0 8px 32px rgba(0,0,0,0.06)"
-      : `0 1px 3px ${dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.05)"}`,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "12px",
-    flexWrap: "wrap",
-    marginBottom: 24,
-    transition: "all 0.3s ease",
-  };
-  // --- Общие стили кнопок групп ---
-  const group1Btn = {
-    ...btn,
-    height: 30,
-    padding: "2px 8px",
-    fontSize: r.btnSize,
-  };
-  const group2Btn = {
-    ...btn,
-    height: 30,
-    padding: "2px 8px",
-    fontSize: r.btnSize,
-  };
+    [markSaving],
+  );
+
+  const dismissToast = useCallback(() => setToast(null), []);
+  const relevantTasks = useMemo(
+    () => getRelevantTasks(tasks, contentFilters),
+    [tasks, contentFilters],
+  );
+  const visibleTasks = useMemo(
+    () => getVisibleTasks(relevantTasks, focusMode),
+    [relevantTasks, focusMode],
+  );
+  const hiddenByFilters = getHiddenByFiltersCount(tasks, relevantTasks);
+  const filtersAreDefault = useMemo(
+    () =>
+      JSON.stringify(contentFilters) === JSON.stringify(buildContentFilters()),
+    [contentFilters],
+  );
+  const {
+    done: doneTasks,
+    total: totalTasks,
+    percent,
+  } = getOverallProgress(relevantTasks);
   return (
-    <div
-      style={{
-        padding: r.pad,
-        minHeight: "100vh",
-        fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial",
-        color: textColor,
-        position: "relative",
-        zIndex: 1,
-        transition: "background 0.3s ease",
-        backgroundColor: bg,
-      }}
-      className={dark ? "dark" : ""}
-    >
-      {bgImage && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 0,
-            pointerEvents: "none",
-            backgroundImage: `url(${bgImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
-      )}
-      <div style={{ maxWidth: r.maxW, margin: "0 auto", position: "relative" }}>
-        <style>{`
-          body, html { margin: 0 !important; padding: 0 !important; }
-          .notes-fab { user-select: none; -webkit-tap-highlight-color: transparent; }
-          .notes-fab:hover { transform: scale(1.08); }
-          .notes-fab:active { transform: scale(0.95); }
-        `}</style>
-        {/* ===== ШАПКА ЧЕК-ЛИСТА ===== */}
-        <div style={headerGlass}>
-          <div style={{ flex: "1 1 auto", minWidth: isSmall ? "auto" : 150, textAlign: isSmall ? "center" : "left" }}>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: r.titleSize,
-                fontWeight: 700,
-                lineHeight: 1.1,
-                color: titleColor,
-                textShadow: bgImage
-                  ? dark
-                    ? "0 2px 8px rgba(0,0,0,0.6)"
-                    : "0 2px 8px rgba(255,255,255,0.6)"
-                  : "none",
-              }}
-            >
-              Чек-лист проверки
-            </h1>
-            <div style={{ marginTop: 2, fontSize: r.progressSize, color: mutedColor, lineHeight: 1.4, display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <span>{doneTasks}/{totalTasks} ({percent}%)</span>
-              <a
-                href={METHODICHKA_URL}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 4,
-                  fontSize: r.progressSize, fontWeight: 500,
-                  color: dark ? "#7ab7ff" : "#2563eb",
-                  textDecoration: "none", padding: "2px 8px", borderRadius: 8,
-                  background: dark ? "rgba(122, 183, 255, 0.15)" : "rgba(37, 99, 235, 0.08)",
-                  transition: "all 0.2s ease",
-                  cursor: "pointer"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = dark ? "rgba(122, 183, 255, 0.25)" : "rgba(37, 99, 235, 0.15)"}
-                onMouseLeave={(e) => e.currentTarget.style.background = dark ? "rgba(122, 183, 255, 0.15)" : "rgba(37, 99, 235, 0.08)"}
-              >
-                Методички
-              </a>
-            </div>
-          </div>
-          {/* ===== ГРУППА 1 — единоразовое использование, справа ===== */}
-          <div style={{ flex: "0 0 auto", textAlign: isSmall ? "center" : "right" }}>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 4,
-                justifyContent: isSmall ? "center" : "flex-end",
-              }}
-            >
-              {/* Тема */}
-              <button
-                type="button"
-                style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
-                onClick={() => setDark((v) => !v)}
-              >
-                {dark ? "☀️" : "🌙"}
-              </button>
-              {/* Загрузка фона */}
-              <button
-                type="button"
-                style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10 }}
-                onClick={() => document.getElementById("bg-file-input").click()}
-              >
-                Фон
-              </button>
-              <input
-                id="bg-file-input"
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleBgFile}
-              />
-              {/* Сброс фона */}
-              {bgImage && (
-                <button
-                  type="button"
-                  style={{
-                    ...group1Btn,
-                    height: 28,
-                    minWidth: 20,
-                    padding: "0 4px",
-                    fontSize: 10,
-                    justifyContent: "center",
-                  }}
-                  onClick={() => {
-                    setBgImage("");
-                    localStorage.removeItem("bgImage");
-                  }}
-                >
-                  ✖
-                </button>
-              )}
-              {/* Hard Reset */}
-              <button
-                type="button"
-                style={{ ...group1Btn, height: 28, padding: "2px 6px", fontSize: 10, color: "red" }}
-                onClick={hardReset}
-              >
-                RESET
-              </button>
-            </div>
-          </div>
-        </div>
-        {/* ===== ГРУППА 2 — частое использование, под шапкой ===== */}
-        <div
-          style={{
-            marginBottom: 20,
-            background: bgImage
-              ? dark
-                ? "rgba(12, 12, 18, 0.5)"
-                : "rgba(255, 255, 255, 0.7)"
-              : "transparent",
-            borderRadius: 14,
-            padding: isSmall ? "10px" : "14px",
-            backdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
-            WebkitBackdropFilter: bgImage ? "blur(12px) saturate(170%)" : "none",
-            border: bgImage
-              ? `1px solid ${dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}`
-              : "none",
-          }}
-        >
-          {/* 2a. Пресет + фокус + сброс фильтров и чекбоксов */}
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 4,
-              justifyContent: isSmall ? "center" : "flex-start",
-              marginBottom: 10,
-            }}
-          >
-            {/* Пресет */}
-            <div style={{ position: "relative" }}>
-              <select
-                value={preset}
-                onChange={(e) => {
-                  localStorage.removeItem("checklist");
-                  localStorage.removeItem("collapsed");
-                  setPreset(e.target.value);
-                }}
-                style={{
-                  height: 30,
-                  minWidth: isSmall ? 90 : 130,
-                  padding: "0 30px 0 8px",
-                  borderRadius: 8,
-                  border: `1px solid ${dark ? "#2a2a2e" : "#d1d5db"}`,
-                  background: dark ? "#18181b" : "#ffffff",
-                  color: dark ? "#e8e8ea" : "#111827",
-                  fontSize: r.btnSize,
-                  cursor: "pointer",
-                  outline: "none",
-                  appearance: "none",
-                  WebkitAppearance: "none",
-                  MozAppearance: "none",
-                }}
-              >
-                <option value="default">Обычный</option>
-                <option value="invest">Инвест</option>
-                <option value="shopping">Шопинг</option>
-                <option value="tests">Тест</option>
-                <option value="compare">Сравнятор</option>
-                <option value="spending">Дневник трат</option>
-                <option value="cd">ЧД</option>
-                <option value="shorts">Шорты</option>
-                <option value="ugc">UGC</option>
-              </select>
-              <span
-                style={{
-                  position: "absolute",
-                  right: 8,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                  fontSize: 8,
-                  color: dark ? "#a1a1aa" : "#666",
-                }}
-              >
-                ▼
-              </span>
-            </div>
-            {/* Фокус-режим */}
-            <button
-              type="button"
-              style={group2Btn}
-              onClick={() => setFocusMode((v) => !v)}
-            >
-              {focusMode ? "Фокус ON" : "Фокус OFF"}
-            </button>
-            {/* Сброс фильтров и чекбоксов */}
-            <button
-              type="button"
-              style={{ ...group2Btn, color: "#e06c3b" }}
-              onClick={resetFiltersAndCheckboxes}
-            >
-              Сброс
-            </button>
-          </div>
-          {/* 2b. Фильтр по элементам */}
-          <div>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: mutedColor,
-                marginBottom: 4,
-                textAlign: isSmall ? "center" : "left",
-              }}
-            >
-              Контент
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 4,
-                justifyContent: isSmall ? "center" : "flex-start",
-              }}
-            >
-              {Object.entries(CONTENT_FILTERS).map(([key, item]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() =>
-                    setContentFilters((prev) => ({ ...prev, [key]: !prev[key] }))
-                  }
-                  style={{
-                    ...btn,
-                    height: 26,
-                    padding: r.catPad,
-                    fontSize: 10,
-                    background: contentFilters[key] ? "#FFDD2D" : dark ? "#1A1D21" : "#fff",
-                    color: contentFilters[key] ? "#111" : textColor,
-                    border: contentFilters[key]
-                      ? "1px solid #FFDD2D"
-                      : `1px solid ${border}`,
-                    fontWeight: contentFilters[key] ? 600 : 400,
-                  }}
-                >
-                  {contentFilters[key] ? "✓ " : ""}
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* ===== СПИСОК ЗАДАЧ ===== */}
-        {Object.keys(tasks).map((cat) => (
-          <div key={cat} style={{ marginBottom: 14 }}>
-            <div
-              onClick={() => toggleCollapse(cat)}
-              style={{
-                ...ui.categoryTitle,
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                background: bgImage
-                  ? dark
-                    ? "rgba(0,0,0,0.5)"
-                    : "rgba(255,255,255,0.75)"
-                  : dark
-                    ? "rgba(255,255,255,0.06)"
-                    : "transparent",
-                padding: r.catPad,
-                borderRadius: 10,
-                backdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
-                WebkitBackdropFilter: bgImage ? "blur(10px) saturate(180%)" : "none",
-                border: bgImage
-                  ? dark
-                    ? "1px solid rgba(255,255,255,0.1)"
-                    : "1px solid rgba(0,0,0,0.08)"
-                  : dark
-                    ? "1px solid rgba(255,255,255,0.08)"
-                    : "none",
-                transition: "all 0.2s ease",
-              }}
-            >
-              <span style={{ fontSize: 14 }}>{collapsed[cat] ? "▶" : "▼"}</span>
-              <span style={{ fontSize: 14 }}>{cat}</span>
-              <span
-                style={{
-                  fontSize: 10,
-                  opacity: 0.9,
-                  padding: "1px 6px",
-                  borderRadius: 999,
-                  background: dark ? "rgba(255,255,255,0.1)" : "#e5e7eb",
-                  minWidth: 36,
-                  textAlign: "center",
-                  fontWeight: 500,
-                }}
-              >
-                {tasks[cat].filter((t) => t.done).length}/
-                {tasks[cat].length}{" "}
-                {tasks[cat].every((t) => t.done) ? " ✓" : ""}
-              </span>
-            </div>
-            {!collapsed[cat] && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                {tasks[cat].map((task, i) => {
-                  if (
-                    (cat === "Таблицы" && !contentFilters.tables) ||
-                    (task.feature && !contentFilters[task.feature])
-                  )
-                    return null;
-                  return (
-                    <label
-                      key={`${cat}-${i}`}
-                      className="task-card"
-                      style={{
-                        ...ui.card,
-                        display: focusMode && task.done ? "none" : "flex",
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={task.done}
-                        onChange={() => toggle(cat, i)}
-                        aria-label={task.text}
-                        style={{
-                          width: 16,
-                          height: 16,
-                          marginTop: 1,
-                          accentColor: dark ? "#3f3f46" : "#6b7280",
-                          cursor: "pointer",
-                          flexShrink: 0,
-                        }}
-                      />
-                      <div style={{ flex: 1, opacity: task.done ? 0.5 : 1 }}>
-                        {task.text && (
-                          <div
-                            style={{
-                              ...ui.taskText,
-                              textDecoration: task.done ? "line-through" : "none",
-                            }}
-                          >
-                            {renderTextWithLinks(task.text, dark)}
-                          </div>
-                        )}
-                        {task.links?.length > 0 && (
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: 4,
-                              marginTop: task.text ? 4 : 0,
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            {task.links.map((link) => (
-                              <a
-                                key={link.url}
-                                href={link.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{
-                                  padding: "2px 6px",
-                                  borderRadius: 999,
-                                  fontSize: 10,
-                                  fontWeight: 600,
-                                  textDecoration: "none",
-                                  background: dark ? "#27272a" : "#eef2f7",
-                                  color: dark ? "#93c5fd" : "#2563eb",
-                                  border: dark ? "1px solid #3f3f46" : "1px solid #d1d5db",
-                                }}
-                              >
-                                {link.label}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      {/* ===== ЗАМЕТКИ (FAB) ===== */}
-      <div style={{ position: "fixed", right: 12, bottom: 12, zIndex: 999 }}>
-        {notesOpen && (
-          <div
-            style={{
-              width: r.notesW,
-              maxWidth: 280,
-              marginBottom: 10,
-              padding: 12,
-              borderRadius: 16,
-              border: `1px solid ${border}`,
-              background: bgImage
-                ? dark
-                  ? "rgba(15, 15, 20, 0.65)"
-                  : "rgba(255, 255, 255, 0.7)"
-                : card,
-              backdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
-              WebkitBackdropFilter: bgImage ? "blur(18px) saturate(180%)" : "none",
-              boxShadow: dark
-                ? "0 12px 40px rgba(0,0,0,0.45)"
-                : "0 12px 30px rgba(0,0,0,0.12)",
-              boxSizing: "border-box",
-            }}
-          >
-            <div style={{ fontWeight: 700, marginBottom: 6, color: titleColor, fontSize: 13 }}>
-              Заметки
-            </div>
-            <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-              <button
-                type="button"
-                onClick={() =>
-                  setNotes((prev) => (prev.trim() ? prev : NOTES_TEMPLATE))
-                }
-                style={{
-                  padding: "3px 6px",
-                  borderRadius: 6,
-                  border: "none",
-                  background: dark ? "#27272a" : "#eef2f7",
-                  color: textColor,
-                  fontSize: 10,
-                  cursor: "pointer",
-                }}
-              >
-                Вставить шаблон
-              </button>
-              <button
-                type="button"
-                onClick={() => setNotes("")}
-                style={{
-                  padding: "3px 6px",
-                  borderRadius: 6,
-                  border: "none",
-                  background: dark ? "#3a1f1f" : "#fee2e2",
-                  color: dark ? "#fca5a5" : "#991b1b",
-                  fontSize: 10,
-                  cursor: "pointer",
-                }}
-              >
-                Очистить
-              </button>
-            </div>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Заметки по ходу проверки: вопросы, правки и всё, что не хочется потерять — можно записывать сюда, чтобы не держать в голове"
-              style={{
-                width: "100%",
-                height: 140,
-                padding: 8,
-                borderRadius: 8,
-                border: `1px solid ${border}`,
-                background: dark ? "#111" : "#fff",
-                color: textColor,
-                fontSize: 12,
-                lineHeight: "16px",
-                resize: "none",
-                outline: "none",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-        )}
-        <button
-          type="button"
-          className="notes-fab"
-          onClick={() => setNotesOpen((v) => !v)}
-          style={{
-            width: r.fabSize,
-            height: r.fabSize,
-            borderRadius: "50%",
-            background: bgImage
-              ? dark
-                ? "rgba(12, 12, 18, 0.5)"
-                : "rgba(255, 255, 255, 0.6)"
-              : dark
-                ? "rgba(25, 25, 28, 0.75)"
-                : "rgba(255, 255, 255, 0.75)",
-            backdropFilter: "blur(20px) saturate(200%)",
-            WebkitBackdropFilter: "blur(20px) saturate(200%)",
-            border: bgImage
-              ? dark
-                ? "1px solid rgba(255,255,255,0.12)"
-                : "1px solid rgba(255,255,255,0.45)"
-              : dark
-                ? "1px solid rgba(255,255,255,0.08)"
-                : "1px solid rgba(0,0,0,0.08)",
-            boxShadow: bgImage
-              ? dark
-                ? "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)"
-                : "0 10px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7)"
-              : dark
-                ? "0 10px 40px rgba(0,0,0,0.4)"
-                : "0 10px 40px rgba(0,0,0,0.08)",
-            color: dark ? "#FFDD2D" : "#111827",
-            fontSize: 18,
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: r.fabPad,
-            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-            textShadow: dark
-              ? "0 1px 3px rgba(0,0,0,0.6)"
-              : "0 1px 2px rgba(255,255,255,0.8)",
-            userSelect: "none",
-          }}
-        >
-          ✏️
-        </button>
-      </div>
-    </div>
+    <ChecklistWorkspace
+      dark={dark}
+      setDark={updateDark}
+      preset={preset}
+      switchPreset={switchPreset}
+      tasks={tasks}
+      collapsed={collapsed}
+      toggleCollapse={toggleCollapse}
+      toggle={toggle}
+      contentFilters={contentFilters}
+      toggleFilter={toggleFilter}
+      resetFilters={resetFilters}
+      filtersAreDefault={filtersAreDefault}
+      focusMode={focusMode}
+      setFocusMode={setFocusMode}
+      relevantTasks={relevantTasks}
+      visibleTasks={visibleTasks}
+      hiddenByFilters={hiddenByFilters}
+      progress={{ done: doneTasks, total: totalTasks, percent }}
+      clearMarks={clearMarks}
+      hardReset={hardReset}
+      notes={notes}
+      setNotes={setNotes}
+      notesOpen={notesOpen}
+      setNotesOpen={setNotesOpen}
+      notesFabRef={notesFabRef}
+      notesPopoverRef={notesPopoverRef}
+      notesTextareaRef={notesTextareaRef}
+      saveStatus={saveStatus}
+      toast={toast}
+      dismissToast={dismissToast}
+      undoClear={undoClear}
+      contextVersion={contextVersion}
+    />
   );
 }
