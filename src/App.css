@@ -95,7 +95,8 @@ input:focus-visible {
   line-height: 1.1;
   letter-spacing: -0.035em;
 }
-.format-control span,
+.format-control-label,
+.format-control-subheading,
 .section-heading span,
 .progress-percent {
   font-family: "IBM Plex Mono", monospace;
@@ -200,7 +201,8 @@ input:focus-visible {
   display: grid;
   gap: 7px;
 }
-.format-control span {
+.format-control-label,
+.format-control-subheading {
   color: var(--muted);
 }
 .format-control select {
@@ -212,6 +214,113 @@ input:focus-visible {
   background: var(--surface);
   color: var(--ink);
   cursor: pointer;
+}
+.format-control-hierarchy {
+  gap: 12px;
+}
+.format-type-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+.format-type-button,
+.format-category-button,
+.format-option-button {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+.format-type-button {
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+}
+.format-type-button:hover:not(.is-open) {
+  background: var(--surface);
+}
+.format-type-button.is-open {
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 600;
+}
+.format-type-button small,
+.format-category-button small {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 400;
+}
+.format-type-button.is-open small {
+  color: inherit;
+  opacity: 0.72;
+}
+.format-category-section {
+  display: grid;
+  gap: 7px;
+}
+.format-category-list,
+.format-option-list {
+  display: grid;
+  gap: 4px;
+}
+.format-category-button {
+  position: relative;
+  width: 100%;
+  min-height: 35px;
+  padding: 7px 9px 7px 13px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+}
+.format-category-button:hover,
+.format-category-button.is-open {
+  background: var(--surface-soft);
+}
+.format-category-button.is-open {
+  font-weight: 600;
+}
+.format-category-button.is-open::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--accent);
+}
+.format-option-button {
+  width: 100%;
+  min-height: 39px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+}
+.format-option-button:hover:not(.is-selected) {
+  border-color: var(--line-strong);
+  background: var(--surface-soft);
+}
+.format-option-button.is-selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  font-weight: 600;
+}
+.format-option-check {
+  flex: 0 0 auto;
+  color: var(--accent-ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
 }
 .header-format-control {
   display: none;
@@ -878,7 +987,7 @@ input:focus-visible {
     align-items: center;
     gap: 10px;
   }
-  .header-format-control span {
+  .header-format-control .format-control-label {
     white-space: nowrap;
   }
   .header-format-control select {

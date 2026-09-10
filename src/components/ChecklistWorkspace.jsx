@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { METHODICHKA_URL, PRESET_LABELS } from "../checklist-data";
+import {
+  METHODICHKA_URL,
+  PRESET_LABELS,
+  getPresetLocation,
+} from "../checklist-data";
 import { getCategoryProgress } from "../lib/checklist-state";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ContentFilterBar from "./ContentFilterBar";
@@ -46,8 +50,9 @@ export default function ChecklistWorkspace({
     () => Object.keys(tasks)[0],
   );
   const [pendingAction, setPendingAction] = useState(null);
-  const headerFormatSelectRef = useRef(null);
-  const sidebarFormatSelectRef = useRef(null);
+  const [formatView, setFormatView] = useState(
+    () => getPresetLocation(preset) ?? { typeId: "regular", categoryId: null },
+  );
   const resetButtonRef = useRef(null);
   const actionTriggerRef = useRef(null);
   const scrollingTargetRef = useRef(null);
@@ -143,19 +148,19 @@ export default function ChecklistWorkspace({
       setActiveCategory(category);
     }, 550);
   };
-  const getVisibleFormatSelect = () =>
-    [headerFormatSelectRef.current, sidebarFormatSelectRef.current].find(
-      (el) => el && el.offsetParent !== null,
-    ) ?? null;
-  const changePreset = (event) => {
-    const nextPreset = event.target.value;
+  const applyPresetChange = (nextPreset) => {
+    const location = getPresetLocation(nextPreset);
+    if (location) setFormatView(location);
+    switchPreset(nextPreset);
+  };
+  const requestPresetChange = (nextPreset, trigger, source) => {
     if (nextPreset === preset) return;
+    actionTriggerRef.current = trigger;
     if (progress.done > 0) {
-      actionTriggerRef.current = getVisibleFormatSelect();
-      setPendingAction({ kind: "preset", value: nextPreset });
+      setPendingAction({ kind: "preset", value: nextPreset, source });
       return;
     }
-    switchPreset(nextPreset);
+    applyPresetChange(nextPreset);
   };
   const requestReset = () => {
     actionTriggerRef.current = resetButtonRef.current;
@@ -168,8 +173,11 @@ export default function ChecklistWorkspace({
   const confirmPendingAction = () => {
     const action = pendingAction;
     setPendingAction(null);
-    if (action.kind === "preset") switchPreset(action.value);
-    else hardReset();
+    if (action.kind === "preset") applyPresetChange(action.value);
+    else {
+      setFormatView(getPresetLocation("default"));
+      hardReset();
+    }
   };
   const scrollToNextCategory = (category) => {
     const index = categories.indexOf(category);
@@ -240,8 +248,8 @@ export default function ChecklistWorkspace({
             </div>
             <FormatControl
               preset={preset}
-              onChange={changePreset}
-              selectRef={headerFormatSelectRef}
+              onSelectPreset={requestPresetChange}
+              variant="header"
               className="header-format-control"
             />
             <FocusToggle
@@ -322,8 +330,9 @@ export default function ChecklistWorkspace({
           <aside className="sidebar">
             <FormatControl
               preset={preset}
-              onChange={changePreset}
-              selectRef={sidebarFormatSelectRef}
+              view={formatView}
+              onViewChange={setFormatView}
+              onSelectPreset={requestPresetChange}
               className="sidebar-format-control"
             />
             <section
