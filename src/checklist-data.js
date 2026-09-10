@@ -327,6 +327,15 @@ const PRESETS = {
         },
       ],
     },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc2: {
@@ -363,14 +372,43 @@ const PRESETS = {
       },
  ],
     Прочее: [
-      {
-        links: [
-          {
-            label: "Методичка по анкетам и потокам",
-            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-          },
-        ],
-      },
+
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc3: {
@@ -426,7 +464,7 @@ const PRESETS = {
     },
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -434,6 +472,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc4: {
@@ -481,7 +555,7 @@ const PRESETS = {
     },
     ],
       Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -489,6 +563,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc5: {
@@ -536,7 +646,7 @@ const PRESETS = {
 
 
      Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -544,6 +654,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc6: {
@@ -603,7 +749,7 @@ const PRESETS = {
     },
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример мнение из коммента",
@@ -615,6 +761,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc7: {
@@ -653,7 +835,7 @@ const PRESETS = {
       },
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -661,6 +843,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc8: {
@@ -700,7 +918,7 @@ const PRESETS = {
       { _sortOrder: 1, text: "Выпускаем в пятницу в 18:00 МСК" },
     ],
      Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -708,6 +926,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc9: {
@@ -740,7 +994,7 @@ const PRESETS = {
     ],
 
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -748,6 +1002,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc10: {
@@ -791,7 +1081,7 @@ const PRESETS = {
     ],
     
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -799,6 +1089,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc11: {
@@ -838,12 +1164,48 @@ const PRESETS = {
     Прочее: [
       {
         links: [
-          {
+          {_sortOrder: 0,
             label: "Пример статьи",
             url: "https://t-j.ru/kakoi-dom-postroit/",
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc12: {
@@ -882,7 +1244,7 @@ const PRESETS = {
       },
     ],
    Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -890,6 +1252,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
       },
   ugc13: {
@@ -924,7 +1322,7 @@ const PRESETS = {
       { _sortOrder: 1, text: "Ответ эксперта оформлен в бабл" },
     ],
      Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -932,6 +1330,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc14: {
@@ -963,14 +1397,50 @@ const PRESETS = {
       { _sortOrder: 1, text: "Вопрос читателя оформлен в бабл" },
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
-          {
+          { 
             label: "Пример статьи",
             url: "https://t-j.ru/vospitanie-nado-li-zastavliat-detei-chitat/",
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc15: {
@@ -1001,7 +1471,7 @@ const PRESETS = {
       { _sortOrder: 1, text: "Ответ эксперта оформлен в бабл" },
     ],
     Прочее: [
-      {
+      { _sortOrder: 0,
         links: [
           {
             label: "Пример статьи Авто",
@@ -1009,7 +1479,7 @@ const PRESETS = {
           },
         ],
       },
-       {
+       { _sortOrder: 0,
         links: [
           {
             label: "Пример статьи Образование",
@@ -1017,6 +1487,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc16: {
@@ -1063,7 +1569,7 @@ const PRESETS = {
     ],
     
  Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1071,6 +1577,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc17: {
@@ -1108,7 +1650,7 @@ const PRESETS = {
       
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1116,6 +1658,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
 
@@ -1154,7 +1732,7 @@ const PRESETS = {
     },
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи Больше ни ногой",
@@ -1166,6 +1744,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc18: {
@@ -1208,7 +1822,7 @@ const PRESETS = {
  
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1216,6 +1830,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc19: {
@@ -1251,7 +1901,7 @@ const PRESETS = {
       },
     ],
     Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1259,6 +1909,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
   ugc20: {
@@ -1295,7 +1981,7 @@ const PRESETS = {
     ],
 
        Прочее: [
-      {
+      {_sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1303,6 +1989,42 @@ const PRESETS = {
           },
         ],
       },
+       {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+       {_sortOrder: 0,
+      links: [
+        {
+          label:
+            "UGC-генератор",
+          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+        },
+      ],
+    },
     ],
   },
 };
@@ -1667,6 +2389,7 @@ export const DATA = {
       text: "После выпуска проверить материал на главной: все ли в порядке с обложкой, по правилам ли стоят переносы в заголовке",
     },
   ],
+  
 };
 export const PRESET_LABELS = {
   default: "Обычный",
