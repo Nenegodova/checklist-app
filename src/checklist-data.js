@@ -299,6 +299,35 @@ const PRESETS = {
       ],
     },
     ],
+        Прочее: [
+      {_sortOrder: 0,
+      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+        },
+      ],
+    },
+          {_sortOrder: 0,
+      text: "Как работать с плашками Сообщества в UGC",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+        },
+      ],
+    },
+              {_sortOrder: 0,
+      text: "Как создавать новые UGC-потоки и анкеты",
+      links: [
+        {
+          label: "Методичка",
+          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+        },
+      ],
+    },
+    ],
   },
   ugc2: {
     Админка: [
