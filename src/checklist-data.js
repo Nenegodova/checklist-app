@@ -2400,27 +2400,149 @@ export const PRESET_LABELS = {
   spending: "Дневник трат",
   cd: "ЧД",
   shorts: "Шорты",
-  ugc: "UGC (базовый)",
-  ugc3: "Бесит — один автор (UGC)",
-  ugc4: "Бесит — подборка (UGC)",
-  ugc5: "Жалею (UGC)",
-  ugc6: "Мнение (UGC)",
-  ugc7: "Дискуссия (UGC)",
-  ugc8: "АМА вопрос (UGC)",
-  ugc9: "АМА ответ (UGC)",
-  ugc10: "Вопрос—ответ: Медицина (UGC)",
-  ugc11: "Вопрос—ответ: Недвижимость (UGC)",
-  ugc12: "Вопрос—ответ: Спорт (UGC)",
-  ugc13: "Вопрос—ответ: Мозг (UGC)",
-  ugc14: "Вопрос—ответ: Дети (UGC)",
-  ugc15: "Вопрос—ответ: Авто / Образование (UGC)",
-  ugc16: "За и Против: любая редакция (UGC)",
-  ugc21: "Особый лонг / Тревел (UGC)",
-  ugc17: "Комментарий недели (UGC)",
-  ugc18: "Комментарий месяца (UGC)",
-  ugc19: "Сообщники месяца (UGC)",
-  ugc20: "Голосовалки за дневник трат (UGC)",
+  ugc: "Базовый",
+  ugc3: "Бесит — один автор",
+  ugc4: "Бесит — подборка",
+  ugc5: "Жалею",
+  ugc6: "Мнение",
+  ugc7: "Дискуссия",
+  ugc8: "АМА вопрос",
+  ugc9: "АМА ответ",
+  ugc10: "Вопрос—ответ: Медицина",
+  ugc11: "Вопрос—ответ: Недвижимость",
+  ugc12: "Вопрос—ответ: Спорт",
+  ugc13: "Вопрос—ответ: Мозг",
+  ugc14: "Вопрос—ответ: Дети",
+  ugc15: "Вопрос—ответ: Авто / Образование",
+  ugc16: "За и Против: любая редакция",
+  ugc21: "Особый лонг / Тревел",
+  ugc17: "Комментарий недели",
+  ugc18: "Комментарий месяца",
+  ugc19: "Сообщники месяца",
+  ugc20: "Голосовалки за дневник трат",
 };
+
+export const FORMAT_GROUPS = [
+  {
+    id: "regular",
+    label: "Обычный",
+    items: [
+      { preset: "default", label: "Обычный" },
+      { preset: "invest", label: "Инвест" },
+      { preset: "shopping", label: "Шопинг" },
+      { preset: "tests", label: "Тест" },
+      { preset: "compare", label: "Сравнятор" },
+      { preset: "spending", label: "Дневник трат" },
+      { preset: "cd", label: "ЧД" },
+      { preset: "shorts", label: "Шорты" },
+    ],
+  },
+  {
+    id: "ugc",
+    label: "UGC",
+    categories: [
+      {
+        id: "base",
+        label: "Базовый",
+        items: [{ preset: "ugc", label: "Базовый" }],
+      },
+      {
+        id: "hate",
+        label: "Бесит",
+        items: [
+          { preset: "ugc3", label: "Один автор" },
+          { preset: "ugc4", label: "Подборка" },
+        ],
+      },
+      {
+        id: "experience",
+        label: "Опыт и мнения",
+        items: [
+          { preset: "ugc5", label: "Жалею" },
+          { preset: "ugc6", label: "Мнение" },
+          { preset: "ugc7", label: "Дискуссия" },
+        ],
+      },
+      {
+        id: "ama",
+        label: "АМА",
+        items: [
+          { preset: "ugc8", label: "Вопрос" },
+          { preset: "ugc9", label: "Ответ" },
+        ],
+      },
+      {
+        id: "question-answer",
+        label: "Вопрос—ответ",
+        items: [
+          { preset: "ugc10", label: "Медицина" },
+          { preset: "ugc11", label: "Недвижимость" },
+          { preset: "ugc12", label: "Спорт" },
+          { preset: "ugc13", label: "Мозг" },
+          { preset: "ugc14", label: "Дети" },
+          { preset: "ugc15", label: "Авто / Образование" },
+        ],
+      },
+      {
+        id: "debates-and-longs",
+        label: "Споры и лонги",
+        items: [
+          { preset: "ugc16", label: "За и Против" },
+          { preset: "ugc21", label: "Особый лонг / Тревел" },
+        ],
+      },
+      {
+        id: "community-results",
+        label: "Итоги сообщества",
+        items: [
+          { preset: "ugc17", label: "Комментарий недели" },
+          { preset: "ugc18", label: "Комментарий месяца" },
+          { preset: "ugc19", label: "Сообщники месяца" },
+          { preset: "ugc20", label: "Голосовалки за дневник трат" },
+        ],
+      },
+    ],
+  },
+];
+
+export const getFormatType = (typeId) =>
+  FORMAT_GROUPS.find((type) => type.id === typeId);
+
+export const getFormatCategory = (categoryId) =>
+  FORMAT_GROUPS.flatMap((type) => type.categories ?? []).find(
+    (category) => category.id === categoryId,
+  );
+
+export const getPresetLocation = (preset) => {
+  for (const type of FORMAT_GROUPS) {
+    if (type.items?.some((item) => item.preset === preset)) {
+      return { typeId: type.id, categoryId: null };
+    }
+
+    const category = type.categories?.find((candidate) =>
+      candidate.items.some((item) => item.preset === preset),
+    );
+    if (category) {
+      return { typeId: type.id, categoryId: category.id };
+    }
+  }
+
+  return null;
+};
+
+export const isUgcPreset = (preset) =>
+  getPresetLocation(preset)?.typeId === "ugc";
+
+export const getTypeCount = (type) =>
+  type.items?.length ??
+  type.categories?.reduce(
+    (count, category) => count + category.items.length,
+    0,
+  ) ??
+  0;
+
+export const getCategoryCount = (category) => category.items.length;
+
 export const getPresetData = (preset) => {
   const clone =
     typeof structuredClone === "function"
