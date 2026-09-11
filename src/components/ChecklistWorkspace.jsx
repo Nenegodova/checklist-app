@@ -3,6 +3,7 @@ import {
   METHODICHKA_URL,
   PRESET_LABELS,
   getPresetLocation,
+  isUgcPreset,
 } from "../checklist-data";
 import { getCategoryProgress } from "../lib/checklist-state";
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -218,7 +219,12 @@ export default function ChecklistWorkspace({
         <div className="sticky-header">
           <header className="topbar">
             <div className="brand">
-              <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
+              <div className="brand-title">
+                <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
+                {isUgcPreset(preset) && (
+                  <span className="format-type-badge">UGC</span>
+                )}
+              </div>
               <a
                 className="method-link header-method-link"
                 href={METHODICHKA_URL}

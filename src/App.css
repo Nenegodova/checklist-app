@@ -86,6 +86,12 @@ input:focus-visible {
   display: flex;
   align-items: center;
 }
+.brand-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
 .header-method-link {
   margin-left: 20px;
 }
@@ -94,6 +100,19 @@ input:focus-visible {
   font-size: 22px;
   line-height: 1.1;
   letter-spacing: -0.035em;
+}
+.format-type-badge {
+  flex: 0 0 auto;
+  padding: 3px 6px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 .format-control-label,
 .format-control-subheading,

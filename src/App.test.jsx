@@ -96,6 +96,32 @@ describe("checklist application", () => {
     ).not.toBeChecked();
   });
 
+  it("marks only UGC formats in the desktop header", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: /Тип: UGC, 20 форматов/i }),
+    );
+    await user.click(screen.getByRole("button", { name: "Формат: Базовый" }));
+
+    expect(
+      screen.getByRole("heading", { name: "Чек-лист проверки · Базовый" }),
+    ).toBeInTheDocument();
+    expect(document.querySelector(".format-type-badge")).toHaveTextContent(
+      "UGC",
+    );
+    expect(screen.queryByText(/\(UGC\)/)).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /Тип: Обычный, 8 форматов/i }),
+    );
+    await user.click(screen.getByRole("button", { name: "Формат: Обычный" }));
+    expect(
+      document.querySelector(".format-type-badge"),
+    ).not.toBeInTheDocument();
+  });
+
   it("clears marks without touching filters, and undo restores only the marks", async () => {
     const user = userEvent.setup();
     render(<App />);
