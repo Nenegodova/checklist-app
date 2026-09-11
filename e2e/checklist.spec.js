@@ -12,34 +12,61 @@ const formatLabels = {
   ugc: "Базовый",
 };
 
-const getVisibleFormatControl = async (page, preset) => {
-  const nativeSelect = page.getByRole("combobox", { name: "Формат" });
-  if (await nativeSelect.isVisible()) return nativeSelect;
+const getMobileFormatTrigger = (page) =>
+  page.getByRole("button", { name: /^Выбрать формат:/ });
+
+const selectFormat = async (page, preset) => {
+  const mobileTrigger = getMobileFormatTrigger(page);
+  if (await mobileTrigger.isVisible()) {
+    await mobileTrigger.click();
+    const dialog = page.getByRole("dialog", { name: "Выбор формата" });
+    const type = preset.startsWith("ugc") ? "UGC" : "Обычный";
+    await dialog
+      .getByRole("button", { name: new RegExp(`Тип: ${type},`) })
+      .click();
+    await dialog
+      .getByRole("button", {
+        name: `Формат: ${formatLabels[preset]}`,
+        exact: true,
+      })
+      .click();
+    return { isMobile: true, trigger: mobileTrigger };
+  }
 
   if (preset.startsWith("ugc")) {
     await page.getByRole("button", { name: /Тип: UGC, 20 форматов/ }).click();
   }
-  return page.getByRole("button", {
+  const control = page.getByRole("button", {
     name: `Формат: ${formatLabels[preset]}`,
     exact: true,
   });
-};
-
-const selectFormat = async (page, preset) => {
-  const control = await getVisibleFormatControl(page, preset);
-  if (await control.evaluate((element) => element.tagName === "BUTTON"))
-    await control.click();
-  else await control.selectOption(preset);
-  return control;
+  await control.click();
+  return { isMobile: false, trigger: control };
 };
 
 const expectSelectedFormat = async (page, preset) => {
-  const control = await getVisibleFormatControl(page, preset);
-  if (await control.evaluate((element) => element.tagName === "BUTTON")) {
-    await expect(control).toHaveAttribute("aria-pressed", "true");
-  } else {
-    await expect(control).toHaveValue(preset);
+  const mobileTrigger = getMobileFormatTrigger(page);
+  if (await mobileTrigger.isVisible()) {
+    await expect(mobileTrigger).toContainText(formatLabels[preset]);
+    await expect(mobileTrigger).toHaveAttribute("aria-expanded", "false");
+    if (preset.startsWith("ugc")) {
+      await expect(mobileTrigger.locator(".format-type-badge")).toHaveText(
+        "UGC",
+      );
+    } else {
+      await expect(mobileTrigger.locator(".format-type-badge")).toHaveCount(0);
+    }
+    return;
   }
+
+  if (preset.startsWith("ugc"))
+    await page.getByRole("button", { name: /Тип: UGC, 20 форматов/ }).click();
+  await expect(
+    page.getByRole("button", {
+      name: `Формат: ${formatLabels[preset]}`,
+      exact: true,
+    }),
+  ).toHaveAttribute("aria-pressed", "true");
 };
 
 test.beforeEach(async ({ page }) => {
@@ -157,7 +184,7 @@ test("mobile header keeps format and actions aligned and centers the reset icon"
   test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
   const elements = [
     page.locator(".header-format-control > span"),
-    page.getByRole("combobox", { name: "Формат" }),
+    getMobileFormatTrigger(page),
     page.getByTestId("theme-toggle"),
     page.getByRole("button", { name: "Полный RESET" }),
   ];
@@ -230,17 +257,26 @@ test("changing format asks before resetting completion and restores context", as
 
 test("canceling a format change returns focus to its visible trigger", async ({
   page,
-}) => {
+}, testInfo) => {
   const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
   await task.check();
 
-  const formatTrigger = await selectFormat(page, "tests");
+  const formatSelection = await selectFormat(page, "tests");
   await expect(
     page.getByRole("alertdialog", { name: "Сменить формат?" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Отмена" }).click();
 
-  await expect(formatTrigger).toBeFocused();
+  if (testInfo.project.name === "mobile") {
+    const dialog = page.getByRole("dialog", { name: "Выбор формата" });
+    await expect(
+      dialog.getByRole("button", { name: "Формат: Тест" }),
+    ).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(formatSelection.trigger).toBeFocused();
+  } else {
+    await expect(formatSelection.trigger).toBeFocused();
+  }
   await expectSelectedFormat(page, "default");
   await expect(task).toBeChecked();
 });
@@ -396,6 +432,52 @@ test("mobile section chips scroll to their section", async ({
   await expect
     .poll(async () => (await page.locator(".sticky-header").boundingBox())?.y)
     .toBe(0);
+});
+
+test("mobile format dialog restores its UGC branch after cancellation", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
+  const task = page.getByRole("checkbox", { name: /мягкий перенос/i });
+  const trigger = getMobileFormatTrigger(page);
+  await task.check();
+  await trigger.click();
+
+  const dialog = page.getByRole("dialog", { name: "Выбор формата" });
+  await expect(dialog).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+  await dialog.getByRole("button", { name: /Тип: UGC, 20 форматов/ }).click();
+  await dialog
+    .getByRole("button", { name: /Рубрика Вопрос—ответ, 6 форматов/ })
+    .click();
+  await dialog
+    .getByRole("button", {
+      name: "Формат: Вопрос—ответ: Авто / Образование",
+    })
+    .click();
+
+  await expect(dialog).toHaveCount(0);
+  await expect(
+    page.getByRole("alertdialog", { name: "Сменить формат?" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Отмена" }).click();
+
+  const reopenedDialog = page.getByRole("dialog", { name: "Выбор формата" });
+  await expect(reopenedDialog).toBeVisible();
+  await expect(
+    reopenedDialog.getByRole("button", {
+      name: /Рубрика Вопрос—ответ, 6 форматов/,
+    }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    reopenedDialog.getByRole("button", {
+      name: "Формат: Вопрос—ответ: Авто / Образование",
+    }),
+  ).toBeFocused();
+
+  await page.keyboard.press("Escape");
+  await expect(reopenedDialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
 });
 
 test("mobile page has no clipped main content", async ({ page }, testInfo) => {

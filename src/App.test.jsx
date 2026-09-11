@@ -1,4 +1,10 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import App from "./App";
@@ -120,6 +126,61 @@ describe("checklist application", () => {
     expect(
       document.querySelector(".format-type-badge"),
     ).not.toBeInTheDocument();
+  });
+
+  it("reopens the mobile format dialog on the same branch after cancellation", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("checkbox", { name: /мягкий перенос/i }));
+
+    const trigger = screen.getByRole("button", {
+      name: "Выбрать формат: Обычный",
+      hidden: true,
+    });
+    await user.click(trigger);
+    const dialog = screen.getByRole("dialog", { name: "Выбор формата" });
+    expect(document.body).toHaveStyle({ overflow: "hidden" });
+    await user.click(
+      within(dialog).getByRole("button", {
+        name: /Тип: UGC, 20 форматов/i,
+      }),
+    );
+    await user.click(
+      within(dialog).getByRole("button", {
+        name: /Рубрика Вопрос—ответ, 6 форматов/i,
+      }),
+    );
+    await user.click(
+      within(dialog).getByRole("button", {
+        name: "Формат: Вопрос—ответ: Авто / Образование",
+      }),
+    );
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("alertdialog", { name: "Сменить формат?" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Отмена" }));
+
+    const reopenedDialog = await screen.findByRole("dialog", {
+      name: "Выбор формата",
+    });
+    expect(
+      within(reopenedDialog).getByRole("button", {
+        name: /Рубрика Вопрос—ответ, 6 форматов/i,
+      }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await waitFor(() =>
+      expect(
+        within(reopenedDialog).getByRole("button", {
+          name: "Формат: Вопрос—ответ: Авто / Образование",
+        }),
+      ).toHaveFocus(),
+    );
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 
   it("clears marks without touching filters, and undo restores only the marks", async () => {

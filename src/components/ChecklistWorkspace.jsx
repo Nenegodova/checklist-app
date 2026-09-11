@@ -10,6 +10,7 @@ import ConfirmationDialog from "./ConfirmationDialog";
 import ContentFilterBar from "./ContentFilterBar";
 import FocusToggle from "./FocusToggle";
 import FormatControl from "./FormatControl";
+import FormatModal from "./FormatModal";
 import NotesPopover from "./NotesPopover";
 import TaskSection from "./TaskSection";
 
@@ -54,8 +55,11 @@ export default function ChecklistWorkspace({
   const [formatView, setFormatView] = useState(
     () => getPresetLocation(preset) ?? { typeId: "regular", categoryId: null },
   );
+  const [formatModalOpen, setFormatModalOpen] = useState(false);
+  const [formatModalFocusPreset, setFormatModalFocusPreset] = useState(null);
   const resetButtonRef = useRef(null);
   const actionTriggerRef = useRef(null);
+  const formatTriggerRef = useRef(null);
   const scrollingTargetRef = useRef(null);
   const scrollTimerRef = useRef(null);
   const previousContextVersionRef = useRef(contextVersion);
@@ -155,20 +159,41 @@ export default function ChecklistWorkspace({
     switchPreset(nextPreset);
   };
   const requestPresetChange = (nextPreset, trigger, source) => {
-    if (nextPreset === preset) return;
+    if (nextPreset === preset) {
+      if (source === "modal") closeFormatModal(false);
+      return;
+    }
     actionTriggerRef.current = trigger;
     if (progress.done > 0) {
+      if (source === "modal") setFormatModalOpen(false);
       setPendingAction({ kind: "preset", value: nextPreset, source });
       return;
     }
     applyPresetChange(nextPreset);
+    if (source === "modal") closeFormatModal(false);
+  };
+  const openFormatModal = () => {
+    setFormatModalFocusPreset(null);
+    setFormatModalOpen(true);
+  };
+  const closeFormatModal = (returnFocus = true) => {
+    setFormatModalOpen(false);
+    if (returnFocus) {
+      window.requestAnimationFrame(() => formatTriggerRef.current?.focus());
+    }
   };
   const requestReset = () => {
     actionTriggerRef.current = resetButtonRef.current;
     setPendingAction({ kind: "reset" });
   };
   const cancelPendingAction = () => {
+    const action = pendingAction;
     setPendingAction(null);
+    if (action?.kind === "preset" && action.source === "modal") {
+      setFormatModalFocusPreset(action.value);
+      setFormatModalOpen(true);
+      return;
+    }
     window.requestAnimationFrame(() => actionTriggerRef.current?.focus());
   };
   const confirmPendingAction = () => {
@@ -252,12 +277,24 @@ export default function ChecklistWorkspace({
                 {saveLabel}
               </small>
             </div>
-            <FormatControl
-              preset={preset}
-              onSelectPreset={requestPresetChange}
-              variant="header"
-              className="header-format-control"
-            />
+            <div className="format-control header-format-control">
+              <span className="format-control-label">ФОРМАТ</span>
+              <button
+                className="mobile-format-trigger"
+                type="button"
+                ref={formatTriggerRef}
+                aria-label={`Выбрать формат: ${PRESET_LABELS[preset]}`}
+                aria-haspopup="dialog"
+                aria-expanded={formatModalOpen}
+                aria-controls="format-modal"
+                onClick={openFormatModal}
+              >
+                <span>{PRESET_LABELS[preset]}</span>
+                {isUgcPreset(preset) && (
+                  <span className="format-type-badge">UGC</span>
+                )}
+              </button>
+            </div>
             <FocusToggle
               className="header-focus"
               focusMode={focusMode}
@@ -501,6 +538,15 @@ export default function ChecklistWorkspace({
         action={pendingAction}
         onCancel={cancelPendingAction}
         onConfirm={confirmPendingAction}
+      />
+      <FormatModal
+        open={formatModalOpen}
+        preset={preset}
+        view={formatView}
+        onViewChange={setFormatView}
+        onSelectPreset={requestPresetChange}
+        onClose={closeFormatModal}
+        focusPreset={formatModalFocusPreset}
       />
     </div>
   );

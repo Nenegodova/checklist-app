@@ -26,33 +26,9 @@ export default function FormatControl({
   view,
   onViewChange,
   onSelectPreset,
-  variant = "sidebar",
   className = "",
 }) {
   const controlId = useId();
-
-  // The compact native control stays in the mobile header until FormatModal is
-  // introduced in stage D. It already uses the new explicit selection API.
-  if (variant === "header") {
-    return (
-      <label className={`format-control ${className}`.trim()}>
-        <span className="format-control-label">ФОРМАТ</span>
-        <select
-          aria-label="Формат"
-          value={preset}
-          onChange={(event) =>
-            onSelectPreset(event.target.value, event.currentTarget, "header")
-          }
-        >
-          {Object.entries(PRESET_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-      </label>
-    );
-  }
 
   const activeType = getFormatType(view.typeId) ?? getFormatType("regular");
   const activeCategory =
@@ -141,6 +117,7 @@ export default function FormatControl({
               className={`format-option-button ${isSelected ? "is-selected" : ""}`.trim()}
               aria-label={`Формат: ${PRESET_LABELS[item.preset]}`}
               aria-pressed={isSelected}
+              data-format-preset={item.preset}
               onClick={(event) =>
                 onSelectPreset(item.preset, event.currentTarget, "sidebar")
               }
