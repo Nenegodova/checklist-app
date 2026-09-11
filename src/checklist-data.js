@@ -55,17 +55,22 @@ const PRESETS = {
     ],
     Админка: [
       { _sortOrder: 2, text: "Тег noadscalctest" },
-  
-       { _sortOrder: 2, text: "Формат статьи «Тесты»" },
+
+      { _sortOrder: 2, text: "Формат статьи «Тесты»" },
     ],
-     Картинки: [
-  
+    Картинки: [
       {
         _sortOrder: 1,
         text: "В больших тестах под обложкой указан иллюстратор",
       },
-       { _sortOrder: 1, text: "В подвале (или в кате details) у больших тестов и кроссвордов прописаны авторы и источники картинок" },
-           { _sortOrder: 1, text: "В кроссвордах и мини-кроссвордах в подвале прописан автор изображения" },
+      {
+        _sortOrder: 1,
+        text: "В подвале (или в кате details) у больших тестов и кроссвордов прописаны авторы и источники картинок",
+      },
+      {
+        _sortOrder: 1,
+        text: "В кроссвордах и мини-кроссвордах в подвале прописан автор изображения",
+      },
     ],
     Прочее: [
       { text: "В кайтене прикреплены ссылки на админку и конфиг" },
@@ -89,7 +94,7 @@ const PRESETS = {
         _sortOrder: 1,
         text: "Если у автора нет аватарки, то стоят анонимные: anonym_male у мужчин и anonym_female у женщин, автор стоит после оглавления",
       },
-       {
+      {
         _sortOrder: 1,
         text: "Сервисная плашка оформлена через <panel>",
       },
@@ -119,8 +124,6 @@ const PRESETS = {
       {
         _sortOrder: 2,
         text: "После выпуска прикрепить в кайтене ссылку на материал и in-картинку",
-
-    
       },
     ],
   },
@@ -169,7 +172,8 @@ const PRESETS = {
         text: "В классических ЧД написание автора вопроса «спросил в Сообществе»/«спросила в Сообществе»",
       },
       { _sortOrder: 3, text: "У автора вопроса стоит additional" },
-      {_sortOrder: 16,
+      {
+        _sortOrder: 16,
         text: 'Если в конце статьи стоит список статей: вводное предложение выделяем болдом, для вводного предложения и списка используем шифт с p grade="large"',
       },
       { _sortOrder: 7, text: "В микро ЧД ответ на вопрос в плашке" },
@@ -215,7 +219,10 @@ const PRESETS = {
         _sortOrder: 2,
         text: "Нажата кнопка из сообщества и выбор редакции если вторая редакция UGC, основной поток тематитеский",
       },
-      { _sortOrder: 3, text: "Отсутствует основная обложка и основной подзаголовок, подпись к обложее, если она нужна, находится в поле «Дополнительно о статье»" },
+      {
+        _sortOrder: 3,
+        text: "Отсутствует основная обложка и основной подзаголовок, подпись к обложее, если она нужна, находится в поле «Дополнительно о статье»",
+      },
       { _sortOrder: 3, text: "Источник фото в подвале" },
     ],
     Текст: [
@@ -223,14 +230,20 @@ const PRESETS = {
         _sortOrder: 4,
         text: 'Подводка размещается в теге p grade="secondary"',
       },
-      { _sortOrder: 1, text: 'В шортах текст без засечек — параграфам вокруг тайлов добавлен атрибут grade="secondary", в том числе под катом и в списке в конце статьи' },
-      { _sortOrder: 1, text: "Оглавление стоит перед карточками-тайлами. У заголовка оглавления нет знаков препинания в конце. Якорные ссылки в оглавлении ведут на нужные разделы" },
+      {
+        _sortOrder: 1,
+        text: 'В шортах текст без засечек — параграфам вокруг тайлов добавлен атрибут grade="secondary", в том числе под катом и в списке в конце статьи',
+      },
+      {
+        _sortOrder: 1,
+        text: "Оглавление стоит перед карточками-тайлами. У заголовка оглавления нет знаков препинания в конце. Якорные ссылки в оглавлении ведут на нужные разделы",
+      },
       { text: 'У текста внутри шортов grade="medium"' },
       {
         _sortOrder: 3,
         text: "В заголовке нет эмодзи, если в карточке есть картинка",
       },
-       { 
+      {
         _sortOrder: 3,
         text: 'Везде проставлены верные уровни заголовков (В тайлах и плашках используем h2 level="3"',
       },
@@ -247,7 +260,9 @@ const PRESETS = {
       {
         text: "В дискрипшен под последней карточкой вынесена информация об актуальности цен и ценах в валюте (поскольку не используем тултипы), источниках данных, метках об иноагентах и т. д.",
       },
-      { text: 'У кнопки в последнем тайле отсутствует type="tertiary" (исключение — тайл, продолжающий подборку)' },
+      {
+        text: 'У кнопки в последнем тайле отсутствует type="tertiary" (исключение — тайл, продолжающий подборку)',
+      },
       {
         text: "Список в конце шортов из 3–4 ссылок выстроен «лесенкой» если позволяет смысл. Вводное предложение — без жирного выделения",
       },
@@ -272,16 +287,16 @@ const PRESETS = {
   },
   ugc: {
     Админка: [
-
-          {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
     ],
     Текст: [
@@ -289,142 +304,151 @@ const PRESETS = {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-      {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
     ],
-        Прочее: [
-      {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+    Прочее: [
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc2: {
     Админка: [
       { _sortOrder: 1, text: "UGC-поток всегда собирается в паре с анкетой" },
-       { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       {
         _sortOrder: 2,
         text: "Проверить, что выбран правильный поток и анкета",
       },
-
     ],
-     Текст: [  {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
-         {
+    Текст: [
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
- ],
+    ],
     Прочее: [
-
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc3: {
     Админка: [
       { _sortOrder: 1, text: "Основным потоком стоит поток Бесит" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       {
         _sortOrder: 2,
         text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
@@ -433,38 +457,40 @@ const PRESETS = {
         _sortOrder: 2,
         text: "ОГ⁠⁠-⁠⁠заг = заголовок статьи, текст на ОГ-картинке оттипографирован, на ОГ-картинке отсутствует бирка «Бесит», ОГ-описание: «Точка зрения читателя» или «Точка зрения читательницы»",
       },
-     { _sortOrder: 2,
-      text: "В out cтоит готовая обложка-заглушка out-hate-cap, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
-      links: [
-        {
-          label: "Памятка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
-        },
+      {
+        _sortOrder: 2,
+        text: "В out cтоит готовая обложка-заглушка out-hate-cap, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
+        links: [
+          {
+            label: "Памятка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
+          },
         ],
       },
-   
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-       {
+      {
         _sortOrder: 20,
         text: "В конце добавлен стандартный для формата опрос (можно взять из ранее выпущеного материала)",
       },
-      {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
     ],
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -472,90 +498,96 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc4: {
     Админка: [
       { _sortOrder: 1, text: "Основным потоком стоит поток Бесит" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       {
         _sortOrder: 2,
         text: "ОГ⁠⁠-⁠⁠заг = заголовок статьи, ОГ-описание на месте, текст на ОГ-картинке оттипографирован, на ОГ-картинке отсутствует бирка «Бесит»",
       },
-          {_sortOrder: 2,
-      text: "В out cтоит готовая обложка-заглушка out-hate-cap, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
-      links: [
-        {
-          label: "Памятка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
-        },
+      {
+        _sortOrder: 2,
+        text: "В out cтоит готовая обложка-заглушка out-hate-cap, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
+        links: [
+          {
+            label: "Памятка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
+          },
         ],
       },
-  
-    ], 
+    ],
 
-      Текст: [
-             {
+    Текст: [
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-      {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
     ],
-      Прочее: [
-      {_sortOrder: 0,
+    Прочее: [
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -563,57 +595,61 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc5: {
     Админка: [
       { _sortOrder: 1, text: "Основным потоком стоит поток Жалею" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       {
         _sortOrder: 2,
         text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
@@ -625,28 +661,29 @@ const PRESETS = {
       { _sortOrder: 4, text: "Обложка мини над заголовком" },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-            {
-       _sortOrder: 20,
+      {
+        _sortOrder: 20,
         text: "В конце добавлен стандартный для формата опрос (можно взять из ранее выпущеного материала)",
       },
-      {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
     ],
 
-
-     Прочее: [
-      {_sortOrder: 0,
+    Прочее: [
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -654,60 +691,64 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc6: {
     Админка: [
       { _sortOrder: 1, text: "Основным потоком стоит поток Мнения" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       {
         _sortOrder: 2,
-        text: "Если материал новый, то автор — Редакция, читателю добавляем prop=\"additional\"",
+        text: 'Если материал новый, то автор — Редакция, читателю добавляем prop="additional"',
       },
       {
         _sortOrder: 3,
@@ -721,35 +762,37 @@ const PRESETS = {
         _sortOrder: 7,
         text: "ОГ⁠⁠-⁠⁠заг = заголовок статьи, ОГ-описание на месте, текст на ОГ-картинке оттипографирован, на ОГ-картинках добавлена бирка Мнение",
       },
-      {_sortOrder: 2,
-      text: "В out cтоит готовая обложка-заглушка opinion-cap, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
-      links: [
-        {
-          label: "Памятка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
-        },
+      {
+        _sortOrder: 2,
+        text: "В out cтоит готовая обложка-заглушка opinion-cap, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
+        links: [
+          {
+            label: "Памятка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
+          },
         ],
       },
-  
     ],
 
-      Текст: [
-       {
+    Текст: [
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-      {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
     ],
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример мнение из коммента",
@@ -761,58 +804,62 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc7: {
     Админка: [
-         { _sortOrder: 1, text: "Поле для меты оствляем пустым" },
+      { _sortOrder: 1, text: "Поле для меты оствляем пустым" },
 
       { _sortOrder: 1, text: "Основным потоком стоит поток Дискуссии" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       { _sortOrder: 2, text: "Нажата кнопка из сообщества" },
       {
         _sortOrder: 2,
@@ -820,13 +867,12 @@ const PRESETS = {
       },
     ],
 
-      Текст: [
-             {
+    Текст: [
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
- {_sortOrder: 0,
-      text: "Не ставим плашку Сообщества", },
+      { _sortOrder: 0, text: "Не ставим плашку Сообщества" },
     ],
     Выпуск: [
       {
@@ -835,7 +881,8 @@ const PRESETS = {
       },
     ],
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -843,58 +890,65 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc8: {
     Админка: [
       { _sortOrder: 1, text: "Основным потоком стоит поток AMA" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
-      { _sortOrder: 5, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
+      {
+        _sortOrder: 5,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
       {
         _sortOrder: 3,
         text: "Обложка мини над заголовком, без подписи",
@@ -904,21 +958,18 @@ const PRESETS = {
       {
         _sortOrder: 0,
         text: "Автор материала эксперт, но на верстке его не добавляем",
-      },    
-           {
+      },
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-        {_sortOrder: 0,
-      text: "Не ставим плашку Сообщества", },
+      { _sortOrder: 0, text: "Не ставим плашку Сообщества" },
     ],
 
-
-    Выпуск: [
-      { _sortOrder: 1, text: "Выпускаем в пятницу в 18:00 МСК" },
-    ],
-     Прочее: [
-      {_sortOrder: 0,
+    Выпуск: [{ _sortOrder: 1, text: "Выпускаем в пятницу в 18:00 МСК" }],
+    Прочее: [
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -926,75 +977,82 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc9: {
     Админка: [
       { _sortOrder: 1, text: "Основным потоком стоит поток AMA" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
-      { _sortOrder: 2, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
+      {
+        _sortOrder: 2,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
       {
         _sortOrder: 3,
         text: "Обложка мини над заголовком, без подписи",
       },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-      { _sortOrder: 2, text: "Вопрос от читателя в бабл" },   
-          {_sortOrder: 0,
-      text: "Не ставим плашку Сообщества", },
+      { _sortOrder: 2, text: "Вопрос от читателя в бабл" },
+      { _sortOrder: 0, text: "Не ставим плашку Сообщества" },
     ],
 
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1002,42 +1060,45 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc10: {
@@ -1047,41 +1108,47 @@ const PRESETS = {
         text: "Главный поток Мне только спросить",
       },
       { _sortOrder: 2, text: "Автор материала — эксперт" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
-      { _sortOrder: 3, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
+      {
+        _sortOrder: 3,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
       {
         _sortOrder: 4,
         text: "Обложка мини над заголовком, без подписи",
       },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору, при бане сообщить редактору",
       },
-            {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
-      { _sortOrder: 1, text: "Ответ эксперта оформлен в бабл" },   
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
+      { _sortOrder: 1, text: "Ответ эксперта оформлен в бабл" },
     ],
-    
+
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1089,42 +1156,45 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc11: {
@@ -1133,29 +1203,33 @@ const PRESETS = {
         _sortOrder: 1,
         text: "Главный поток Вопросы о дизайне и ремонте / Спросите о недвижимости",
       },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       { _sortOrder: 3, text: "Автор материала — эксперт" },
-      { _sortOrder: 4, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      {
+        _sortOrder: 4,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
       {
         _sortOrder: 5,
         text: "Обложка мини над заголовком без подписи",
       },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору, при бане сообщить редактору",
       },
-               {
+      {
         _sortOrder: 0,
         text: "Без плашки сообщества, если подпись у читателя «спросил в Сообществе»",
       },
@@ -1164,77 +1238,85 @@ const PRESETS = {
     Прочее: [
       {
         links: [
-          {_sortOrder: 0,
+          {
+            _sortOrder: 0,
             label: "Пример статьи",
             url: "https://t-j.ru/kakoi-dom-postroit/",
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc12: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Вопрос тренеру" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       { _sortOrder: 3, text: "Автор материала — эксперт" },
-      { _sortOrder: 4, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      {
+        _sortOrder: 4,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
       {
         _sortOrder: 5,
         text: "Обложка мини над заголовком без подписи",
       },
     ],
     Текст: [
-               {
+      {
         _sortOrder: 0,
         text: "Без плашки сообщества, если подпись у читателя «спросил в Сообществе»",
       },
       { _sortOrder: 1, text: "Ответ эксперта оформлен в бабл" },
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору, при бане сообщить редактору",
       },
@@ -1243,8 +1325,9 @@ const PRESETS = {
         text: "В конце добавлен список из 3 статей, вводное предложение в стронге",
       },
     ],
-   Прочее: [
-      {_sortOrder: 0,
+    Прочее: [
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1252,77 +1335,85 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
-    ],
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
       },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
+    ],
+  },
   ugc13: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Письмо психологу" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       { _sortOrder: 3, text: "Автор материала — читатель" },
-      { _sortOrder: 4, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      {
+        _sortOrder: 4,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
       {
         _sortOrder: 5,
         text: "Обложка мини над заголовком без подписи",
       },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору, при бане сообщить редактору",
       },
-               {
+      {
         _sortOrder: 0,
         text: "Без плашки сообщества, если подпись у читателя «спросил в Сообществе»",
       },
       { _sortOrder: 1, text: "Ответ эксперта оформлен в бабл" },
     ],
-     Прочее: [
-      {_sortOrder: 0,
+    Прочее: [
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1330,148 +1421,164 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc14: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Как воспитывать" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
 
       { _sortOrder: 3, text: "Автор материала — эксперт" },
-      { _sortOrder: 4, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      {
+        _sortOrder: 4,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
-               {
+      {
         _sortOrder: 0,
         text: "Без плашки сообщества, если подпись у читателя «спросил в Сообществе»",
       },
       { _sortOrder: 1, text: "Вопрос читателя оформлен в бабл" },
     ],
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
-          { 
+          {
             label: "Пример статьи",
             url: "https://t-j.ru/vospitanie-nado-li-zastavliat-detei-chitat/",
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc15: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Вопросы о карьере / Авторазбор" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       { _sortOrder: 3, text: "Автор материала — эксперт" },
-      { _sortOrder: 4, text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)" },
+      {
+        _sortOrder: 4,
+        text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие, затравка — от лица редакции (даже если автор статьи наш редактор)",
+      },
     ],
     Текст: [
-               {
+      {
         _sortOrder: 0,
         text: "Без плашки сообщества, если подпись у читателя «спросил в Сообществе»",
       },
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
       { _sortOrder: 1, text: "Ответ эксперта оформлен в бабл" },
     ],
     Прочее: [
-      { _sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи Авто",
@@ -1479,7 +1586,8 @@ const PRESETS = {
           },
         ],
       },
-       { _sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи Образование",
@@ -1487,42 +1595,45 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc16: {
@@ -1531,16 +1642,17 @@ const PRESETS = {
         _sortOrder: 1,
         text: "В главном заголовке частица «ли» приклеена к предыдущему слову и отделена от следующего пробелом нулевой ширины",
       },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       {
         _sortOrder: 2,
         text: "Главный поток За и против",
@@ -1548,28 +1660,30 @@ const PRESETS = {
       { _sortOrder: 3, text: "Обложка без подписи" },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
       {
         _sortOrder: 2,
-        text: "Комментарии читателей оформлены в цветные баблы: Для 👎, добавляем атрибут surface=\"negative\"; Для 👍, добавляем атрибут surface=\"positive\"",
+        text: 'Комментарии читателей оформлены в цветные баблы: Для 👎, добавляем атрибут surface="negative"; Для 👍, добавляем атрибут surface="positive"',
       },
       { _sortOrder: 3, text: "Не ставим ссылки на поля" },
-             {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
     ],
-    
- Прочее: [
-      {_sortOrder: 0,
+
+    Прочее: [
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1577,60 +1691,64 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc17: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Доска почета" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
@@ -1638,19 +1756,20 @@ const PRESETS = {
         _sortOrder: 0,
         text: "Автор редакция, но на верстке автора не добавляем",
       },
-       {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
-      
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
     ],
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1658,62 +1777,68 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
 
-    ugc21: {
+  ugc21: {
     Админка: [
-      { text: "Обложка мини над заголовком, подпись должна быть в «Дополнительно о статье», если ее нет — уточнить у фоторедактора" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
-       {  _sortOrder: 1, text: "Главный поток Больше ни ногой / стоит съездить" },
+      {
+        text: "Обложка мини над заголовком, подпись должна быть в «Дополнительно о статье», если ее нет — уточнить у фоторедактора",
+      },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
+      { _sortOrder: 1, text: "Главный поток Больше ни ногой / стоит съездить" },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
@@ -1721,84 +1846,93 @@ const PRESETS = {
         _sortOrder: 9999,
         text: "В конце добавлен этаж с похожими материалами",
       },
-       {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
-    ],
-    Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
         links: [
           {
-            label: "Пример статьи Больше ни ногой",
-            url: "https://t-j.ru/dont-go-ebeyty-lake/", 
-          },
-           {
-            label: "Пример статьи Стоит съездить",
-            url: "https://t-j.ru/must-see-zamok-garibaldi/", 
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+    ],
+    Прочее: [
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "Пример статьи Больше ни ногой",
+            url: "https://t-j.ru/dont-go-ebeyty-lake/",
+          },
+          {
+            label: "Пример статьи Стоит съездить",
+            url: "https://t-j.ru/must-see-zamok-garibaldi/",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc18: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Доска почета" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
     ],
     Текст: [
-      { _sortOrder: 0, text: "Подпись у героев с большой буквы (в подписи названия статей)" },
-           {
+      {
+        _sortOrder: 0,
+        text: "Подпись у героев с большой буквы (в подписи названия статей)",
+      },
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
@@ -1806,23 +1940,24 @@ const PRESETS = {
         _sortOrder: 0,
         text: "Автор редакция, но на верстке автора не добавляем",
       },
-       {_sortOrder: 0,
-      text: "Проверить наличие плашки Сообщества",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Проверить наличие плашки Сообщества",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
+          },
+        ],
+      },
       {
         _sortOrder: 2,
         text: "Комментарии героев в баблах",
       },
- 
     ],
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1830,60 +1965,64 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc19: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Доска почета" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
     ],
     Текст: [
-           {
+      {
         _sortOrder: 0,
         text: "Проверить, что автор или герой/герои статьи не находятся в бане, при бане сообщить редактору",
       },
@@ -1893,7 +2032,7 @@ const PRESETS = {
       },
       {
         _sortOrder: 2,
-        text: "У подзаголовков бирка с position=\"bottom\"",
+        text: 'У подзаголовков бирка с position="bottom"',
       },
       {
         _sortOrder: 13,
@@ -1901,7 +2040,8 @@ const PRESETS = {
       },
     ],
     Прочее: [
-      {_sortOrder: 0,
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1909,57 +2049,61 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
   ugc20: {
     Админка: [
       { _sortOrder: 1, text: "Главный поток Дневники трат" },
-          { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
-        {_sortOrder: 3,
-      text: "Наличие тега скрытия баннеров рекламы, при необходимости",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
-        },
-      ],
-    },
+      { _sortOrder: 4, text: "Нажата кнопка из сообщества" },
+      {
+        _sortOrder: 3,
+        text: "Наличие тега скрытия баннеров рекламы, при необходимости",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/47401677-0902-43a7-a182-8c025cd49d74",
+          },
+        ],
+      },
       { _sortOrder: 2, text: "Обложка мини над загом" },
       {
         _sortOrder: 3,
@@ -1967,7 +2111,6 @@ const PRESETS = {
       },
     ],
     Текст: [
-      
       {
         _sortOrder: 0,
         text: "Автор редакция, но на верстке автора не добавляем",
@@ -1980,8 +2123,9 @@ const PRESETS = {
       },
     ],
 
-       Прочее: [
-      {_sortOrder: 0,
+    Прочее: [
+      {
+        _sortOrder: 0,
         links: [
           {
             label: "Пример статьи",
@@ -1989,42 +2133,45 @@ const PRESETS = {
           },
         ],
       },
-       {_sortOrder: 0,
-      text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
-        },
-      ],
-    },
-          {_sortOrder: 0,
-      text: "Как работать с плашками Сообщества в UGC",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
-        },
-      ],
-    },
-              {_sortOrder: 0,
-      text: "Как создавать новые UGC-потоки и анкеты",
-      links: [
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
-        },
-      ],
-    },
-       {_sortOrder: 0,
-      links: [
-        {
-          label:
-            "UGC-генератор",
-          url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
-        },
-      ],
-    },
+      {
+        _sortOrder: 0,
+        text: "Как верстать и выпускать UGC-материалы с «Выбором редакции»",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1dSfIkWlzi6R-MSfXP3HkXBzN0u5HaM8MWwp5Wr_qtr4/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как работать с плашками Сообщества в UGC",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1CxDHgn_96EO2yc_PepRxZqdcKXnZcb9ulJ-hLiEmHi8/edit?tab=t.0",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        text: "Как создавать новые UGC-потоки и анкеты",
+        links: [
+          {
+            label: "Методичка",
+            url: "https://docs.google.com/document/d/1-qbPIiLOB7kh4dQM3CLrSbMIqyhow-VANpSrecqC9PE/edit?tab=t.0#heading=h.adqbxhdyb4xt",
+          },
+        ],
+      },
+      {
+        _sortOrder: 0,
+        links: [
+          {
+            label: "UGC-генератор",
+            url: "https://ugcgenerator.onrender.com/?qa-nocache=true",
+          },
+        ],
+      },
     ],
   },
 };
@@ -2033,7 +2180,7 @@ const PRESET_EXCLUDES = {
     Текст: ["lead", "heading-levels", "editor-badge"],
     Админка: ["cover-author", "cover-type", "utm", "credit"],
   },
-    tests: {
+  tests: {
     Текст: [
       "tooltip-link",
       "lead",
@@ -2041,14 +2188,9 @@ const PRESET_EXCLUDES = {
       "aside",
       "editors-notes",
       "contents-title",
-      "heading-levels"
+      "heading-levels",
     ],
-      Картинки: [
-      "screenshots",
-      "infographic-one",
-      "infographic-two" ,
-      "video",
-    ],
+    Картинки: ["screenshots", "infographic-one", "infographic-two", "video"],
   },
   shorts: {
     Текст: [
@@ -2065,7 +2207,7 @@ const PRESET_EXCLUDES = {
       "editor-badge",
       "aside",
       "editors-notes",
-      "contents-title"
+      "contents-title",
     ],
   },
   spending: {
@@ -2079,8 +2221,9 @@ const PRESET_EXCLUDES = {
       "spending-card-price",
       "spending-card-shop-hide",
       "shorts-list-format",
-      "panel"],
-      Выпуск: ["og-picture"],
+      "panel",
+    ],
+    Выпуск: ["og-picture"],
   },
   ugc: {
     Текст: ["editor-badge"],
@@ -2088,105 +2231,110 @@ const PRESET_EXCLUDES = {
   },
   ugc2: {
     Текст: ["editor-badge"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
-ugc3: {
-  Админка: ["og-header", "question-comments"], 
-  Текст: ["editor-badge", "spending-poll"],
-  Выпуск: ["authoradd"],
-},
+  ugc3: {
+    Админка: ["og-header", "question-comments"],
+    Текст: ["editor-badge", "spending-poll"],
+    Выпуск: ["authoradd"],
+  },
   ugc4: {
-       Админка: ["og-header"],
+    Админка: ["og-header"],
     Текст: ["editor-badge"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc5: {
-        Админка: ["question-comments", "og-header"],
+    Админка: ["question-comments", "og-header"],
     Текст: ["editor-badge", "spending-poll"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc6: {
-  Админка: ["og-header", "question-comments"], 
+    Админка: ["og-header", "question-comments"],
     Текст: ["editor-badge"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc7: {
-     Админка: ["og-header", "meta"],
+    Админка: ["og-header", "meta"],
     Текст: ["editor-badge"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc8: {
-        Админка: ["question-comments"],
+    Админка: ["question-comments"],
     Текст: ["editor-badge"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc9: {
-        Админка: ["question-comments"],
+    Админка: ["question-comments"],
     Текст: ["editor-badge"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc10: {
-        Админка: ["question-comments"],
+    Админка: ["question-comments"],
     Текст: ["editor-badge", "lead", "contents-title"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc11: {
-        Админка: ["question-comments"],
+    Админка: ["question-comments"],
     Текст: ["editor-badge", "lead", "contents-title"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc12: {
-        Админка: ["question-comments"],
+    Админка: ["question-comments"],
     Текст: ["editor-badge", "lead", "contents-title"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc13: {
-        Админка: ["question-comments"],
+    Админка: ["question-comments"],
     Текст: ["editor-badge", "lead", "contents-title"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc14: {
-        Админка: ["question-comments"],
+    Админка: ["question-comments"],
     Текст: ["editor-badge", "lead", "contents-title"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc15: {
     Админка: ["question-comments"],
     Текст: ["editor-badge", "lead", "contents-title"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc16: {
     Текст: ["editor-badge", "aside"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc17: {
-    Текст: ["editor-badge",  "lead"],
-     Выпуск: ["authoradd"],
+    Текст: ["editor-badge", "lead"],
+    Выпуск: ["authoradd"],
   },
   ugc18: {
     Текст: ["editor-badge", "authordesc"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
   ugc19: {
-    Текст: ["editor-badge",],
-     Выпуск: ["authoradd"],
+    Текст: ["editor-badge"],
+    Выпуск: ["authoradd"],
   },
   ugc20: {
     Текст: ["editor-badge", "lead"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
-    ugc21: {
+  ugc21: {
     Текст: ["editor-badge", "lead"],
-     Выпуск: ["authoradd"],
+    Выпуск: ["authoradd"],
   },
 };
 export const DATA = {
   Админка: [
+    {
+      _sortOrder: 0,
+      text: "Проверить, что коллеги закрыли вкладку с визивигом",
+    },
 
-    { _sortOrder: 0, text: "Проверить, что коллеги закрыли вкладку с визивигом" },
-
-    { id: "meta",
-      _sortOrder: 0, text: "Перенести мету из комментария в кайтене в админку" },
+    {
+      id: "meta",
+      _sortOrder: 0,
+      text: "Перенести мету из комментария в кайтене в админку",
+    },
     {
       _sortOrder: 0,
       text: "В заголовке проставлен мягкий перенос, если если он необходим",
@@ -2202,13 +2350,15 @@ export const DATA = {
         },
       ],
     },
-    { id: "og-header",
+    {
+      id: "og-header",
       text: "ОГ⁠-⁠⁠заг = заголовок статьи, ОГ-описание на месте, текст на ОГ-картинке оттипографирован",
     },
     {
       text: "Нажать галочку скрыть из приложения банка, если материал 18+ (секс, алкоголь и т.д.)",
     },
-    { id: "question-comments",
+    {
+      id: "question-comments",
       _sortOrder: 4,
       text: "Если в затравке отсутствует знак вопроса, то стоит двоеточие",
     },
@@ -2223,16 +2373,17 @@ export const DATA = {
     },
   ],
   Текст: [
-    { id: "authordesc", 
-      text: "Подпись автора с маленькой буквы" },
+    { id: "authordesc", text: "Подпись автора с маленькой буквы" },
     {
       id: "lead",
       text: "В начале статьи есть лид, в конце лида — знак окончания предложения (точка, вопросительный или восклицательный знак, многоточие)",
     },
-    { id: "contents-title",
+    {
+      id: "contents-title",
       text: "У заголовка оглавления нет знаков препинания в конце. Якорные ссылки в оглавлении ведут на нужные разделы",
     },
-    { id: "panel",
+    {
+      id: "panel",
       text: 'У сервисных плашек заголовок <h3> с атрибутом level="3" и в последнем предложении отсутствует точка',
     },
     {
@@ -2242,7 +2393,7 @@ export const DATA = {
     { text: "В коде статьи нет пустых атрибутов" },
     { text: "После эмодзи стоит пробел" },
     { text: "Поправить типографирование: м², а не м2, 1/2, а не ½" },
-      { text: "<nobr> стоит во всех кейсах из методички" },
+    { text: "<nobr> стоит во всех кейсах из методички" },
     {
       text: "Проверить ссылки: предлоги, точки, восклицательные, вопросительные знаки и двоеточия входят в ссылку, а запятые — нет",
     },
@@ -2265,7 +2416,7 @@ export const DATA = {
       id: "lists-style",
       text: "Проверить оформление списков: цифровые и кастомные — с большой буквы, в конце пунктов точки. Списки с буллитами — с маленькой буквы, в конце пунктов точка с запятой, у последнего пункта — точка",
     },
-    {  
+    {
       id: "spending-poll",
       _sortOrder: 9999,
       text: "Опрос на месте, в нем предлоги приклеены к следующему слову, эмодзи отображаются корректно",
@@ -2276,7 +2427,8 @@ export const DATA = {
       _sortOrder: 9999,
       text: "В конце материала стоит верная плашка телеграм-канала редакции",
     },
-    { id: "aside",
+    {
+      id: "aside",
       text: "Расставить поля, если нужно, они не стоят рядом с баннерами, анкетами, картинками и таблицами",
     },
     {
@@ -2343,15 +2495,18 @@ export const DATA = {
     },
   ],
   Картинки: [
-    { id: "screenshots",
+    {
+      id: "screenshots",
       text: 'Скрины ретиновые и без артефактов, текст читаем, соблюдены поля, проставлен prop="bordered", если фон сливается с фоном страницы',
       feature: "screenshots",
     },
-    { id: "infographic-one",
+    {
+      id: "infographic-one",
       text: 'Для инфографики проставлен prop="bordered rounded"',
       feature: "infographic",
     },
-    {  id: "infographic-two",
+    {
+      id: "infographic-two",
       text: 'Если у инфографики есть подпись, то указан кредит "Источник:" ',
       feature: "infographic",
     },
@@ -2367,9 +2522,7 @@ export const DATA = {
       text: "Если на скриншоте есть персональные данные, уточнить у редактора, нужно ли их заблюрить",
       feature: "images",
     },
-    { id: "video",
-      text: 'Проверить необходимость prop="bordered" у видео',
-    },
+    { id: "video", text: 'Проверить необходимость prop="bordered" у видео' },
   ],
   Выпуск: [
     {
@@ -2379,7 +2532,8 @@ export const DATA = {
     {
       text: "Проверить комментарии в кайтене на наличие правок от редакторов и замен от фоторедов",
     },
-    { id: "og-picture",
+    {
+      id: "og-picture",
       text: "После выпуска прикрепить в кайтене ссылку на материал и опенграф-картинку",
     },
     {
@@ -2389,7 +2543,6 @@ export const DATA = {
       text: "После выпуска проверить материал на главной: все ли в порядке с обложкой, по правилам ли стоят переносы в заголовке",
     },
   ],
-  
 };
 export const PRESET_LABELS = {
   default: "Обычный",
@@ -2400,27 +2553,149 @@ export const PRESET_LABELS = {
   spending: "Дневник трат",
   cd: "ЧД",
   shorts: "Шорты",
-  ugc: "UGC (базовый)",
-  ugc3: "Бесит — один автор (UGC)",
-  ugc4: "Бесит — подборка (UGC)",
-  ugc5: "Жалею (UGC)",
-  ugc6: "Мнение (UGC)",
-  ugc7: "Дискуссия (UGC)",
-  ugc8: "АМА вопрос (UGC)",
-  ugc9: "АМА ответ (UGC)",
-  ugc10: "Вопрос—ответ: Медицина (UGC)",
-  ugc11: "Вопрос—ответ: Недвижимость (UGC)",
-  ugc12: "Вопрос—ответ: Спорт (UGC)",
-  ugc13: "Вопрос—ответ: Мозг (UGC)",
-  ugc14: "Вопрос—ответ: Дети (UGC)",
-  ugc15: "Вопрос—ответ: Авто / Образование (UGC)",
-  ugc16: "За и Против: любая редакция (UGC)",
-  ugc21: "Особый лонг / Тревел (UGC)",
-  ugc17: "Комментарий недели (UGC)",
-  ugc18: "Комментарий месяца (UGC)",
-  ugc19: "Сообщники месяца (UGC)",
-  ugc20: "Голосовалки за дневник трат (UGC)",
+  ugc: "Базовый",
+  ugc3: "Бесит — один автор",
+  ugc4: "Бесит — подборка",
+  ugc5: "Жалею",
+  ugc6: "Мнение",
+  ugc7: "Дискуссия",
+  ugc8: "АМА вопрос",
+  ugc9: "АМА ответ",
+  ugc10: "Вопрос—ответ: Медицина",
+  ugc11: "Вопрос—ответ: Недвижимость",
+  ugc12: "Вопрос—ответ: Спорт",
+  ugc13: "Вопрос—ответ: Мозг",
+  ugc14: "Вопрос—ответ: Дети",
+  ugc15: "Вопрос—ответ: Авто / Образование",
+  ugc16: "За и Против: любая редакция",
+  ugc21: "Особый лонг / Тревел",
+  ugc17: "Комментарий недели",
+  ugc18: "Комментарий месяца",
+  ugc19: "Сообщники месяца",
+  ugc20: "Голосовалки за дневник трат",
 };
+
+export const FORMAT_GROUPS = [
+  {
+    id: "regular",
+    label: "Обычный",
+    items: [
+      { preset: "default", label: "Обычный" },
+      { preset: "invest", label: "Инвест" },
+      { preset: "shopping", label: "Шопинг" },
+      { preset: "tests", label: "Тест" },
+      { preset: "compare", label: "Сравнятор" },
+      { preset: "spending", label: "Дневник трат" },
+      { preset: "cd", label: "ЧД" },
+      { preset: "shorts", label: "Шорты" },
+    ],
+  },
+  {
+    id: "ugc",
+    label: "UGC",
+    categories: [
+      {
+        id: "base",
+        label: "Базовый",
+        items: [{ preset: "ugc", label: "Базовый" }],
+      },
+      {
+        id: "hate",
+        label: "Бесит",
+        items: [
+          { preset: "ugc3", label: "Один автор" },
+          { preset: "ugc4", label: "Подборка" },
+        ],
+      },
+      {
+        id: "experience",
+        label: "Опыт и мнения",
+        items: [
+          { preset: "ugc5", label: "Жалею" },
+          { preset: "ugc6", label: "Мнение" },
+          { preset: "ugc7", label: "Дискуссия" },
+        ],
+      },
+      {
+        id: "ama",
+        label: "АМА",
+        items: [
+          { preset: "ugc8", label: "Вопрос" },
+          { preset: "ugc9", label: "Ответ" },
+        ],
+      },
+      {
+        id: "question-answer",
+        label: "Вопрос—ответ",
+        items: [
+          { preset: "ugc10", label: "Медицина" },
+          { preset: "ugc11", label: "Недвижимость" },
+          { preset: "ugc12", label: "Спорт" },
+          { preset: "ugc13", label: "Мозг" },
+          { preset: "ugc14", label: "Дети" },
+          { preset: "ugc15", label: "Авто / Образование" },
+        ],
+      },
+      {
+        id: "debates-and-longs",
+        label: "Споры и лонги",
+        items: [
+          { preset: "ugc16", label: "За и Против" },
+          { preset: "ugc21", label: "Особый лонг / Тревел" },
+        ],
+      },
+      {
+        id: "community-results",
+        label: "Итоги сообщества",
+        items: [
+          { preset: "ugc17", label: "Комментарий недели" },
+          { preset: "ugc18", label: "Комментарий месяца" },
+          { preset: "ugc19", label: "Сообщники месяца" },
+          { preset: "ugc20", label: "Голосовалки за дневник трат" },
+        ],
+      },
+    ],
+  },
+];
+
+export const getFormatType = (typeId) =>
+  FORMAT_GROUPS.find((type) => type.id === typeId);
+
+export const getFormatCategory = (categoryId) =>
+  FORMAT_GROUPS.flatMap((type) => type.categories ?? []).find(
+    (category) => category.id === categoryId,
+  );
+
+export const getPresetLocation = (preset) => {
+  for (const type of FORMAT_GROUPS) {
+    if (type.items?.some((item) => item.preset === preset)) {
+      return { typeId: type.id, categoryId: null };
+    }
+
+    const category = type.categories?.find((candidate) =>
+      candidate.items.some((item) => item.preset === preset),
+    );
+    if (category) {
+      return { typeId: type.id, categoryId: category.id };
+    }
+  }
+
+  return null;
+};
+
+export const isUgcPreset = (preset) =>
+  getPresetLocation(preset)?.typeId === "ugc";
+
+export const getTypeCount = (type) =>
+  type.items?.length ??
+  type.categories?.reduce(
+    (count, category) => count + category.items.length,
+    0,
+  ) ??
+  0;
+
+export const getCategoryCount = (category) => category.items.length;
+
 export const getPresetData = (preset) => {
   const clone =
     typeof structuredClone === "function"
