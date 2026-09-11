@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { METHODICHKA_URL, PRESET_LABELS } from "../checklist-data";
+import {
+  METHODICHKA_URL,
+  PRESET_LABELS,
+  getPresetLocation,
+  isUgcPreset,
+} from "../checklist-data";
 import { getCategoryProgress } from "../lib/checklist-state";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ContentFilterBar from "./ContentFilterBar";
 import FocusToggle from "./FocusToggle";
 import FormatControl from "./FormatControl";
+import FormatModal from "./FormatModal";
 import NotesPopover from "./NotesPopover";
 import TaskSection from "./TaskSection";
 
@@ -46,10 +52,14 @@ export default function ChecklistWorkspace({
     () => Object.keys(tasks)[0],
   );
   const [pendingAction, setPendingAction] = useState(null);
-  const headerFormatSelectRef = useRef(null);
-  const sidebarFormatSelectRef = useRef(null);
+  const [formatView, setFormatView] = useState(
+    () => getPresetLocation(preset) ?? { typeId: "regular", categoryId: null },
+  );
+  const [formatModalOpen, setFormatModalOpen] = useState(false);
+  const [formatModalFocusPreset, setFormatModalFocusPreset] = useState(null);
   const resetButtonRef = useRef(null);
   const actionTriggerRef = useRef(null);
+  const formatTriggerRef = useRef(null);
   const scrollingTargetRef = useRef(null);
   const scrollTimerRef = useRef(null);
   const previousContextVersionRef = useRef(contextVersion);
@@ -143,33 +153,57 @@ export default function ChecklistWorkspace({
       setActiveCategory(category);
     }, 550);
   };
-  const getVisibleFormatSelect = () =>
-    [headerFormatSelectRef.current, sidebarFormatSelectRef.current].find(
-      (el) => el && el.offsetParent !== null,
-    ) ?? null;
-  const changePreset = (event) => {
-    const nextPreset = event.target.value;
-    if (nextPreset === preset) return;
-    if (progress.done > 0) {
-      actionTriggerRef.current = getVisibleFormatSelect();
-      setPendingAction({ kind: "preset", value: nextPreset });
+  const applyPresetChange = (nextPreset) => {
+    const location = getPresetLocation(nextPreset);
+    if (location) setFormatView(location);
+    switchPreset(nextPreset);
+  };
+  const requestPresetChange = (nextPreset, trigger, source) => {
+    if (nextPreset === preset) {
+      if (source === "modal") closeFormatModal(false);
       return;
     }
-    switchPreset(nextPreset);
+    actionTriggerRef.current = trigger;
+    if (progress.done > 0) {
+      if (source === "modal") setFormatModalOpen(false);
+      setPendingAction({ kind: "preset", value: nextPreset, source });
+      return;
+    }
+    applyPresetChange(nextPreset);
+    if (source === "modal") closeFormatModal(false);
+  };
+  const openFormatModal = () => {
+    setFormatModalFocusPreset(null);
+    setFormatModalOpen(true);
+  };
+  const closeFormatModal = (returnFocus = true) => {
+    setFormatModalOpen(false);
+    if (returnFocus) {
+      window.requestAnimationFrame(() => formatTriggerRef.current?.focus());
+    }
   };
   const requestReset = () => {
     actionTriggerRef.current = resetButtonRef.current;
     setPendingAction({ kind: "reset" });
   };
   const cancelPendingAction = () => {
+    const action = pendingAction;
     setPendingAction(null);
+    if (action?.kind === "preset" && action.source === "modal") {
+      setFormatModalFocusPreset(action.value);
+      setFormatModalOpen(true);
+      return;
+    }
     window.requestAnimationFrame(() => actionTriggerRef.current?.focus());
   };
   const confirmPendingAction = () => {
     const action = pendingAction;
     setPendingAction(null);
-    if (action.kind === "preset") switchPreset(action.value);
-    else hardReset();
+    if (action.kind === "preset") applyPresetChange(action.value);
+    else {
+      setFormatView(getPresetLocation("default"));
+      hardReset();
+    }
   };
   const scrollToNextCategory = (category) => {
     const index = categories.indexOf(category);
@@ -210,7 +244,12 @@ export default function ChecklistWorkspace({
         <div className="sticky-header">
           <header className="topbar">
             <div className="brand">
-              <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
+              <div className="brand-title">
+                <h1>Чек-лист проверки · {PRESET_LABELS[preset]}</h1>
+                {isUgcPreset(preset) && (
+                  <span className="format-type-badge">UGC</span>
+                )}
+              </div>
               <a
                 className="method-link header-method-link"
                 href={METHODICHKA_URL}
@@ -238,12 +277,24 @@ export default function ChecklistWorkspace({
                 {saveLabel}
               </small>
             </div>
-            <FormatControl
-              preset={preset}
-              onChange={changePreset}
-              selectRef={headerFormatSelectRef}
-              className="header-format-control"
-            />
+            <div className="format-control header-format-control">
+              <span className="format-control-label">ФОРМАТ</span>
+              <button
+                className="mobile-format-trigger"
+                type="button"
+                ref={formatTriggerRef}
+                aria-label={`Выбрать формат: ${PRESET_LABELS[preset]}`}
+                aria-haspopup="dialog"
+                aria-expanded={formatModalOpen}
+                aria-controls="format-modal"
+                onClick={openFormatModal}
+              >
+                <span>{PRESET_LABELS[preset]}</span>
+                {isUgcPreset(preset) && (
+                  <span className="format-type-badge">UGC</span>
+                )}
+              </button>
+            </div>
             <FocusToggle
               className="header-focus"
               focusMode={focusMode}
@@ -322,8 +373,10 @@ export default function ChecklistWorkspace({
           <aside className="sidebar">
             <FormatControl
               preset={preset}
-              onChange={changePreset}
-              selectRef={sidebarFormatSelectRef}
+              view={formatView}
+              onViewChange={setFormatView}
+              onSelectPreset={requestPresetChange}
+              collapsible
               className="sidebar-format-control"
             />
             <section
@@ -486,6 +539,15 @@ export default function ChecklistWorkspace({
         action={pendingAction}
         onCancel={cancelPendingAction}
         onConfirm={confirmPendingAction}
+      />
+      <FormatModal
+        open={formatModalOpen}
+        preset={preset}
+        view={formatView}
+        onViewChange={setFormatView}
+        onSelectPreset={requestPresetChange}
+        onClose={closeFormatModal}
+        focusPreset={formatModalFocusPreset}
       />
     </div>
   );
