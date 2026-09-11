@@ -218,9 +218,11 @@ export default function App() {
       const nextData = getPresetData(nextPreset);
       markSaving();
       setPreset(nextPreset);
+      setContentFilters(buildContentFilters());
       setTasks(buildTasks(nextData));
       setCollapsed(buildCollapsed(nextData));
       setFocusMode(false);
+      setUndoState(null);
       setContextVersion((value) => value + 1);
       setToast({
         message: `Формат «${PRESET_LABELS[nextPreset]}» выбран`,

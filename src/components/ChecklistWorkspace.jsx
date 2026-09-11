@@ -376,6 +376,7 @@ export default function ChecklistWorkspace({
               view={formatView}
               onViewChange={setFormatView}
               onSelectPreset={requestPresetChange}
+              collapsible
               className="sidebar-format-control"
             />
             <section
