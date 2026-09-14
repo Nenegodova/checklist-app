@@ -6,7 +6,7 @@ export const NOTES_TEMPLATE = `Вопросы к редакции:
 Правки для фотореда/дизайнера:
 —`;
 export const METHODICHKA_URL =
-  "https://tinkoffjournal.kaiten.ru/documents/g/1a81bca6-923a-460c-8081-864ecb12e994";
+  "https://tinkoffjournal.kaiten.ru/documents/g/ca60fc49-ab11-4fcf-a14d-41d79e7e4f85";
 export const CONTENT_FILTERS = {
   tables: { label: "Таблицы", default: true },
   screenshots: { label: "Скрины", default: true },
