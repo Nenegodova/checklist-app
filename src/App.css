@@ -604,12 +604,7 @@ input:focus-visible {
   border-bottom: 1px solid var(--line);
   background: var(--surface);
 }
-.content-filters-primary {
-  display: grid;
-  gap: 11px;
-  min-width: 0;
-}
-.content-filters-primary h2 {
+.content-filters-toggle h2 {
   margin: 0;
   font-family: "IBM Plex Mono", monospace;
   font-size: 10px;
@@ -620,22 +615,24 @@ input:focus-visible {
 }
 .content-filters-toggle {
   display: flex;
+  grid-column: 1 / -1;
   align-items: center;
   gap: 8px;
   width: 100%;
   padding: 0;
   border: 0;
   background: none;
-  cursor: default;
-  pointer-events: none;
+  cursor: pointer;
   text-align: left;
 }
 .content-filters-toggle i {
-  display: none;
   margin-left: auto;
   font-style: normal;
   color: var(--muted);
   transition: transform 0.15s;
+}
+.content-filters.is-collapsed .content-filters-toggle i {
+  transform: rotate(-90deg);
 }
 .content-filters-secondary {
   display: flex;
@@ -1051,13 +1048,6 @@ input:focus-visible {
   }
   .content-filters-toggle {
     cursor: pointer;
-    pointer-events: auto;
-  }
-  .content-filters-toggle i {
-    display: block;
-  }
-  .content-filters.is-collapsed .content-filters-toggle i {
-    transform: rotate(-90deg);
   }
   .content-filters-secondary {
     flex-direction: row;
