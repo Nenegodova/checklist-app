@@ -151,6 +151,31 @@ describe("checklist application", () => {
     ).toBeInTheDocument();
   });
 
+  it("collapses and reopens the entire content filters block on desktop", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const toggle = screen.getByRole("button", {
+      name: "Что есть в материале",
+    });
+
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByRole("button", { name: "Таблицы", pressed: true }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Сбросить фильтры" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId("hidden-by-filters")).not.toBeInTheDocument();
+
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("button", { name: "Таблицы", pressed: true }),
+    ).toBeInTheDocument();
+  });
+
   it("marks only UGC formats in the desktop header", async () => {
     const user = userEvent.setup();
     render(<App />);
