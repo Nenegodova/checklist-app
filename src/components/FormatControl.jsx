@@ -41,6 +41,39 @@ export default function FormatControl({
   const optionsId = `${controlId}-options`;
   const contentId = `${controlId}-content`;
 
+  const renderOptions = (items, label, id, className = "") => (
+    <div
+      id={id}
+      className={`format-option-list ${className}`.trim()}
+      role="group"
+      aria-label={label}
+    >
+      {items.map((item) => {
+        const isSelected = preset === item.preset;
+        return (
+          <button
+            key={item.preset}
+            type="button"
+            className={`format-option-button ${isSelected ? "is-selected" : ""}`.trim()}
+            aria-label={`Формат: ${PRESET_LABELS[item.preset]}`}
+            aria-pressed={isSelected}
+            data-format-preset={item.preset}
+            onClick={(event) =>
+              onSelectPreset(item.preset, event.currentTarget, "sidebar")
+            }
+          >
+            <span>{item.label}</span>
+            {isSelected && (
+              <span className="format-option-check" aria-hidden="true">
+                ✓
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
     <section
       className={`format-control format-control-hierarchy ${className}`.trim()}
@@ -100,60 +133,38 @@ export default function FormatControl({
                 {activeType.categories.map((category) => {
                   const count = getCategoryCount(category);
                   const isOpen = activeCategory?.id === category.id;
+                  const categoryOptionsId = `${optionsId}-${category.id}`;
                   return (
-                    <button
-                      key={category.id}
-                      type="button"
-                      className={`format-category-button ${isOpen ? "is-open" : ""}`.trim()}
-                      aria-label={`Рубрика ${category.label}, ${getFormatCountLabel(count)}`}
-                      aria-pressed={isOpen}
-                      aria-controls={optionsId}
-                      onClick={() =>
-                        onViewChange({ ...view, categoryId: category.id })
-                      }
-                    >
-                      <span>{category.label}</span>
-                      <small aria-hidden="true">{count}</small>
-                    </button>
+                    <div key={category.id} className="format-category-entry">
+                      <button
+                        type="button"
+                        className={`format-category-button ${isOpen ? "is-open" : ""}`.trim()}
+                        aria-label={`Рубрика ${category.label}, ${getFormatCountLabel(count)}`}
+                        aria-pressed={isOpen}
+                        aria-expanded={isOpen}
+                        aria-controls={isOpen ? categoryOptionsId : undefined}
+                        onClick={() =>
+                          onViewChange({ ...view, categoryId: category.id })
+                        }
+                      >
+                        <span>{category.label}</span>
+                        <small aria-hidden="true">{count}</small>
+                      </button>
+                      {isOpen &&
+                        renderOptions(
+                          category.items,
+                          `Форматы рубрики ${category.label}`,
+                          categoryOptionsId,
+                          "format-category-options",
+                        )}
+                    </div>
                   );
                 })}
               </div>
             </div>
           )}
-          <div
-            id={optionsId}
-            className="format-option-list"
-            role="group"
-            aria-label={
-              activeCategory
-                ? `Форматы рубрики ${activeCategory.label}`
-                : "Обычные форматы"
-            }
-          >
-            {activeItems.map((item) => {
-              const isSelected = preset === item.preset;
-              return (
-                <button
-                  key={item.preset}
-                  type="button"
-                  className={`format-option-button ${isSelected ? "is-selected" : ""}`.trim()}
-                  aria-label={`Формат: ${PRESET_LABELS[item.preset]}`}
-                  aria-pressed={isSelected}
-                  data-format-preset={item.preset}
-                  onClick={(event) =>
-                    onSelectPreset(item.preset, event.currentTarget, "sidebar")
-                  }
-                >
-                  <span>{item.label}</span>
-                  {isSelected && (
-                    <span className="format-option-check" aria-hidden="true">
-                      ✓
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          {!activeType.categories &&
+            renderOptions(activeItems, "Обычные форматы", optionsId)}
         </div>
       )}
     </section>

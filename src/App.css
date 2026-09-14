@@ -394,6 +394,10 @@ input:focus-visible {
   display: grid;
   gap: 4px;
 }
+.format-category-entry {
+  display: grid;
+  gap: 4px;
+}
 .format-category-button {
   position: relative;
   width: 100%;
