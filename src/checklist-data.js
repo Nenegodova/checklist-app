@@ -2331,15 +2331,6 @@ export const DATA = {
       _sortOrder: 0,
       text: "Перенести мету из комментария в кайтене в админку",
     },
-    {
-      _sortOrder: 0,
-      text: "В заголовке проставлен мягкий перенос, если если он необходим",
-      links: [
-        { label: "Символы", url: "https://symbl.cc/ru/00AD/" },
-        {
-          label: "Правила",
-          url: "https://www.batov.ru/hyph/cgi-bin/hyphtestex.exe",
-        },
         {
           label: "Методичка",
           url: "https://docs.google.com/document/d/1UBwfR7TE3rSBF4VnxmXUl7K0hjow-y5Jct4hG1QTIsI/edit?tab=t.0#heading=h.z33ybfin6ltb",
