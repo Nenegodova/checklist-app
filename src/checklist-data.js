@@ -2331,12 +2331,7 @@ export const DATA = {
       _sortOrder: 0,
       text: "Перенести мету из комментария в кайтене в админку",
     },
-        {
-          label: "Методичка",
-          url: "https://docs.google.com/document/d/1UBwfR7TE3rSBF4VnxmXUl7K0hjow-y5Jct4hG1QTIsI/edit?tab=t.0#heading=h.z33ybfin6ltb",
-        },
-      ],
-    },
+
     {
       id: "og-header",
       text: "ОГ⁠-⁠⁠заг = заголовок статьи, ОГ-описание на месте, текст на ОГ-картинке оттипографирован",
