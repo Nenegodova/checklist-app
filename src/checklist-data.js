@@ -670,22 +670,22 @@ const PRESETS = {
         text: "В конце добавлен стандартный для формата опрос (можно взять из ранее выпущеного материала)",
       },
       {
+        _sortOrder: 2,
+        text: "В out cтоит готовая обложка-заглушка hate-сap-out-, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
+        links: [
+          {
+            label: "Памятка",
+            url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
+          },
+        ],
+      },
+      {
         _sortOrder: 0,
         text: "Проверить наличие плашки Сообщества",
         links: [
           {
             label: "Методичка",
             url: "https://tinkoffjournal.kaiten.ru/documents/d/582d315f-8e48-4930-98b8-2f1243c664a9",
-          },
-        ],
-      },
-   {
-        _sortOrder: 2,
-        text: "В out cтоит готовая обложка-заглушка out-regret-cap-, поле «Обложка» оставляем пустым. Картинка mini — дублирует out. Опенграфы генерируем из out с затемнением и белым текстом.",
-        links: [
-          {
-            label: "Памятка",
-            url: "https://tinkoffjournal.kaiten.ru/documents/d/d1c51866-b3a8-48fd-8730-8eb83f40ae10",
           },
         ],
       },
